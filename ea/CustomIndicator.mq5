@@ -135,15 +135,13 @@ bool LoadLatestSignal()
   {
    string search = SignalsPath + "/*.json";
    string fname;
-   long   attr;
-   datetime modify;
    datetime latest=0;
    string latest_file="";
-   int handle = FileFindFirst(search,fname,attr);
+   int handle = FileFindFirst(search,fname);
    if(handle!=INVALID_HANDLE)
-     {
-      while(fname!="")
-        {
+      {
+       while(fname!="")
+         {
          int h = FileOpen(SignalsPath+"/"+fname,FILE_READ|FILE_TXT);
          if(h!=INVALID_HANDLE)
            {
@@ -155,7 +153,7 @@ bool LoadLatestSignal()
                latest_file=fname;
               }
            }
-         if(!FileFindNext(handle,fname,attr))
+         if(!FileFindNext(handle,fname))
             break;
         }
       FileFindClose(handle);
