@@ -59,6 +59,22 @@ It loads `config/fetch_yf.json` and accepts the same command-line options.
 When fetching currency pairs from Yahoo Finance use the `=X` suffix (e.g. `EURUSD=X`).
 To download gold prices for `XAUUSD` configure the symbol as `GC=F`.
 
+The `scripts/send_to_gpt.py` script also reads default values from a JSON file.
+It loads `config/gpt.json` unless you pass an alternative path with `--config`.
+Example `config/gpt.json`:
+
+```json
+{
+  "openai_api_key": "YOUR_API_KEY",
+  "prompt": "Generate signal",
+  "model": "gpt-3.5-turbo"
+}
+```
+
+Values provided on the command line override those in the config file.
+For the API key the `OPENAI_API_KEY` environment variable takes precedence over
+the `openai_api_key` value in the JSON config.
+
 ## CustomIndicator
 
 The `ea/CustomIndicator.mq5` file is a simple MT5 indicator that can be compiled

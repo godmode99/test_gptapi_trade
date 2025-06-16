@@ -1,0 +1,5 @@
+{
+  "openai_api_key": "YOUR_API_KEY",
+  "prompt": "Generate signal",
+  "model": "gpt-3.5-turbo"
+}
