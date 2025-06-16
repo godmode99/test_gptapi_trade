@@ -1,4 +1,9 @@
-"""Parse GPT response and save as JSON signal."""
+"""Parse GPT response and save as JSON signal.
+
+This utility logs every parsed response to a CSV file. The log file is
+created automatically if it does not exist and each new entry is appended
+to preserve previous records.
+"""
 from __future__ import annotations
 # python scripts/parse_gpt_response.py
 
@@ -80,7 +85,7 @@ def main() -> None:
     }
     is_new = not csv_path.exists()
     try:
-        with csv_path.open("w", newline="", encoding="utf-8") as f:
+        with csv_path.open("a", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(
                 f,
                 fieldnames=[
