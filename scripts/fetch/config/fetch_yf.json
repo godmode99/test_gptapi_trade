@@ -1,0 +1,10 @@
+{
+  "tz_shift": 0,
+  "symbol": "EURUSD=X",
+  "fetch_bars": 30,
+  "timeframes": [
+    {"tf": "M5", "keep": 10},
+    {"tf": "M15", "keep": 6},
+    {"tf": "H1", "keep": 4}
+  ]
+}

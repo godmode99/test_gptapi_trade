@@ -54,6 +54,8 @@ Example `config/fetch_mt5.json`:
 }
 ```
 
+The script `scripts/fetch_yf_data.py` provides similar functionality using yfinance. It loads `config/fetch_yf.json` and accepts the same command-line options.
+
 ## CustomIndicator
 
 The `ea/CustomIndicator.mq5` file is a simple MT5 indicator that can be compiled
