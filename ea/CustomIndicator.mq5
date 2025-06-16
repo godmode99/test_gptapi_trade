@@ -163,7 +163,22 @@ bool LoadLatestSignal()
    int file=FileOpen(path,FILE_READ|FILE_TXT);
    if(file==INVALID_HANDLE)
       return(false);
-   string content=FileReadString(file, (int)FileSize(file));
+   long fsize=FileSize(file);
+   string content="";
+   if(fsize<=2147483647)
+     {
+      content=FileReadString(file,(int)fsize);
+     }
+   else
+     {
+      int chunk=1024*1024;
+      while(fsize>0)
+        {
+         int to_read=(int)MathMin(fsize,chunk);
+         content+=FileReadString(file,to_read);
+         fsize-=to_read;
+        }
+     }
    FileClose(file);
    ParseSignal(content,current_signal);
    return(true);
