@@ -39,3 +39,7 @@ on the chart.
    RSI/SMA/ATR or set it to `true` to display parsed signals.
 
 Refer to `Work_flow.md` for the full workflow description.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
