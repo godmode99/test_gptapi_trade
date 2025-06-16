@@ -1,6 +1,4 @@
 """Send CSV data and prompts to GPT API and return raw response."""
-"python scripts/send_api/send_to_gpt.py"
-
 from __future__ import annotations
 
 import argparse
