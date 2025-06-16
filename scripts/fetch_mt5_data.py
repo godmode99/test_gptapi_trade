@@ -157,12 +157,6 @@ def main() -> None:
     config = _load_config(Path(args.config))
     symbol = args.symbol or config.get("symbol", "EURUSD")
 
-    output = (
-        Path(args.output)
-        if args.output
-        else Path("data/raw") / f"{symbol.lower()}_multi_tf.csv"
-    )
-
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(message)s",
@@ -171,6 +165,16 @@ def main() -> None:
     try:
         _init_mt5()
         df = fetch_multi_tf(symbol, config)
+
+        if args.output:
+            output = Path(args.output)
+        else:
+            latest_ts = df["timestamp"].max()
+            date_part = latest_ts.strftime("%d%m%y")
+            hour_part = latest_ts.strftime("%H")
+            filename = f"{symbol.lower()}_{date_part}_{hour_part}H.csv"
+            output = Path("data/raw") / filename
+
         output.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(output, index=False)
         LOGGER.info("Saved data to %s", output)
