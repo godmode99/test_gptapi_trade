@@ -103,19 +103,8 @@ def _compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
 
 def fetch_multi_tf(symbol: str, config: Dict[str, Any]) -> pd.DataFrame:
     """Fetch data for several timeframes and merge into one DataFrame."""
-<<<<<<< HEAD
-    # Bars to keep after indicators are calculated
-    timeframes: List[tuple[int, int, str]] = [
-        (mt5.TIMEFRAME_M5, 10, "5m"),
-        (mt5.TIMEFRAME_M15, 6, "15m"),
-        (mt5.TIMEFRAME_H1, 4, "1h"),
-    ]
-    # Always fetch enough bars to compute indicators (min 20)
-    fetch_bars = 30
-=======
     timeframes_conf = config.get("timeframes", [])
     fetch_bars = int(config.get("fetch_bars", 20))
->>>>>>> 147bf6dde7465f0db0acf0972cdcfe707e35bf5e
 
     frames = []
     for item in timeframes_conf:
