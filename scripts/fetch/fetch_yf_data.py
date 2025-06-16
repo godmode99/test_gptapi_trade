@@ -144,6 +144,7 @@ def main() -> None:
     pre_args, remaining = pre_parser.parse_known_args()
     config = _load_config(Path(pre_args.config))
     default_tz = int(config.get("tz_shift", 0))
+    default_save_path = config.get("save_as_path", "data/raw")
 
     parser = argparse.ArgumentParser(description="Fetch yfinance OHLC data", parents=[pre_parser])
     parser.add_argument("--symbol", help="Symbol to fetch and override config")
@@ -169,7 +170,7 @@ def main() -> None:
             h1_df = df[df["timeframe"] == h1_label]
             last_ts = h1_df["timestamp"].max() if not h1_df.empty else df["timestamp"].max()
             name = _timestamp_code(last_ts)
-            output = Path("data/raw") / f"{symbol.lower()}_{name}.csv"
+            output = Path(default_save_path) / f"{symbol.lower()}_{name}.csv"
         output.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(output, index=False)
         LOGGER.info("Saved data to %s", output)

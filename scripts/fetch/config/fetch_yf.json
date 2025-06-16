@@ -2,6 +2,7 @@
   "tz_shift": 7,
   "symbol": "GC=F",
   "fetch_bars": 30,
+  "save_as_path": "scripts/fetch/data/raw",
   "timeframes": [
     {"tf": "M5", "keep": 10},
     {"tf": "M15", "keep": 6},
