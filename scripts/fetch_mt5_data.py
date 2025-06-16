@@ -75,16 +75,20 @@ def _compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
 
 def fetch_multi_tf(symbol: str) -> pd.DataFrame:
     """Fetch data for several timeframes and merge into one DataFrame."""
+    # Bars to keep after indicators are calculated
     timeframes: List[tuple[int, int, str]] = [
         (mt5.TIMEFRAME_M5, 10, "5m"),
         (mt5.TIMEFRAME_M15, 6, "15m"),
         (mt5.TIMEFRAME_H1, 4, "1h"),
     ]
+    # Always fetch enough bars to compute indicators (min 20)
+    fetch_bars = 20
 
     frames = []
-    for tf, bars, label in timeframes:
-        df = _fetch_rates(symbol, tf, bars)
+    for tf, keep, label in timeframes:
+        df = _fetch_rates(symbol, tf, fetch_bars)
         df = _compute_indicators(df)
+        df = df.tail(keep)
         df["timeframe"] = label
         frames.append(df)
 
