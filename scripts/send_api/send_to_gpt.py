@@ -22,6 +22,14 @@ def _load_config(path: Path) -> dict:
         raise RuntimeError(f"Failed to read config: {exc}") from exc
 
 
+def _find_latest_csv(directory: Path) -> Path:
+    """Return the most recently modified CSV file in *directory*."""
+    csv_files = list(directory.glob("*.csv"))
+    if not csv_files:
+        raise FileNotFoundError(f"No CSV files found in {directory}")
+    return max(csv_files, key=lambda p: p.stat().st_mtime)
+
+
 def _call_gpt(csv_text: str, prompt: str, model: str) -> str:
     """Send data to the GPT API and return the response text."""
     messages = [
@@ -54,7 +62,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Send CSV data to GPT API", parents=[pre_parser]
     )
-    parser.add_argument("csv", help="CSV data file")
+    parser.add_argument("csv", nargs="?", help="CSV data file")
+    parser.add_argument(
+        "--data-dir",
+        default="data/raw",
+        help="Directory to search for CSV if argument is omitted",
+    )
     parser.add_argument(
         "--prompt",
         help="Prompt text",
@@ -75,8 +88,18 @@ def main() -> None:
         format="%(asctime)s [%(levelname)s] %(message)s",
     )
 
+    if args.csv:
+        csv_path = Path(args.csv)
+    else:
+        try:
+            csv_path = _find_latest_csv(Path(args.data_dir))
+        except FileNotFoundError as exc:  # noqa: BLE001
+            LOGGER.error("%s", exc)
+            raise SystemExit(1)
+    LOGGER.info("Using CSV file %s", csv_path)
+
     try:
-        csv_text = Path(args.csv).read_text(encoding="utf-8")
+        csv_text = csv_path.read_text(encoding="utf-8")
     except Exception as exc:  # noqa: BLE001
         LOGGER.error("Failed to read CSV: %s", exc)
         raise SystemExit(1)
