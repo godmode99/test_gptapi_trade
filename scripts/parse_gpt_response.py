@@ -80,7 +80,7 @@ def main() -> None:
     }
     is_new = not csv_path.exists()
     try:
-        with csv_path.open("a", newline="", encoding="utf-8") as f:
+        with csv_path.open("w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(
                 f,
                 fieldnames=[

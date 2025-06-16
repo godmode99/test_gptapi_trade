@@ -1,0 +1,3 @@
+```json
+{"signal_id": "xauusd-20250616_21hr", "entry": 3412, "sl": 3405, "tp": 3425, "position_type": "buy limit", "confidence": 77}
+```
