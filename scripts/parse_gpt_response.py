@@ -2,7 +2,8 @@
 
 This utility logs every parsed response to a CSV file. The log file is
 created automatically if it does not exist and each new entry is appended
-to preserve previous records.
+to preserve previous records. The raw input text is also written to
+``latest_response.txt`` so the most recent reply can be inspected easily.
 """
 from __future__ import annotations
 # python scripts/parse_gpt_response.py
@@ -42,12 +43,12 @@ def main() -> None:
     )
     parser.add_argument(
         "--csv-log",
-        default="logs/responses.csv",
+        default="signals_csv/csv_signal_report.csv",
         help="Path to CSV log file",
     )
     parser.add_argument(
         "--json-dir",
-        default="signals",
+        default="signals_json",
         help="Directory for generated JSON files",
     )
 
@@ -63,6 +64,12 @@ def main() -> None:
     except Exception as exc:  # noqa: BLE001
         LOGGER.error("Failed to read input file: %s", exc)
         raise SystemExit(1)
+
+    # Store raw response for debugging
+    try:
+        Path("latest_response.txt").write_text(text, encoding="utf-8")
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.warning("Failed to update latest_response.txt: %s", exc)
 
     LOGGER.info("Raw response: %s", text)
 
