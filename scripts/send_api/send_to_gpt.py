@@ -71,13 +71,16 @@ def main() -> None:
     parser.add_argument(
         "--prompt",
         help="Prompt text",
-        default=config.get("prompt", "Generate signal"),
+        default=config.get(
+            "prompt",
+            "Generate a trading signal and reply only with a JSON object like {\\\"signal_id\\\": \\\"xauusd-20250616_14hr\\\", \\\"entry\\\": 12, \\\"sl\\\": 10, \\\"tp\\\": 20, \\\"position_type\\\": \\\"buy limit\\\", \\\"confidence\\\": 77 }",
+        ),
     )
     parser.add_argument("--prompt-file", help="Read prompt from file")
     parser.add_argument(
         "--model",
         help="Model name",
-        default=config.get("model", "gpt-3.5-turbo"),
+        default=config.get("model", "gpt-4o"),
     )
     parser.add_argument("--output", help="Save raw response to file")
 
