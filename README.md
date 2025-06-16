@@ -22,7 +22,7 @@ pip install -r requirements.txt
 
 ## Configuration
 
-The script `scripts/fetch_mt5_data.py` reads its parameters from
+The script `scripts/fetch/fetch_mt5_data.py` reads its parameters from
 `config/fetch_mt5.json` by default and you can pass an alternative JSON file
 using `--config`. The configuration defines:
 
@@ -54,12 +54,12 @@ Example `config/fetch_mt5.json`:
 }
 ```
 
-The script `scripts/fetch_yf_data.py` provides similar functionality using yfinance.
+The script `scripts/fetch/fetch_yf_data.py` provides similar functionality using yfinance.
 It loads `config/fetch_yf.json` and accepts the same command-line options.
 When fetching currency pairs from Yahoo Finance use the `=X` suffix (e.g. `EURUSD=X`).
 To download gold prices for `XAUUSD` configure the symbol as `GC=F`.
 
-The `scripts/send_to_gpt.py` script also reads default values from a JSON file.
+The `scripts/send_api/send_to_gpt.py` script also reads default values from a JSON file.
 It loads `config/gpt.json` unless you pass an alternative path with `--config`.
 Example `config/gpt.json`:
 
