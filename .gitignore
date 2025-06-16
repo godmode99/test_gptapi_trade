@@ -3,3 +3,7 @@ __pycache__/
 .ruff_cache/
 logs/
 signals/
+
+# Ignore raw CSV data
+data/raw/*
+!data/raw/.gitkeep
