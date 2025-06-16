@@ -37,7 +37,11 @@ def main() -> None:
         format="%(asctime)s [%(levelname)s] %(message)s",
     )
 
-    text = Path(args.input).read_text(encoding="utf-8")
+    try:
+        text = Path(args.input).read_text(encoding="utf-8")
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.error("Failed to read input file: %s", exc)
+        raise SystemExit(1)
 
     try:
         data = _extract_json(text)
@@ -52,8 +56,12 @@ def main() -> None:
         output = Path("signals") / f"{name}.json"
 
     output.parent.mkdir(parents=True, exist_ok=True)
-    with output.open("w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
+    try:
+        with output.open("w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.error("Failed to write output file: %s", exc)
+        raise SystemExit(1)
 
     LOGGER.info("Saved signal to %s", output)
 
