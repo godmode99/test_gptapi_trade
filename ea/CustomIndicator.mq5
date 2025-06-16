@@ -1,0 +1,171 @@
+#property indicator_separate_window
+#property indicator_buffers 3
+#property indicator_plots   3
+
+#property indicator_label1 "RSI14"
+#property indicator_type1   DRAW_LINE
+#property indicator_color1  clrDodgerBlue
+#property indicator_width1  2
+
+#property indicator_label2 "SMA20"
+#property indicator_type2   DRAW_LINE
+#property indicator_color2  clrOrange
+#property indicator_width2  2
+
+#property indicator_label3 "ATR14"
+#property indicator_type3   DRAW_LINE
+#property indicator_color3  clrRed
+#property indicator_width3  2
+
+input bool  DisplaySignals = false;  // Show parsed signals instead of indicators
+input string SignalsPath   = "signals"; // Folder with JSON signal files
+
+//--- indicator buffers
+double BufferRSI[];
+double BufferSMA[];
+double BufferATR[];
+
+//--- variables for signal display
+string  last_signal_file = "";
+struct SignalData
+  {
+   string id;
+   double entry;
+   double sl;
+   double tp;
+   string position;
+   double confidence;
+  };
+SignalData current_signal;
+
+int OnInit()
+  {
+   SetIndexBuffer(0,BufferRSI,INDICATOR_DATA);
+   SetIndexBuffer(1,BufferSMA,INDICATOR_DATA);
+   SetIndexBuffer(2,BufferATR,INDICATOR_DATA);
+
+   PlotIndexSetString(0,PLOT_LABEL,"RSI14");
+   PlotIndexSetString(1,PLOT_LABEL,"SMA20");
+   PlotIndexSetString(2,PLOT_LABEL,"ATR14");
+
+   if(DisplaySignals)
+      EventSetTimer(10);   // check for signals every 10 seconds
+
+   return(INIT_SUCCEEDED);
+  }
+
+void OnDeinit(const int reason)
+  {
+   if(DisplaySignals)
+      EventKillTimer();
+  }
+
+void OnTimer()
+  {
+   if(DisplaySignals)
+      LoadLatestSignal();
+  }
+
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const datetime &time[],
+                const double &open[],
+                const double &high[],
+                const double &low[],
+                const double &close[],
+                const long &tick_volume[],
+                const long &volume[],
+                const int &spread[])
+  {
+   //--- calculate indicators
+   int begin = MathMax(0, rates_total - prev_calculated - 1000);
+   for(int i=begin; i<rates_total; i++)
+     {
+      BufferRSI[i] = iRSI(NULL,0,14,PRICE_CLOSE,i);
+      BufferSMA[i] = iMA(NULL,0,20,0,MODE_SMA,PRICE_CLOSE,i);
+      BufferATR[i] = iATR(NULL,0,14,i);
+     }
+
+   if(DisplaySignals && current_signal.id!="")
+     {
+      string msg = StringFormat("Signal %s %s\nEntry: %.2f SL: %.2f TP: %.2f Conf: %.0f",
+                                current_signal.id,
+                                current_signal.position,
+                                current_signal.entry,
+                                current_signal.sl,
+                                current_signal.tp,
+                                current_signal.confidence);
+      Comment(msg);
+     }
+   else if(!DisplaySignals)
+      Comment("");
+
+   return(rates_total);
+  }
+
+//--- helper to load latest signal
+bool LoadLatestSignal()
+  {
+   string search = SignalsPath + "/*.json";
+   string fname;
+   long   attr;
+   datetime modify;
+   datetime latest=0;
+   string latest_file="";
+   int handle = FileFindFirst(search,fname,attr);
+   if(handle!=INVALID_HANDLE)
+     {
+      while(fname!="")
+        {
+         int h = FileOpen(SignalsPath+"/"+fname,FILE_READ|FILE_TXT);
+         if(h!=INVALID_HANDLE)
+           {
+            datetime m = (datetime)FileGetInteger(h,FILE_MODIFY_DATE);
+            FileClose(h);
+            if(m>latest)
+              {
+               latest=m;
+               latest_file=fname;
+              }
+           }
+         if(!FileFindNext(handle,fname,attr))
+            break;
+        }
+      FileFindClose(handle);
+     }
+   if(latest_file=="" || latest_file==last_signal_file)
+      return(false);
+   last_signal_file=latest_file;
+   string path = SignalsPath + "/" + latest_file;
+   int file=FileOpen(path,FILE_READ|FILE_TXT);
+   if(file==INVALID_HANDLE)
+      return(false);
+   string content=FileReadString(file, (int)FileSize(file));
+   FileClose(file);
+   ParseSignal(content,current_signal);
+   return(true);
+  }
+
+void ParseSignal(string json, SignalData &sig)
+  {
+   sig.id = GetValue(json,"signal_id");
+   sig.entry = StrToDouble(GetValue(json,"entry"));
+   sig.sl = StrToDouble(GetValue(json,"sl"));
+   sig.tp = StrToDouble(GetValue(json,"tp"));
+   sig.position = GetValue(json,"position_type");
+   sig.confidence = StrToDouble(GetValue(json,"confidence"));
+  }
+
+string GetValue(string text,string key)
+  {
+   string pattern = "\""+key+"\"";
+   int pos = StringFind(text,pattern);
+   if(pos==-1) return "";
+   pos = StringFind(text,":",pos);
+   if(pos==-1) return "";
+   pos++;
+   while(pos<StringLen(text) && (text[pos]==' ' || text[pos]=='\"')) pos++;
+   int end=pos;
+   while(end<StringLen(text) && text[end]!='\"' && text[end]!=',' && text[end]!='}' && text[end]!='\n' && text[end]!='\r') end++;
+   return StringSubstr(text,pos,end-pos);
+  }
