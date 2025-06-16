@@ -40,7 +40,7 @@ json
 "entry": 12,
 "sl": 10,
 "tp": 20,
-"position_type": "buy limit",
+"pending_order_type": "buy limit",
 "confidence": 77
 }
 3.5 Parse response to JSON file & save to folder
@@ -91,7 +91,7 @@ Modular, debug/ปรับปรุงทุกจุดได้
    "entry": 2332.14,
    "sl": 2327.50,
    "tp": 2340.50,
-   "position_type": "buy limit",
+   "pending_order_type": "buy limit",
    "confidence": 81
    }
 7. Extensibility
