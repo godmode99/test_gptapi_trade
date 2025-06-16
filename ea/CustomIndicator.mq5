@@ -2,6 +2,8 @@
 #property indicator_buffers 3
 #property indicator_plots   3
 
+#include <stdlib.mqh>
+
 #property indicator_label1 "RSI14"
 #property indicator_type1   DRAW_LINE
 #property indicator_color1  clrDodgerBlue
@@ -174,11 +176,11 @@ bool LoadLatestSignal()
 void ParseSignal(string json, SignalData &sig)
   {
    sig.id = GetValue(json,"signal_id");
-   sig.entry = StrToDouble(GetValue(json,"entry"));
-   sig.sl = StrToDouble(GetValue(json,"sl"));
-   sig.tp = StrToDouble(GetValue(json,"tp"));
+   sig.entry = StringToDouble(GetValue(json,"entry"));
+   sig.sl = StringToDouble(GetValue(json,"sl"));
+   sig.tp = StringToDouble(GetValue(json,"tp"));
    sig.position = GetValue(json,"position_type");
-   sig.confidence = StrToDouble(GetValue(json,"confidence"));
+   sig.confidence = StringToDouble(GetValue(json,"confidence"));
   }
 
 string GetValue(string text,string key)
