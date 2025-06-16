@@ -1,6 +1,6 @@
 {
   "symbol": "XAUUSD",
-  "fetch_bars": 20,
+  "fetch_bars": 30,
   "timeframes": [
     {"tf": "M5", "keep": 10},
     {"tf": "M15", "keep": 6},
