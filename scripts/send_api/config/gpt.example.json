@@ -3,5 +3,6 @@
   "prompt": "Generate a trading signal and reply only with a JSON object like {\"signal_id\": \"xauusd-20250616_14hr\", \"entry\": 12, \"sl\": 10, \"tp\": 20, \"position_type\": \"buy limit\", \"confidence\": 77 }",
   "model": "gpt-4o",
   "csv_file": "",
-  "csv_path": "data/raw"
+  "csv_path": "scripts/fetch/data/raw"
+
 }
