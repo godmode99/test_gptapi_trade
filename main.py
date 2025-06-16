@@ -26,7 +26,7 @@ async def main() -> None:
     )
     parser.add_argument(
         "--fetch-script",
-        default="scripts/fetch/fetch_mt5_data.py",
+        default="scripts/fetch/fetch_yf_data.py",
         help="Path to data fetching script",
     )
     parser.add_argument(
