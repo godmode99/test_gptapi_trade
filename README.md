@@ -75,6 +75,11 @@ Values provided on the command line override those in the config file.
 For the API key the `OPENAI_API_KEY` environment variable takes precedence over
 the `openai_api_key` value in the JSON config.
 
+If you omit the positional `csv` argument, `send_to_gpt.py` automatically
+searches the directory specified by `--data-dir` (default `data/raw`) and uses
+the newest `*.csv` file it finds. The selected file path is reported in the
+logs and the script exits with an error if no CSV files are available.
+
 ## CustomIndicator
 
 The `ea/CustomIndicator.mq5` file is a simple MT5 indicator that can be compiled
