@@ -31,7 +31,8 @@ on the chart.
 ### Compile & Attach
 
 1. Copy `CustomIndicator.mq5` to your MT5 **MQL5/Indicators** folder or open it
-   directly in MetaEditor.
+   directly in MetaEditor. A minimal `stdlib.mqh` stub is also provided in the
+   `ea/` directory in case the standard library is missing.
 2. Press **Compile**. The compiled indicator (`CustomIndicator.ex5`) will appear
    in the Navigator under *Indicators*.
 3. Drag the indicator onto a chart. Set `DisplaySignals` to `false` to plot
