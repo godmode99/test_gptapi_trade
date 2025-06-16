@@ -1,5 +1,4 @@
 """Fetch OHLCV data via yfinance and compute indicators."""
-
 from __future__ import annotations
 
 import argparse
