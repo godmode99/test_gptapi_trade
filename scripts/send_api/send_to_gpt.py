@@ -82,6 +82,7 @@ def main() -> None:
     parser.add_argument("--output", help="Save raw response to file")
 
     args = parser.parse_args(remaining)
+    config_csv = config.get("csv")
 
     logging.basicConfig(
         level=logging.INFO,
@@ -90,13 +91,18 @@ def main() -> None:
 
     if args.csv:
         csv_path = Path(args.csv)
+        src = "CLI"
+    elif config_csv:
+        csv_path = Path(config_csv)
+        src = "config"
     else:
         try:
             csv_path = _find_latest_csv(Path(args.data_dir))
+            src = f"directory scan ({args.data_dir})"
         except FileNotFoundError as exc:  # noqa: BLE001
             LOGGER.error("%s", exc)
             raise SystemExit(1)
-    LOGGER.info("Using CSV file %s", csv_path)
+    LOGGER.info("Using CSV file %s from %s", csv_path, src)
 
     try:
         csv_text = csv_path.read_text(encoding="utf-8")

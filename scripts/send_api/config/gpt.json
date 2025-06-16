@@ -1,5 +1,6 @@
 {
   "openai_api_key": "YOUR_API_KEY",
   "prompt": "Generate signal",
-  "model": "gpt-3.5-turbo"
+  "model": "gpt-3.5-turbo",
+  "csv": "data/raw/example.csv"
 }
