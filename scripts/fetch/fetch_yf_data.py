@@ -56,6 +56,7 @@ def _fetch_rates(symbol: str, interval: str, bars: int, tz_shift: int = 0) -> pd
     if idx.tzinfo is not None:
         idx = idx.tz_convert(None)
     df.index = idx + pd.Timedelta(hours=tz_shift)
+    df.index.name = "timestamp"
     df = df.rename(
         columns={
             "Open": "open",
@@ -65,7 +66,7 @@ def _fetch_rates(symbol: str, interval: str, bars: int, tz_shift: int = 0) -> pd
             "Volume": "tick_volume",
         }
     )
-    df = df.reset_index().rename(columns={"index": "timestamp"})
+    df = df.reset_index()
     df = df[["timestamp", "open", "high", "low", "close", "tick_volume"]]
     return df
 
