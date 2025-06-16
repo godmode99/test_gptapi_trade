@@ -25,6 +25,11 @@ double BufferRSI[];
 double BufferSMA[];
 double BufferATR[];
 
+//--- indicator handles
+int rsiHandle=INVALID_HANDLE;
+int maHandle=INVALID_HANDLE;
+int atrHandle=INVALID_HANDLE;
+
 //--- variables for signal display
 string  last_signal_file = "";
 struct SignalData
@@ -44,6 +49,11 @@ int OnInit()
    SetIndexBuffer(1,BufferSMA,INDICATOR_DATA);
    SetIndexBuffer(2,BufferATR,INDICATOR_DATA);
 
+   //--- create indicator handles
+   rsiHandle = iRSI(_Symbol,PERIOD_CURRENT,14,PRICE_CLOSE);
+   maHandle  = iMA(_Symbol,PERIOD_CURRENT,20,0,MODE_SMA,PRICE_CLOSE);
+   atrHandle = iATR(_Symbol,PERIOD_CURRENT,14);
+
    PlotIndexSetString(0,PLOT_LABEL,"RSI14");
    PlotIndexSetString(1,PLOT_LABEL,"SMA20");
    PlotIndexSetString(2,PLOT_LABEL,"ATR14");
@@ -58,6 +68,14 @@ void OnDeinit(const int reason)
   {
    if(DisplaySignals)
       EventKillTimer();
+
+   //--- release indicator handles
+   if(rsiHandle!=INVALID_HANDLE)
+      IndicatorRelease(rsiHandle);
+   if(maHandle!=INVALID_HANDLE)
+      IndicatorRelease(maHandle);
+   if(atrHandle!=INVALID_HANDLE)
+      IndicatorRelease(atrHandle);
   }
 
 void OnTimer()
@@ -79,11 +97,20 @@ int OnCalculate(const int rates_total,
   {
    //--- calculate indicators
    int begin = MathMax(0, rates_total - prev_calculated - 1000);
+   double rsi_val[1];
+   double ma_val[1];
+   double atr_val[1];
+   ArraySetAsSeries(rsi_val,true);
+   ArraySetAsSeries(ma_val,true);
+   ArraySetAsSeries(atr_val,true);
    for(int i=begin; i<rates_total; i++)
      {
-      BufferRSI[i] = iRSI(NULL,0,14,PRICE_CLOSE,i);
-      BufferSMA[i] = iMA(NULL,0,20,0,MODE_SMA,PRICE_CLOSE,i);
-      BufferATR[i] = iATR(NULL,0,14,i);
+      if(CopyBuffer(rsiHandle,0,i,1,rsi_val)<=0) return(0);
+      if(CopyBuffer(maHandle,0,i,1,ma_val)<=0)  return(0);
+      if(CopyBuffer(atrHandle,0,i,1,atr_val)<=0) return(0);
+      BufferRSI[i] = rsi_val[0];
+      BufferSMA[i] = ma_val[0];
+      BufferATR[i] = atr_val[0];
      }
 
    if(DisplaySignals && current_signal.id!="")
