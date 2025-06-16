@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -56,6 +57,11 @@ def _tf_label(tf: str) -> str:
     digits = "".join(ch for ch in tf if ch.isdigit())
     letters = "".join(ch for ch in tf if ch.isalpha()).lower()
     return f"{digits}{letters}"
+
+
+def _timestamp_code(ts: pd.Timestamp) -> str:
+    """Return a string like '250616_16H' for a timestamp."""
+    return ts.strftime("%d%m%y_%H") + "H"
 
 
 def _fetch_rates(symbol: str, timeframe: int, bars: int) -> pd.DataFrame:
@@ -157,11 +163,7 @@ def main() -> None:
     config = _load_config(Path(args.config))
     symbol = args.symbol or config.get("symbol", "EURUSD")
 
-    output = (
-        Path(args.output)
-        if args.output
-        else Path("data/raw") / f"{symbol.lower()}_multi_tf.csv"
-    )
+    output = Path(args.output) if args.output else None
 
     logging.basicConfig(
         level=logging.INFO,
@@ -171,6 +173,12 @@ def main() -> None:
     try:
         _init_mt5()
         df = fetch_multi_tf(symbol, config)
+        if output is None:
+            h1_label = _tf_label("H1")
+            h1_df = df[df["timeframe"] == h1_label]
+            last_ts = h1_df["timestamp"].max() if not h1_df.empty else df["timestamp"].max()
+            name = _timestamp_code(last_ts)
+            output = Path("data/raw") / f"{symbol.lower()}_{name}.csv"
         output.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(output, index=False)
         LOGGER.info("Saved data to %s", output)
