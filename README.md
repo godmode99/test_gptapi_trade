@@ -84,6 +84,19 @@ If you omit the positional `csv` argument, `send_to_gpt.py` first checks
 selected file path is reported in the logs and the script exits with an error if
 no CSV files are available.
 
+## Running the complete workflow
+
+Once the individual scripts are configured you can execute the whole process in
+a single command:
+
+```bash
+python main.py
+```
+
+The `main.py` helper runs the fetch step, sends the result to the GPT API and
+parses the raw response into a JSON signal. Use `--fetch-script`, `--send-script`
+and `--parse-script` to override the default script locations.
+
 ## CustomIndicator
 
 The `ea/CustomIndicator.mq5` file is a simple MT5 indicator that can be compiled

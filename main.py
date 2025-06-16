@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+"""Run the fetch -> GPT -> parse workflow in one command."""
+
+from __future__ import annotations
+
+import argparse
+import asyncio
+import logging
+import sys
+from pathlib import Path
+
+
+async def _run_step(step: str, script: Path, *args: str) -> None:
+    """Run a script as a subprocess and wait for it to finish."""
+    cmd = [sys.executable, str(script), *args]
+    logging.info("Running %s: %s", step, " ".join(cmd))
+    proc = await asyncio.create_subprocess_exec(*cmd)
+    await proc.communicate()
+    if proc.returncode:
+        raise RuntimeError(f"{step} failed with code {proc.returncode}")
+
+
+async def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Fetch data, send to GPT and parse the response sequentially",
+    )
+    parser.add_argument(
+        "--fetch-script",
+        default="scripts/fetch/fetch_mt5_data.py",
+        help="Path to data fetching script",
+    )
+    parser.add_argument(
+        "--send-script",
+        default="scripts/send_api/send_to_gpt.py",
+        help="Path to GPT API script",
+    )
+    parser.add_argument(
+        "--parse-script",
+        default="scripts/parse_gpt_response.py",
+        help="Path to response parsing script",
+    )
+    parser.add_argument(
+        "--response",
+        default="latest_response.txt",
+        help="Temporary file to store raw GPT response",
+    )
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
+    await _run_step("fetch", Path(args.fetch_script))
+    await _run_step("send", Path(args.send_script), "--output", args.response)
+    await _run_step("parse", Path(args.parse_script), args.response)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
