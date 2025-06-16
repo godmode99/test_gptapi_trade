@@ -1,6 +1,6 @@
 {
   "tz_shift": 7,
-  "symbol": "XAUUSD=X",
+  "symbol": "GC=F",
   "fetch_bars": 30,
   "timeframes": [
     {"tf": "M5", "keep": 10},
