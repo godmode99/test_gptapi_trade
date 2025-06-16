@@ -31,6 +31,9 @@ using `--config`. The configuration defines:
 - `timeframes` – list of timeframes, each with `tf` (timeframe code) and `keep`
   (how many bars of that timeframe to retain).
 
+You can adjust timestamps with the `--tz-shift` option. For example, if the
+server time is GMT+3 and you need GMT+7 data, pass `--tz-shift 4`.
+
 If you do not specify an output path, `fetch_mt5_data.py` automatically
 saves to `data/raw/` with a unique filename in the form
 `<symbol>_<ddmmyy>_<HH>H.csv` (e.g. `xauusd_250616_16H.csv`).

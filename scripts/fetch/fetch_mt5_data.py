@@ -64,14 +64,14 @@ def _timestamp_code(ts: pd.Timestamp) -> str:
     return ts.strftime("%d%m%y_%H") + "H"
 
 
-def _fetch_rates(symbol: str, timeframe: int, bars: int) -> pd.DataFrame:
+def _fetch_rates(symbol: str, timeframe: int, bars: int, tz_shift: int = 0) -> pd.DataFrame:
     """Fetch OHLC data from MT5 for a given timeframe."""
     LOGGER.info("Fetching %s bars for %s timeframe", bars, timeframe)
     rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, bars)
     if rates is None:
         raise RuntimeError(f"Failed to fetch data for {symbol} timeframe {timeframe}")
     df = pd.DataFrame(rates)
-    df["timestamp"] = pd.to_datetime(df["time"], unit="s")
+    df["timestamp"] = pd.to_datetime(df["time"], unit="s") + pd.Timedelta(hours=tz_shift)
     df = df.drop(columns=["time", "spread", "real_volume"], errors="ignore")
     return df
 
@@ -107,7 +107,7 @@ def _compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def fetch_multi_tf(symbol: str, config: Dict[str, Any]) -> pd.DataFrame:
+def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd.DataFrame:
     """Fetch data for several timeframes and merge into one DataFrame."""
     timeframes_conf = config.get("timeframes", [])
     fetch_bars = int(config.get("fetch_bars", 20))
@@ -120,7 +120,7 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any]) -> pd.DataFrame:
         if tf_const is None:
             raise ValueError(f"Unsupported timeframe: {tf_name}")
         label = _tf_label(tf_name)
-        df = _fetch_rates(symbol, tf_const, fetch_bars)
+        df = _fetch_rates(symbol, tf_const, fetch_bars, tz_shift)
         df = _compute_indicators(df)
         df = df.tail(keep)
         df["timeframe"] = label
@@ -157,6 +157,12 @@ def main() -> None:
         help="Output CSV file",
         default=None,
     )
+    parser.add_argument(
+        "--tz-shift",
+        type=int,
+        default=0,
+        help="Hours to shift timestamps (e.g. 4 for GMT+3 to GMT+7)",
+    )
 
     args = parser.parse_args()
 
@@ -172,7 +178,7 @@ def main() -> None:
 
     try:
         _init_mt5()
-        df = fetch_multi_tf(symbol, config)
+        df = fetch_multi_tf(symbol, config, tz_shift=args.tz_shift)
         if output is None:
             h1_label = _tf_label("H1")
             h1_df = df[df["timeframe"] == h1_label]
