@@ -8,7 +8,7 @@ import logging
 import os
 from pathlib import Path
 
-import openai
+from openai import OpenAI
 
 
 LOGGER = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ def _find_latest_csv(directory: Path) -> Path:
     return max(csv_files, key=lambda p: p.stat().st_mtime)
 
 
-def _call_gpt(csv_text: str, prompt: str, model: str) -> str:
+def _call_gpt(csv_text: str, prompt: str, model: str, client: OpenAI) -> str:
     """Send data to the GPT API and return the response text."""
     messages = [
         {
@@ -39,7 +39,7 @@ def _call_gpt(csv_text: str, prompt: str, model: str) -> str:
         },
         {"role": "user", "content": f"{prompt}\n\nCSV Data:\n{csv_text}"},
     ]
-    resp = openai.ChatCompletion.create(model=model, messages=messages)
+    resp = client.chat.completions.create(model=model, messages=messages)
     return resp.choices[0].message.content.strip()
 
 
@@ -132,10 +132,10 @@ def main() -> None:
             "OPENAI_API_KEY environment variable is not set and no api key in config"
         )
         raise SystemExit(1)
-    openai.api_key = api_key
+    client = OpenAI(api_key=api_key)
 
     try:
-        response = _call_gpt(csv_text, prompt, args.model)
+        response = _call_gpt(csv_text, prompt, args.model, client)
     except Exception as exc:  # noqa: BLE001
         LOGGER.error("GPT API request failed: %s", exc)
         raise SystemExit(1)
