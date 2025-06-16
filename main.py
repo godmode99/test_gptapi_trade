@@ -41,7 +41,7 @@ async def main() -> None:
     )
     parser.add_argument(
         "--response",
-        default="latest_response.txt",
+        default="scripts/signals/path_latest_response.txt",
         help="Temporary file to store raw GPT response",
     )
     args = parser.parse_args()

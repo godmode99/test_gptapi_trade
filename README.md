@@ -18,8 +18,8 @@ This project requires the OpenAI Python library version 1.0 or newer.
   - `processed/` – cleaned data and generated datasets
 - `scripts/` – Python scripts for data fetching, GPT communication and parsing
 - `ea/` – Expert Advisor or trading automation code
-- `signals_json/` – stored trading signals in JSON format
-- `signals_csv/` – CSV log of parsed signals
+- `scripts/signals/signals_json/` – stored trading signals in JSON format
+- `scripts/signals/signals_csv/` – CSV log of parsed signals
 - `logs/` – log files for debugging and monitoring
 
 ## Configuration
@@ -89,11 +89,7 @@ values described above. The `--data-dir` option defaults to `csv_path` and can
 be used to override the search directory.
 
 The parser `scripts/parse_gpt_response.py` reads a raw GPT reply and writes the
-structured result to a JSON file. Use `--csv-log` to set the path for logging
-every response (default `signals_csv/csv_signal_report.csv`) and `--json-dir` to choose the directory for generated JSON signals (default `signals_json`). Each run appends a row
-to the CSV log with the key values from the signal and saves the parsed data in
-a uniquely named file like `250616_153045.json` inside the configured
-directory.
+structured result to a JSON file. Default paths are loaded from `scripts/signals/config/parse.json` which defines where to store the CSV log, JSON signals and the latest response file. Use `--csv-log`, `--json-dir`, `--latest-response` or `--tz-shift` to override these values. Each run appends a row to the CSV log and saves the parsed data in a uniquely named file like `250616_153045.json` inside the configured directory.
 
 ## Running the complete workflow
 
