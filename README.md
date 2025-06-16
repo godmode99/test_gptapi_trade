@@ -20,6 +20,27 @@ pip install -r requirements.txt
 - `signals/` – stored trading signals in JSON format
 - `logs/` – log files for debugging and monitoring
 
+## Configuration
+
+The script `scripts/fetch_mt5_data.py` reads its parameters from
+`config/fetch_mt5.json` by default. The configuration defines the trading
+symbol, how many bars to fetch for indicator calculation and the list of
+timeframes to include.
+
+Example `config/fetch_mt5.json`:
+
+```json
+{
+  "symbol": "XAUUSD",
+  "fetch_bars": 20,
+  "timeframes": [
+    {"tf": "M5", "keep": 10},
+    {"tf": "M15", "keep": 6},
+    {"tf": "H1", "keep": 4}
+  ]
+}
+```
+
 ## CustomIndicator
 
 The `ea/CustomIndicator.mq5` file is a simple MT5 indicator that can be compiled
