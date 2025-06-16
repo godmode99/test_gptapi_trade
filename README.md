@@ -68,21 +68,22 @@ Example `scripts/send_api/config/gpt.json`:
   "openai_api_key": "YOUR_API_KEY",
   "prompt": "Generate a trading signal and reply only with a JSON object like {\"signal_id\": \"xauusd-20250616_14hr\", \"entry\": 12, \"sl\": 10, \"tp\": 20, \"position_type\": \"buy limit\", \"confidence\": 77 }",
   "model": "gpt-4o",
-  "csv": "path/to/file.csv"
+  "csv_file": "",
+  "csv_path": "data/raw"
 }
 ```
 
 Values provided on the command line override those in the config file.
 For the API key the `OPENAI_API_KEY` environment variable takes precedence over
 the `openai_api_key` value in the JSON config.
-If a `csv` path exists in the provided config file it is used directly and
-skips the automatic search for the newest CSV.
 
-If you omit the positional `csv` argument, `send_to_gpt.py` first checks
-`config["csv"]`. If that setting is missing it scans the directory specified by
-`--data-dir` (default `data/raw`) and uses the newest `*.csv` file it finds. The
-selected file path is reported in the logs and the script exits with an error if
-no CSV files are available.
+If `csv_file` is empty, the script picks the newest `*.csv` file from
+`csv_path`. When a file name is specified it is loaded from that directory
+unless an absolute path is given.
+
+If you omit the positional `csv` argument, `send_to_gpt.py` uses the config
+values described above. The `--data-dir` option defaults to `csv_path` and can
+be used to override the search directory.
 
 The parser `scripts/parse_gpt_response.py` reads a raw GPT reply and writes the
 structured result to a JSON file. Use `--csv-log` to set the path for logging
