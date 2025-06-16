@@ -30,6 +30,7 @@ using `--config`. The configuration defines:
 - `fetch_bars` – number of historical bars requested for indicator calculation.
 - `timeframes` – list of timeframes, each with `tf` (timeframe code) and `keep`
   (how many bars of that timeframe to retain).
+- `tz_shift` – hours to shift timestamps. If omitted the default is `0`.
 
 You can adjust timestamps with the `--tz-shift` option. For example, if the
 server time is GMT+3 and you need GMT+7 data, pass `--tz-shift 4`.
@@ -42,6 +43,7 @@ Example `config/fetch_mt5.json`:
 
 ```json
 {
+  "tz_shift": 4,
   "symbol": "XAUUSD",
   "fetch_bars": 20,
   "timeframes": [

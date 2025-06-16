@@ -145,11 +145,20 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Fetch MT5 OHLC data")
-    parser.add_argument(
+    pre_parser = argparse.ArgumentParser(add_help=False)
+    pre_parser.add_argument(
         "--config",
         help="Path to JSON config",
         default="config/fetch_mt5.json",
+    )
+
+    # First parse only --config to determine defaults from file
+    pre_args, remaining = pre_parser.parse_known_args()
+    config = _load_config(Path(pre_args.config))
+    default_tz = int(config.get("tz_shift", 0))
+
+    parser = argparse.ArgumentParser(
+        description="Fetch MT5 OHLC data", parents=[pre_parser]
     )
     parser.add_argument("--symbol", help="Symbol to fetch and override config")
     parser.add_argument(
@@ -160,13 +169,12 @@ def main() -> None:
     parser.add_argument(
         "--tz-shift",
         type=int,
-        default=0,
+        default=default_tz,
         help="Hours to shift timestamps (e.g. 4 for GMT+3 to GMT+7)",
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(remaining)
 
-    config = _load_config(Path(args.config))
     symbol = args.symbol or config.get("symbol", "EURUSD")
 
     output = Path(args.output) if args.output else None
