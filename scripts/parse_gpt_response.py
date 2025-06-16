@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import logging
 import re
@@ -21,6 +22,11 @@ def _extract_json(text: str) -> dict:
     return json.loads(match.group(0))
 
 
+def _timestamp_code(ts: datetime) -> str:
+    """Return a string like '250616_153045' for a timestamp."""
+    return ts.strftime("%d%m%y_%H%M%S")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Parse GPT response to JSON")
     parser.add_argument("input", help="File with raw GPT response")
@@ -28,6 +34,16 @@ def main() -> None:
         "--output",
         help="Output JSON file path",
         default=None,
+    )
+    parser.add_argument(
+        "--csv-log",
+        default="logs/responses.csv",
+        help="Path to CSV log file",
+    )
+    parser.add_argument(
+        "--json-dir",
+        default="signals",
+        help="Directory for generated JSON files",
     )
 
     args = parser.parse_args()
@@ -43,17 +59,51 @@ def main() -> None:
         LOGGER.error("Failed to read input file: %s", exc)
         raise SystemExit(1)
 
+    LOGGER.info("Raw response: %s", text)
+
     try:
         data = _extract_json(text)
     except Exception as exc:  # noqa: BLE001
         LOGGER.error("Failed to parse response: %s", exc)
         raise SystemExit(1)
 
+    csv_path = Path(args.csv_log)
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
+    row = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "signal_id": data.get("signal_id"),
+        "entry": data.get("entry"),
+        "sl": data.get("sl"),
+        "tp": data.get("tp"),
+        "position_type": data.get("position_type"),
+        "confidence": data.get("confidence"),
+    }
+    is_new = not csv_path.exists()
+    try:
+        with csv_path.open("a", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(
+                f,
+                fieldnames=[
+                    "timestamp",
+                    "signal_id",
+                    "entry",
+                    "sl",
+                    "tp",
+                    "position_type",
+                    "confidence",
+                ],
+            )
+            if is_new:
+                writer.writeheader()
+            writer.writerow(row)
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.error("Failed to write CSV log: %s", exc)
+
     if args.output:
         output = Path(args.output)
     else:
-        name = data.get("signal_id") or datetime.utcnow().strftime("%Y%m%d%H%M%S")
-        output = Path("signals") / f"{name}.json"
+        name = _timestamp_code(datetime.utcnow())
+        output = Path(args.json_dir) / f"{name}.json"
 
     output.parent.mkdir(parents=True, exist_ok=True)
     try:

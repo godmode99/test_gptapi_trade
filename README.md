@@ -84,6 +84,14 @@ If you omit the positional `csv` argument, `send_to_gpt.py` first checks
 selected file path is reported in the logs and the script exits with an error if
 no CSV files are available.
 
+The parser `scripts/parse_gpt_response.py` reads a raw GPT reply and writes the
+structured result to a JSON file. Use `--csv-log` to set the path for logging
+every response (default `logs/responses.csv`) and `--json-dir` to choose the
+directory for generated JSON signals (default `signals`). Each run appends a row
+to the CSV log with the key values from the signal and saves the parsed data in
+a uniquely named file like `250616_153045.json` inside the configured
+directory.
+
 ## Running the complete workflow
 
 Once the individual scripts are configured you can execute the whole process in
