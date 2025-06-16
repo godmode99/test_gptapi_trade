@@ -2,6 +2,14 @@
 
 This project implements an automated trading workflow that uses data from MT5 and generates trading signals using the GPT API. The main steps are documented in `Work_flow.md`.
 
+## Installation
+
+Install the Python dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Directory Structure
 
 - `data/` – stores fetched data and processed CSV/JSON files
