@@ -9,6 +9,7 @@ Install the Python dependencies:
 ```bash
 pip install -r requirements.txt
 ```
+This project requires the OpenAI Python library version 1.0 or newer.
 
 ## Directory Structure
 

@@ -1,4 +1,4 @@
 pandas
 MetaTrader5
-openai
+openai>=1.0
 yfinance
