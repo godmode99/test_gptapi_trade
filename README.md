@@ -23,9 +23,13 @@ pip install -r requirements.txt
 ## Configuration
 
 The script `scripts/fetch_mt5_data.py` reads its parameters from
-`config/fetch_mt5.json` by default. The configuration defines the trading
-symbol, how many bars to fetch for indicator calculation and the list of
-timeframes to include.
+`config/fetch_mt5.json` by default and you can pass an alternative JSON file
+using `--config`. The configuration defines:
+
+- `symbol` – trading pair (e.g., `XAUUSD`).
+- `fetch_bars` – number of historical bars requested for indicator calculation.
+- `timeframes` – list of timeframes, each with `tf` (timeframe code) and `keep`
+  (how many bars of that timeframe to retain).
 
 Example `config/fetch_mt5.json`:
 
