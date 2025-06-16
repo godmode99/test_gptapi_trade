@@ -61,7 +61,8 @@ When fetching currency pairs from Yahoo Finance use the `=X` suffix (e.g. `EURUS
 To download gold prices for `XAUUSD` configure the symbol as `GC=F`.
 
 The `scripts/send_api/send_to_gpt.py` script also reads default values from a JSON file.
-It loads `scripts/send_api/config/gpt.json` unless you pass an alternative path with `--config`.
+Copy `scripts/send_api/config/gpt.example.json` to `scripts/send_api/config/gpt.json` and fill in your API key.
+The script loads `scripts/send_api/config/gpt.json` unless you pass an alternative path with `--config`.
 Example `scripts/send_api/config/gpt.json`:
 
 ```json

@@ -7,4 +7,4 @@ signals/
 # Ignore raw CSV data
 data/raw/*
 !data/raw/.gitkeep
-scripts/send_api/config/gpt.json
+gpt.json
