@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import os
 from pathlib import Path
@@ -11,6 +12,14 @@ import openai
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _load_config(path: Path) -> dict:
+    """Load JSON configuration from *path*."""
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        raise RuntimeError(f"Failed to read config: {exc}") from exc
 
 
 def _call_gpt(csv_text: str, prompt: str, model: str) -> str:
@@ -27,14 +36,39 @@ def _call_gpt(csv_text: str, prompt: str, model: str) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Send CSV data to GPT API")
+    pre_parser = argparse.ArgumentParser(add_help=False)
+    pre_parser.add_argument(
+        "--config",
+        help="Path to JSON config",
+        default="config/gpt.json",
+    )
+
+    pre_args, remaining = pre_parser.parse_known_args()
+
+    try:
+        config = _load_config(Path(pre_args.config))
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.error("%s", exc)
+        raise SystemExit(1)
+
+    parser = argparse.ArgumentParser(
+        description="Send CSV data to GPT API", parents=[pre_parser]
+    )
     parser.add_argument("csv", help="CSV data file")
-    parser.add_argument("--prompt", help="Prompt text", default="Generate signal")
+    parser.add_argument(
+        "--prompt",
+        help="Prompt text",
+        default=config.get("prompt", "Generate signal"),
+    )
     parser.add_argument("--prompt-file", help="Read prompt from file")
-    parser.add_argument("--model", help="Model name", default="gpt-3.5-turbo")
+    parser.add_argument(
+        "--model",
+        help="Model name",
+        default=config.get("model", "gpt-3.5-turbo"),
+    )
     parser.add_argument("--output", help="Save raw response to file")
 
-    args = parser.parse_args()
+    args = parser.parse_args(remaining)
 
     logging.basicConfig(
         level=logging.INFO,
@@ -55,9 +89,11 @@ def main() -> None:
             LOGGER.error("Failed to read prompt file: %s", exc)
             raise SystemExit(1)
 
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("OPENAI_API_KEY") or config.get("openai_api_key")
     if not api_key:
-        LOGGER.error("OPENAI_API_KEY environment variable is not set")
+        LOGGER.error(
+            "OPENAI_API_KEY environment variable is not set and no api key in config"
+        )
         raise SystemExit(1)
     openai.api_key = api_key
 
