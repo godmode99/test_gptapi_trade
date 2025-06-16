@@ -99,9 +99,12 @@ int OnCalculate(const int rates_total,
   {
    //--- calculate indicators
    int begin = MathMax(0, rates_total - prev_calculated - 1000);
-   double rsi_val[1];
-   double ma_val[1];
-   double atr_val[1];
+   double rsi_val[];
+   double ma_val[];
+   double atr_val[];
+   ArrayResize(rsi_val,1);
+   ArrayResize(ma_val,1);
+   ArrayResize(atr_val,1);
    ArraySetAsSeries(rsi_val,true);
    ArraySetAsSeries(ma_val,true);
    ArraySetAsSeries(atr_val,true);
@@ -139,19 +142,19 @@ bool LoadLatestSignal()
    string fname;
    datetime latest=0;
    string latest_file="";
-   uint attr=0;
-   datetime modify=0;
-   int handle = FileFindFirst(search,fname,attr,modify);
+   int handle = FileFindFirst(search,fname);
    if(handle!=INVALID_HANDLE)
       {
        while(fname!="")
          {
+         string path_iter = SignalsPath + "/" + fname;
+         datetime modify=(datetime)FileGetInteger(path_iter,FILE_MODIFY_DATE);
          if(modify>latest)
            {
             latest=modify;
             latest_file=fname;
            }
-         if(!FileFindNext(handle,fname,attr,modify))
+         if(!FileFindNext(handle,fname))
             break;
         }
       FileFindClose(handle);
@@ -163,7 +166,7 @@ bool LoadLatestSignal()
    int file=FileOpen(path,FILE_READ|FILE_TXT);
    if(file==INVALID_HANDLE)
       return(false);
-   long fsize=FileSize(file);
+   ulong fsize=FileSize(file);
    string content="";
    if(fsize<=2147483647)
      {
