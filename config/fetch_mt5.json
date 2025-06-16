@@ -1,0 +1,9 @@
+{
+  "symbol": "XAUUSD",
+  "fetch_bars": 20,
+  "timeframes": [
+    {"tf": "M5", "keep": 10},
+    {"tf": "M15", "keep": 6},
+    {"tf": "H1", "keep": 4}
+  ]
+}
