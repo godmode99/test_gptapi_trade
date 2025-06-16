@@ -1,7 +1,6 @@
 """Parse GPT response and save as JSON signal."""
-"python scripts/parse_gpt_response.py"
-
 from __future__ import annotations
+# python scripts/parse_gpt_response.py
 
 import argparse
 import csv
