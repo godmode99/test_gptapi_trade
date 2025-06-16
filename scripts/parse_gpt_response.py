@@ -21,7 +21,16 @@ LOGGER = logging.getLogger(__name__)
 
 
 def _extract_json(text: str) -> dict:
-    """Extract a JSON object from raw GPT text."""
+    """Extract a JSON object from raw GPT text.
+
+    The GPT reply may wrap the JSON in code fences like '```json ... ```' or
+    plain '``` ... ```' blocks. These fences are stripped before parsing.
+    """
+
+    fence = re.search(r"```(?:json)?\s*(.*?)```", text, flags=re.DOTALL | re.IGNORECASE)
+    if fence:
+        text = fence.group(1)
+
     match = re.search(r"{.*}", text, flags=re.DOTALL)
     if not match:
         raise ValueError("No JSON object found in response")
