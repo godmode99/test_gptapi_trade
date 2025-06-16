@@ -3,6 +3,8 @@ __pycache__/
 .ruff_cache/
 logs/
 signals/
+!scripts/signals/
+!scripts/signals/**
 
 # Ignore raw CSV data
 data/raw/*

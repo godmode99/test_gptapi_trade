@@ -1,0 +1,7 @@
+{
+  "path_signals_csv": "scripts/signals/signals_csv",
+  "file_signal_report": "csv_signal_report.csv",
+  "path_signals_json": "scripts/signals/signals_json",
+  "path_latest_response": "scripts/signals/path_latest_response.txt",
+  "tz_shift": 7
+}
