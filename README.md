@@ -66,8 +66,8 @@ Example `config/gpt.json`:
 ```json
 {
   "openai_api_key": "YOUR_API_KEY",
-  "prompt": "Generate signal",
-  "model": "gpt-3.5-turbo",
+  "prompt": "Generate a trading signal and reply only with a JSON object like {\"signal_id\": \"xauusd-20250616_14hr\", \"entry\": 12, \"sl\": 10, \"tp\": 20, \"position_type\": \"buy limit\", \"confidence\": 77 }",
+  "model": "gpt-4o",
   "csv": "path/to/file.csv"
 }
 ```
