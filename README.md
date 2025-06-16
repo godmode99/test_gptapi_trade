@@ -31,6 +31,10 @@ using `--config`. The configuration defines:
 - `timeframes` – list of timeframes, each with `tf` (timeframe code) and `keep`
   (how many bars of that timeframe to retain).
 
+If you do not specify an output path, `fetch_mt5_data.py` automatically
+saves to `data/raw/` with a unique filename in the form
+`<symbol>_<ddmmyy>_<HH>H.csv` (e.g. `xauusd_250616_16H.csv`).
+
 Example `config/fetch_mt5.json`:
 
 ```json
