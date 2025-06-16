@@ -145,10 +145,11 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
 
 def main() -> None:
     pre_parser = argparse.ArgumentParser(add_help=False)
+    default_cfg = Path(__file__).resolve().parent / "config" / "fetch_mt5.json"
     pre_parser.add_argument(
         "--config",
         help="Path to JSON config",
-        default="config/fetch_mt5.json",
+        default=str(default_cfg),
     )
 
     # First parse only --config to determine defaults from file

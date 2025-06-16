@@ -45,10 +45,11 @@ def _call_gpt(csv_text: str, prompt: str, model: str) -> str:
 
 def main() -> None:
     pre_parser = argparse.ArgumentParser(add_help=False)
+    default_cfg = Path(__file__).resolve().parent / "config" / "gpt.json"
     pre_parser.add_argument(
         "--config",
         help="Path to JSON config",
-        default="config/gpt.json",
+        default=str(default_cfg),
     )
 
     pre_args, remaining = pre_parser.parse_known_args()
