@@ -137,7 +137,7 @@ def main() -> None:
         "entry": data.get("entry"),
         "sl": data.get("sl"),
         "tp": data.get("tp"),
-        "position_type": data.get("position_type"),
+        "pending_order_type": data.get("pending_order_type"),
         "confidence": data.get("confidence"),
     }
     is_new = not csv_path.exists()
@@ -151,7 +151,7 @@ def main() -> None:
                     "entry",
                     "sl",
                     "tp",
-                    "position_type",
+                    "pending_order_type",
                     "confidence",
                 ],
             )

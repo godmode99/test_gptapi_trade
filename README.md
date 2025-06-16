@@ -61,15 +61,17 @@ It loads `scripts/fetch/config/fetch_yf.json` and accepts the same command-line 
 When fetching currency pairs from Yahoo Finance use the `=X` suffix (e.g. `EURUSD=X`).
 To download gold prices for `XAUUSD` configure the symbol as `GC=F`.
 
-The `scripts/send_api/send_to_gpt.py` script also reads default values from a JSON file.
-Copy `scripts/send_api/config/gpt.example.json` to `scripts/send_api/config/gpt.json` and fill in your API key.
-The script loads `scripts/send_api/config/gpt.json` unless you pass an alternative path with `--config`.
+The `scripts/send_api/send_to_gpt.py` script reads its API key and other settings from
+`scripts/send_api/config/gpt.json`. Copy `scripts/send_api/config/gpt.example.json`
+to `scripts/send_api/config/gpt.json` and fill in your API key. The prompt is
+generated automatically from the CSV file name unless you override it on the
+command line. The script loads `scripts/send_api/config/gpt.json` unless you pass
+an alternative path with `--config`.
 Example `scripts/send_api/config/gpt.json`:
 
 ```json
 {
   "openai_api_key": "YOUR_API_KEY",
-  "prompt": "Generate a trading signal and reply only with a JSON object like {\"signal_id\": \"xauusd-20250616_14hr\", \"entry\": 12, \"sl\": 10, \"tp\": 20, \"position_type\": \"buy limit\", \"confidence\": 77 }",
   "model": "gpt-4o",
   "csv_file": "",
   "csv_path": "data/raw"

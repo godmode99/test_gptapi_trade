@@ -12,6 +12,14 @@ from openai import OpenAI
 
 LOGGER = logging.getLogger(__name__)
 
+# Template for the default prompt. The CSV filename will be inserted
+# in place of ``%s`` to become the ``signal_id`` value.
+DEFAULT_PROMPT = (
+    "Generate a trading signal and reply only with a JSON object like "
+    '{"signal_id": "%s", "entry": , "sl": , "tp": , '
+    '"pending_order_type": "", "confidence":  }'
+)
+
 
 def _load_config(path: Path) -> dict:
     """Load JSON configuration from *path*."""
@@ -68,14 +76,7 @@ def main() -> None:
         default=config.get("csv_path", "data/raw"),
         help="Directory containing CSV files",
     )
-    parser.add_argument(
-        "--prompt",
-        help="Prompt text",
-        default=config.get(
-            "prompt",
-            "Generate a trading signal and reply only with a JSON object like {\\\"signal_id\\\": \\\"xauusd-20250616_14hr\\\", \\\"entry\\\": 12, \\\"sl\\\": 10, \\\"tp\\\": 20, \\\"position_type\\\": \\\"buy limit\\\", \\\"confidence\\\": 77 }",
-        ),
-    )
+    parser.add_argument("--prompt", help="Prompt text")
     parser.add_argument("--prompt-file", help="Read prompt from file")
     parser.add_argument(
         "--model",
@@ -124,6 +125,9 @@ def main() -> None:
         except Exception as exc:  # noqa: BLE001
             LOGGER.error("Failed to read prompt file: %s", exc)
             raise SystemExit(1)
+
+    if prompt is None:
+        prompt = DEFAULT_PROMPT % csv_path.stem
 
     api_key = os.getenv("OPENAI_API_KEY") or config.get("openai_api_key")
     if not api_key:
