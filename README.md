@@ -23,7 +23,7 @@ pip install -r requirements.txt
 ## Configuration
 
 The script `scripts/fetch/fetch_mt5_data.py` reads its parameters from
-`config/fetch_mt5.json` by default and you can pass an alternative JSON file
+`scripts/fetch/config/fetch_mt5.json` by default and you can pass an alternative JSON file
 using `--config`. The configuration defines:
 
 - `symbol` – trading pair (e.g., `XAUUSD`).
@@ -39,7 +39,7 @@ If you do not specify an output path, `fetch_mt5_data.py` automatically
 saves to `data/raw/` with a unique filename in the form
 `<symbol>_<ddmmyy>_<HH>H.csv` (e.g. `xauusd_250616_16H.csv`).
 
-Example `config/fetch_mt5.json`:
+Example `scripts/fetch/config/fetch_mt5.json`:
 
 ```json
 {
@@ -55,13 +55,13 @@ Example `config/fetch_mt5.json`:
 ```
 
 The script `scripts/fetch/fetch_yf_data.py` provides similar functionality using yfinance.
-It loads `config/fetch_yf.json` and accepts the same command-line options.
+It loads `scripts/fetch/config/fetch_yf.json` and accepts the same command-line options.
 When fetching currency pairs from Yahoo Finance use the `=X` suffix (e.g. `EURUSD=X`).
 To download gold prices for `XAUUSD` configure the symbol as `GC=F`.
 
 The `scripts/send_api/send_to_gpt.py` script also reads default values from a JSON file.
-It loads `config/gpt.json` unless you pass an alternative path with `--config`.
-Example `config/gpt.json`:
+It loads `scripts/send_api/config/gpt.json` unless you pass an alternative path with `--config`.
+Example `scripts/send_api/config/gpt.json`:
 
 ```json
 {
