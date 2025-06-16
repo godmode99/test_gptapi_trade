@@ -68,13 +68,15 @@ Example `config/gpt.json`:
   "openai_api_key": "YOUR_API_KEY",
   "prompt": "Generate signal",
   "model": "gpt-3.5-turbo",
-  "csv": "data/raw/example.csv"
+  "csv": "path/to/file.csv"
 }
 ```
 
 Values provided on the command line override those in the config file.
 For the API key the `OPENAI_API_KEY` environment variable takes precedence over
 the `openai_api_key` value in the JSON config.
+If a `csv` path exists in the provided config file it is used directly and
+skips the automatic search for the newest CSV.
 
 If you omit the positional `csv` argument, `send_to_gpt.py` first checks
 `config["csv"]`. If that setting is missing it scans the directory specified by
