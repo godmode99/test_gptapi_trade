@@ -54,9 +54,10 @@ Example `config/fetch_mt5.json`:
 }
 ```
 
-The script `scripts/fetch_yf_data.py` provides similar functionality using yfinance. It loads `config/fetch_yf.json` and accepts the same command-line options.
-When fetching currency data from Yahoo Finance make sure to use the Yahoo symbol
-format that appends `=X` to the pair, for example `XAUUSD=X`.
+The script `scripts/fetch_yf_data.py` provides similar functionality using yfinance.
+It loads `config/fetch_yf.json` and accepts the same command-line options.
+When fetching currency pairs from Yahoo Finance use the `=X` suffix (e.g. `EURUSD=X`).
+To download gold prices for `XAUUSD` configure the symbol as `GC=F`.
 
 ## CustomIndicator
 
