@@ -82,7 +82,7 @@ def fetch_multi_tf(symbol: str) -> pd.DataFrame:
         (mt5.TIMEFRAME_H1, 4, "1h"),
     ]
     # Always fetch enough bars to compute indicators (min 20)
-    fetch_bars = 20
+    fetch_bars = 30
 
     frames = []
     for tf, keep, label in timeframes:
