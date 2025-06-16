@@ -18,7 +18,8 @@ This project requires the OpenAI Python library version 1.0 or newer.
   - `processed/` – cleaned data and generated datasets
 - `scripts/` – Python scripts for data fetching, GPT communication and parsing
 - `ea/` – Expert Advisor or trading automation code
-- `signals/` – stored trading signals in JSON format
+- `signals_json/` – stored trading signals in JSON format
+- `signals_csv/` – CSV log of parsed signals
 - `logs/` – log files for debugging and monitoring
 
 ## Configuration
@@ -89,8 +90,7 @@ be used to override the search directory.
 
 The parser `scripts/parse_gpt_response.py` reads a raw GPT reply and writes the
 structured result to a JSON file. Use `--csv-log` to set the path for logging
-every response (default `logs/responses.csv`) and `--json-dir` to choose the
-directory for generated JSON signals (default `signals`). Each run appends a row
+every response (default `signals_csv/csv_signal_report.csv`) and `--json-dir` to choose the directory for generated JSON signals (default `signals_json`). Each run appends a row
 to the CSV log with the key values from the signal and saves the parsed data in
 a uniquely named file like `250616_153045.json` inside the configured
 directory.
@@ -113,7 +113,7 @@ and `--parse-script` to override the default script locations.
 The `ea/CustomIndicator.mq5` file is a simple MT5 indicator that can be compiled
 with **MetaEditor**. The indicator calculates RSI‑14, SMA‑20 and ATR‑14 for the
 current chart timeframe. If the `DisplaySignals` parameter is enabled it reads
-the latest JSON file from the `signals/` directory and shows the parsed values
+the latest JSON file from the `signals_json/` directory and shows the parsed values
 on the chart.
 
 ### Compile & Attach
