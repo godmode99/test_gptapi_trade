@@ -139,23 +139,19 @@ bool LoadLatestSignal()
    string fname;
    datetime latest=0;
    string latest_file="";
-   int handle = FileFindFirst(search,fname);
+   uint attr=0;
+   datetime modify=0;
+   int handle = FileFindFirst(search,fname,attr,modify);
    if(handle!=INVALID_HANDLE)
       {
        while(fname!="")
          {
-         int h = FileOpen(SignalsPath+"/"+fname,FILE_READ|FILE_TXT);
-         if(h!=INVALID_HANDLE)
+         if(modify>latest)
            {
-            datetime m = (datetime)FileGetInteger(h,FILE_MODIFY_DATE);
-            FileClose(h);
-            if(m>latest)
-              {
-               latest=m;
-               latest_file=fname;
-              }
+            latest=modify;
+            latest_file=fname;
            }
-         if(!FileFindNext(handle,fname))
+         if(!FileFindNext(handle,fname,attr,modify))
             break;
         }
       FileFindClose(handle);
