@@ -47,3 +47,53 @@ def test_fetch_multi_tf_tz_shift_and_latest_bar() -> None:
     expected_times = pd.date_range("2024-01-01", periods=5, freq="min") + pd.Timedelta(hours=2)
     assert list(df["timestamp"]) == list(expected_times)
     assert df["timestamp"].iloc[-1] == expected_times[-1]
+
+
+def test_fetch_multi_tf_with_time_fetch() -> None:
+    """Data should end at the configured time_fetch value."""
+    sample_times = pd.date_range("2024-01-01", periods=5, freq="min")
+    sample_rates = [
+        {
+            "time": int(ts.timestamp()),
+            "open": 0,
+            "high": 0,
+            "low": 0,
+            "close": 0,
+            "tick_volume": 0,
+            "spread": 0,
+            "real_volume": 0,
+        }
+        for ts in sample_times
+    ]
+    called: dict = {}
+
+    mt5 = ModuleType("MetaTrader5")
+    mt5.TIMEFRAME_M1 = 1
+    mt5.TIMEFRAME_M5 = 2
+    mt5.TIMEFRAME_M15 = 3
+    mt5.TIMEFRAME_M30 = 4
+    mt5.TIMEFRAME_H1 = 5
+    mt5.TIMEFRAME_H4 = 6
+    mt5.TIMEFRAME_D1 = 7
+
+    def _range(symbol: str, tf: int, start, end):
+        called["start"] = start
+        called["end"] = end
+        return sample_rates
+
+    mt5.copy_rates_range = _range
+
+    with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
+        fetch_mt5_data = importlib.import_module("scripts.fetch.fetch_mt5_data")
+        importlib.reload(fetch_mt5_data)
+
+        config = {
+            "fetch_bars": 5,
+            "time_fetch": "2024-01-01 00:04:00",
+            "timeframes": [{"tf": "M1", "keep": 5}],
+        }
+        df = fetch_mt5_data.fetch_multi_tf("TEST", config, tz_shift=0)
+
+    assert list(df["timestamp"]) == list(sample_times)
+    assert called["start"].strftime("%Y-%m-%d %H:%M:%S") == "2024-01-01 00:00:00"
+    assert called["end"].strftime("%Y-%m-%d %H:%M:%S") == "2024-01-01 00:04:00"
