@@ -11,3 +11,6 @@ data/signals/
 data/fetch/*
 !data/fetch/.gitkeep
 gpt.json
+
+# Local settings
+config/setting_main.json

@@ -65,7 +65,7 @@ Example `scripts/fetch/config/fetch_mt5.json`:
 }
 ```
 
-The `fetch` section inside `config/main.json` accepts the same keys as the
+The `fetch` section inside `config/setting_main.json` accepts the same keys as the
 individual fetcher configuration files, so you can provide `time_fetch` there as
 well when running the combined workflow with `main.py`.
 
@@ -118,7 +118,7 @@ a single command:
 python main.py
 ```
 
-`main.py` reads default settings from `config/main.json`. Pass `--config` with a
+`main.py` reads default settings from `config/setting_main.json`. Pass `--config` with a
 different path to use custom values. Command-line options override the config
 entries. The configuration is divided into `workflow`, `fetch`, `send` and
 `parse` sections so all parameters can be managed in one place.
