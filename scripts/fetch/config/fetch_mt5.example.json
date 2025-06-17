@@ -1,0 +1,11 @@
+{
+  "tz_shift": 4,
+  "symbol": "XAUUSD",
+  "fetch_bars": 30,
+  "time_fetch": "2024-01-01 00:04:00",
+  "timeframes": [
+    {"tf": "M5", "keep": 10},
+    {"tf": "M15", "keep": 6},
+    {"tf": "H1", "keep": 4}
+  ]
+}
