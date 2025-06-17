@@ -2,6 +2,6 @@
   "openai_api_key": "YOUR_API_KEY",
   "model": "gpt-4o",
   "csv_file": "",
-  "csv_path": "scripts/fetch/data/raw"
+  "csv_path": "data/fetch"
 
 }

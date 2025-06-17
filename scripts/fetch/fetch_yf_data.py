@@ -144,7 +144,7 @@ def main() -> None:
     pre_args, remaining = pre_parser.parse_known_args()
     config = _load_config(Path(pre_args.config))
     default_tz = int(config.get("tz_shift", 0))
-    default_save_path = config.get("save_as_path", "data/raw")
+    default_save_path = config.get("save_as_path", "data/fetch")
 
     parser = argparse.ArgumentParser(description="Fetch yfinance OHLC data", parents=[pre_parser])
     parser.add_argument("--symbol", help="Symbol to fetch and override config")

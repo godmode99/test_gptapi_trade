@@ -55,9 +55,7 @@ def _timestamp_code(ts: datetime) -> str:
 
 def main() -> None:
     pre_parser = argparse.ArgumentParser(add_help=False)
-    default_cfg = (
-        Path(__file__).resolve().parent / "signals" / "config" / "parse.json"
-    )
+    default_cfg = Path(__file__).resolve().parent / "config" / "parse.json"
     pre_parser.add_argument(
         "--config", help="Path to JSON config", default=str(default_cfg)
     )
@@ -69,11 +67,11 @@ def main() -> None:
         LOGGER.error("%s", exc)
         raise SystemExit(1)
 
-    csv_dir = Path(config.get("path_signals_csv", "signals_csv"))
+    csv_dir = Path(config.get("path_signals_csv", "data/signals/signals_csv"))
     csv_name = config.get("file_signal_report", "csv_signal_report.csv")
     default_csv_log = csv_dir / csv_name
-    default_json_dir = config.get("path_signals_json", "signals_json")
-    default_latest = config.get("path_latest_response", "latest_response.txt")
+    default_json_dir = config.get("path_signals_json", "data/signals/signals_json")
+    default_latest = config.get("path_latest_response", "data/signals/latest_response.txt")
     default_tz = int(config.get("tz_shift", 0))
 
     parser = argparse.ArgumentParser(
