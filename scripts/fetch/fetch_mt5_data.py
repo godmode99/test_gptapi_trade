@@ -70,6 +70,7 @@ def _fetch_rates(symbol: str, timeframe: int, bars: int, tz_shift: int = 0) -> p
     if rates is None:
         raise RuntimeError(f"Failed to fetch data for {symbol} timeframe {timeframe}")
     df = pd.DataFrame(rates)
+    df = df.sort_values("time").reset_index(drop=True)
     df["timestamp"] = pd.to_datetime(df["time"], unit="s") + pd.Timedelta(hours=tz_shift)
     df = df.drop(columns=["time", "spread", "real_volume"], errors="ignore")
     return df

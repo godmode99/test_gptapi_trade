@@ -44,6 +44,6 @@ def test_fetch_multi_tf_tz_shift_and_latest_bar() -> None:
         config = {"fetch_bars": 5, "timeframes": [{"tf": "M1", "keep": 5}]}
         df = fetch_mt5_data.fetch_multi_tf("TEST", config, tz_shift=2)
 
-    expected_times = sample_times + pd.Timedelta(hours=2)
+    expected_times = pd.date_range("2024-01-01", periods=5, freq="min") + pd.Timedelta(hours=2)
     assert list(df["timestamp"]) == list(expected_times)
-    assert df["timestamp"].iloc[0] == expected_times[0]
+    assert df["timestamp"].iloc[-1] == expected_times[-1]
