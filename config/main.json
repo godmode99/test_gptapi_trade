@@ -17,6 +17,7 @@
     "tz_shift": 7,
     "symbol": "XAUUSD",
     "fetch_bars": 30,
+    "time_fetch": "",
     "save_as_path": "data/fetch",
     "timeframes": [
       {"tf": "M5", "keep": 10},
