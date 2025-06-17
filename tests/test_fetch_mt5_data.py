@@ -103,6 +103,47 @@ def test_fetch_multi_tf_with_time_fetch() -> None:
     assert called["end"].strftime("%Y-%m-%d %H:%M:%S") == "2024-01-01 00:04:00"
 
 
+def test_fetch_multi_tf_invalid_time_fetch() -> None:
+    """Invalid timestamps should raise a ValueError."""
+    config = {
+        "fetch_bars": 5,
+        "time_fetch": "not a date",
+        "timeframes": [{"tf": "M1", "keep": 5}],
+    }
+    fetch_mt5_data = importlib.import_module("scripts.fetch.fetch_mt5_data")
+    with pytest.raises(ValueError):
+        fetch_mt5_data.fetch_multi_tf("TEST", config)
+
+
+def test_fetch_multi_tf_time_fetch_no_data() -> None:
+    """Missing bars for time_fetch should raise a ValueError."""
+    mt5 = ModuleType("MetaTrader5")
+    mt5.TIMEFRAME_M1 = 1
+    mt5.TIMEFRAME_M5 = 2
+    mt5.TIMEFRAME_M15 = 3
+    mt5.TIMEFRAME_M30 = 4
+    mt5.TIMEFRAME_H1 = 5
+    mt5.TIMEFRAME_H4 = 6
+    mt5.TIMEFRAME_D1 = 7
+
+    def _range(symbol: str, tf: int, start, end):
+        return []
+
+    mt5.copy_rates_range = _range
+
+    with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
+        fetch_mt5_data = importlib.import_module("scripts.fetch.fetch_mt5_data")
+        importlib.reload(fetch_mt5_data)
+
+        config = {
+            "fetch_bars": 5,
+            "time_fetch": "2024-01-01 00:00:00",
+            "timeframes": [{"tf": "M1", "keep": 5}],
+        }
+        with pytest.raises(ValueError):
+            fetch_mt5_data.fetch_multi_tf("TEST", config, tz_shift=0)
+
+
 def test_main_error_on_empty_df(tmp_path, caplog) -> None:
     """main() should exit with SystemExit when no data is fetched."""
     cfg = {

@@ -40,6 +40,8 @@ using `--config`. The configuration defines:
   (how many bars of that timeframe to retain).
 - `tz_shift` – hours to shift timestamps. If omitted the default is `0`.
 
+If the specified `time_fetch` has no matching bars, the script will exit with an error.
+
 You can adjust timestamps with the `--tz-shift` option. For example, if the
 server time is GMT+3 and you need GMT+7 data, pass `--tz-shift 4`. The shift is
 always applied *after* the raw data has been fetched so the CSV output uses the
