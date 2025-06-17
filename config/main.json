@@ -1,6 +1,6 @@
 {
   "fetch_type": "yf",
-  "fetch_script": "",
+  "fetch_script": null,
   "send_script": "scripts/send_api/send_to_gpt.py",
   "parse_script": "scripts/parse_response/parse_gpt_response.py",
   "response": "data/signals/latest_response.txt",
