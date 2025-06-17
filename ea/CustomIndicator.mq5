@@ -40,7 +40,7 @@ struct SignalData
    double entry;
    double sl;
    double tp;
-   string position;
+   string order_type;
    double confidence;
   };
 SignalData current_signal;
@@ -122,7 +122,7 @@ int OnCalculate(const int rates_total,
      {
       string msg = StringFormat("Signal %s %s\nEntry: %.2f SL: %.2f TP: %.2f Conf: %.0f",
                                 current_signal.id,
-                                current_signal.position,
+                                current_signal.order_type,
                                 current_signal.entry,
                                 current_signal.sl,
                                 current_signal.tp,
@@ -193,7 +193,7 @@ void ParseSignal(string json, SignalData &sig)
    sig.entry = StringToDouble(GetValue(json,"entry"));
    sig.sl = StringToDouble(GetValue(json,"sl"));
    sig.tp = StringToDouble(GetValue(json,"tp"));
-   sig.position = GetValue(json,"position_type");
+   sig.order_type = GetValue(json,"pending_order_type");
    sig.confidence = StringToDouble(GetValue(json,"confidence"));
   }
 
