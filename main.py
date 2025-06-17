@@ -36,12 +36,12 @@ async def main() -> None:
     )
     parser.add_argument(
         "--parse-script",
-        default="scripts/parse_gpt_response.py",
+        default="scripts/parse_response/parse_gpt_response.py",
         help="Path to response parsing script",
     )
     parser.add_argument(
         "--response",
-        default="scripts/signals/path_latest_response.txt",
+        default="data/signals/latest_response.txt",
         help="Temporary file to store raw GPT response",
     )
     args = parser.parse_args()

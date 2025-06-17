@@ -5,7 +5,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.parse_gpt_response import _extract_json
+from scripts.parse_response.parse_gpt_response import _extract_json
 
 
 def test_extract_json_unfenced():

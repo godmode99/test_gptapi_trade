@@ -75,7 +75,7 @@ def main() -> None:
     parser.add_argument("csv", nargs="?", help="CSV data file")
     parser.add_argument(
         "--data-dir",
-        default=config.get("csv_path", "data/raw"),
+        default=config.get("csv_path", "data/fetch"),
         help="Directory containing CSV files",
     )
     parser.add_argument("--prompt", help="Prompt text")

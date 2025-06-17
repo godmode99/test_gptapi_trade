@@ -13,13 +13,12 @@ This project requires the OpenAI Python library version 1.0 or newer.
 
 ## Directory Structure
 
-- `data/` – stores fetched data and processed CSV/JSON files
-  - `raw/` – original data exported from MT5
-  - `processed/` – cleaned data and generated datasets
+- `data/` – stores all CSV and JSON output
+  - `fetch/` – fetched OHLC data
+  - `signals/signals_json/` – stored trading signals in JSON format
+  - `signals/signals_csv/` – CSV log of parsed signals
 - `scripts/` – Python scripts for data fetching, GPT communication and parsing
 - `ea/` – Expert Advisor or trading automation code
-- `scripts/signals/signals_json/` – stored trading signals in JSON format
-- `scripts/signals/signals_csv/` – CSV log of parsed signals
 - `logs/` – log files for debugging and monitoring
 
 ## Configuration
@@ -38,7 +37,7 @@ You can adjust timestamps with the `--tz-shift` option. For example, if the
 server time is GMT+3 and you need GMT+7 data, pass `--tz-shift 4`.
 
 If you do not specify an output path, `fetch_mt5_data.py` automatically
-saves to `data/raw/` with a unique filename in the form
+saves to `data/fetch/` with a unique filename in the form
 `<symbol>_<ddmmyy>_<HH>H.csv` (e.g. `xauusd_250616_16H.csv`).
 
 Example `scripts/fetch/config/fetch_mt5.json`:
@@ -74,7 +73,7 @@ Example `scripts/send_api/config/gpt.json`:
   "openai_api_key": "YOUR_API_KEY",
   "model": "gpt-4o",
   "csv_file": "",
-  "csv_path": "data/raw"
+  "csv_path": "data/fetch"
 }
 ```
 
@@ -90,8 +89,7 @@ If you omit the positional `csv` argument, `send_to_gpt.py` uses the config
 values described above. The `--data-dir` option defaults to `csv_path` and can
 be used to override the search directory.
 
-The parser `scripts/parse_gpt_response.py` reads a raw GPT reply and writes the
-structured result to a JSON file. Default paths are loaded from `scripts/signals/config/parse.json` which defines where to store the CSV log, JSON signals and the latest response file. Use `--csv-log`, `--json-dir`, `--latest-response` or `--tz-shift` to override these values. Each run appends a row to the CSV log and saves the parsed data in a uniquely named file like `250616_153045.json` inside the configured directory.
+The parser `scripts/parse_response/parse_gpt_response.py` reads a raw GPT reply and writes the structured result to a JSON file. Default paths are loaded from `scripts/parse_response/config/parse.json` which defines where to store the CSV log, JSON signals and the latest response file. Use `--csv-log`, `--json-dir`, `--latest-response` or `--tz-shift` to override these values. Each run appends a row to the CSV log and saves the parsed data in a uniquely named file like `250616_153045.json` inside the configured directory.
 
 ## Running the complete workflow
 
@@ -111,7 +109,7 @@ and `--parse-script` to override the default script locations.
 The `ea/CustomIndicator.mq5` file is a simple MT5 indicator that can be compiled
 with **MetaEditor**. The indicator calculates RSI‑14, SMA‑20 and ATR‑14 for the
 current chart timeframe. If the `DisplaySignals` parameter is enabled it reads
-the latest JSON file from the `signals_json/` directory and shows the parsed values
+the latest JSON file from the `data/signals/signals_json/` directory and shows the parsed values
 on the chart. Each JSON signal must include the fields `signal_id`, `entry`, `sl`,
 `tp`, `pending_order_type` and `confidence`.
 
