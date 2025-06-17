@@ -11,7 +11,7 @@ import argparse
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import pandas as pd
 import MetaTrader5 as mt5
@@ -28,6 +28,16 @@ TF_MAP: Dict[str, int] = {
     "H1": mt5.TIMEFRAME_H1,
     "H4": mt5.TIMEFRAME_H4,
     "D1": mt5.TIMEFRAME_D1,
+}
+
+TF_DELTA: Dict[int, pd.Timedelta] = {
+    mt5.TIMEFRAME_M1: pd.Timedelta(minutes=1),
+    mt5.TIMEFRAME_M5: pd.Timedelta(minutes=5),
+    mt5.TIMEFRAME_M15: pd.Timedelta(minutes=15),
+    mt5.TIMEFRAME_M30: pd.Timedelta(minutes=30),
+    mt5.TIMEFRAME_H1: pd.Timedelta(hours=1),
+    mt5.TIMEFRAME_H4: pd.Timedelta(hours=4),
+    mt5.TIMEFRAME_D1: pd.Timedelta(days=1),
 }
 
 
@@ -63,10 +73,32 @@ def _timestamp_code(ts: pd.Timestamp) -> str:
     return ts.strftime("%d%m%y_%H") + "H"
 
 
-def _fetch_rates(symbol: str, timeframe: int, bars: int, tz_shift: int = 0) -> pd.DataFrame:
-    """Fetch OHLC data from MT5 for a given timeframe."""
+def _fetch_rates(
+    symbol: str,
+    timeframe: int,
+    bars: int,
+    tz_shift: int = 0,
+    end_time: Optional[pd.Timestamp] = None,
+) -> pd.DataFrame:
+    """Fetch OHLC data from MT5 for a given timeframe.
+
+    If *end_time* is provided the data will end at that timestamp.
+    """
     LOGGER.info("Fetching %s bars for %s timeframe", bars, timeframe)
-    rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, bars)
+    if end_time is None:
+        rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, bars)
+    else:
+        delta = TF_DELTA.get(timeframe)
+        if delta is None:
+            raise ValueError(f"Unknown timeframe constant: {timeframe}")
+        end = pd.Timestamp(end_time)
+        start = end - delta * (bars - 1)
+        rates = mt5.copy_rates_range(
+            symbol,
+            timeframe,
+            start.to_pydatetime(),
+            end.to_pydatetime(),
+        )
     if rates is None:
         raise RuntimeError(f"Failed to fetch data for {symbol} timeframe {timeframe}")
     df = pd.DataFrame(rates)
@@ -112,6 +144,9 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
     timeframes_conf = config.get("timeframes", [])
     fetch_bars = int(config.get("fetch_bars", 20))
 
+    time_fetch_str = str(config.get("time_fetch", "")).strip()
+    end_time = pd.to_datetime(time_fetch_str) if time_fetch_str else None
+
     frames = []
     for item in timeframes_conf:
         tf_name = str(item.get("tf", "")).upper()
@@ -120,7 +155,7 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
         if tf_const is None:
             raise ValueError(f"Unsupported timeframe: {tf_name}")
         label = _tf_label(tf_name)
-        df = _fetch_rates(symbol, tf_const, fetch_bars, tz_shift)
+        df = _fetch_rates(symbol, tf_const, fetch_bars, tz_shift, end_time)
         df = _compute_indicators(df)
         df = df.tail(keep)
         df["timeframe"] = label
@@ -173,10 +208,18 @@ def main() -> None:
         default=default_tz,
         help="Hours to shift timestamps (e.g. 4 for GMT+3 to GMT+7)",
     )
+    parser.add_argument(
+        "--time-fetch",
+        default=str(config.get("time_fetch", "")),
+        help="Fetch bars ending at this time (YYYY-MM-DD HH:MM:SS)",
+    )
 
     args = parser.parse_args(remaining)
 
     symbol = args.symbol or config.get("symbol", "EURUSD")
+
+    if args.time_fetch:
+        config["time_fetch"] = args.time_fetch
 
     output = Path(args.output) if args.output else None
 

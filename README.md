@@ -29,6 +29,8 @@ using `--config`. The configuration defines:
 
 - `symbol` – trading pair (e.g., `XAUUSD`).
 - `fetch_bars` – number of historical bars requested for indicator calculation.
+- `time_fetch` – optional timestamp in the form `YYYY-MM-DD HH:MM:SS` to
+  retrieve bars ending at that time. Leave empty to fetch the most recent data.
 - `timeframes` – list of timeframes, each with `tf` (timeframe code) and `keep`
   (how many bars of that timeframe to retain).
 - `tz_shift` – hours to shift timestamps. If omitted the default is `0`.
@@ -49,6 +51,7 @@ Example `scripts/fetch/config/fetch_mt5.json`:
   "tz_shift": 4,
   "symbol": "XAUUSD",
   "fetch_bars": 20,
+  "time_fetch": "",
   "timeframes": [
     {"tf": "M5", "keep": 10},
     {"tf": "M15", "keep": 6},
