@@ -7,8 +7,10 @@ import logging
 import os
 from pathlib import Path
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from openai import OpenAI
+if TYPE_CHECKING:  # pragma: no cover - only for type hints
+    from openai import OpenAI
 
 
 LOGGER = logging.getLogger(__name__)
@@ -56,15 +58,19 @@ def _save_prompt_copy(
     (out_dir / f"{base}_prompt.txt").write_text(prompt, encoding="utf-8")
 
 
-def _call_gpt(csv_text: str, prompt: str, model: str, client: OpenAI) -> str:
-    """Send data to the GPT API and return the response text."""
-    messages = [
+def _build_messages(csv_text: str, prompt: str) -> list[dict[str, str]]:
+    """Return OpenAI chat messages for *csv_text* and *prompt*."""
+    return [
         {
             "role": "system",
             "content": "You analyze trading data and produce JSON signals.",
         },
         {"role": "user", "content": f"{prompt}\n\nCSV Data:\n{csv_text}"},
     ]
+
+
+def _call_gpt(messages: list[dict[str, str]], model: str, client: "OpenAI") -> str:
+    """Send *messages* to the GPT API and return the response text."""
     resp = client.chat.completions.create(model=model, messages=messages)
     return resp.choices[0].message.content.strip()
 
@@ -158,6 +164,8 @@ def main() -> None:
     except Exception as exc:  # noqa: BLE001
         LOGGER.warning("Failed to save prompt copy: %s", exc)
 
+    from openai import OpenAI  # imported here to avoid mandatory dependency for tests
+
     api_key = os.getenv("OPENAI_API_KEY") or config.get("openai_api_key")
     if not api_key:
         LOGGER.error(
@@ -166,8 +174,10 @@ def main() -> None:
         raise SystemExit(1)
     client = OpenAI(api_key=api_key)
 
+    messages = _build_messages(csv_text, prompt)
+
     try:
-        response = _call_gpt(csv_text, prompt, args.model, client)
+        response = _call_gpt(messages, args.model, client)
     except Exception as exc:  # noqa: BLE001
         LOGGER.error("GPT API request failed: %s", exc)
         raise SystemExit(1)
