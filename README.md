@@ -122,7 +122,7 @@ entries. The configuration is divided into `workflow`, `fetch`, `send` and
 The `main.py` helper runs the fetch step, sends the result to the GPT API and
 parses the raw response into a JSON signal. Use `--fetch-script`, `--send-script`
 and `--parse-script` to override the default script locations. You can also
-select a built-in fetcher with `--fetch-type yf|mt5` (default is `yf`) or skip
+select a built-in fetcher with `--fetch-type mt5|yf` (default is `mt5`) or skip
 individual stages with `--skip-fetch`, `--skip-send` and `--skip-parse`.
 
 Example fetching from MT5 and only parsing a previous response:

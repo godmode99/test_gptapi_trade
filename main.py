@@ -55,7 +55,7 @@ async def main() -> None:
     parser.add_argument(
         "--fetch-type",
         choices=["yf", "mt5"],
-        default=workflow.get("fetch_type", "yf"),
+        default=workflow.get("fetch_type", "mt5"),
         help="Select built-in data fetcher (ignored if --fetch-script is set)",
     )
     parser.add_argument(
