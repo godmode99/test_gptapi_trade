@@ -42,3 +42,35 @@ def test_default_fetcher_loaded(tmp_path):
     fetch_script, fetch_args = called["fetch"]
     assert str(fetch_script).endswith("scripts/fetch/fetch_mt5_data.py")
     assert "--config" in fetch_args
+
+
+def test_time_fetch_passed(tmp_path):
+    cfg = {
+        "workflow": {
+            "fetch_type": "mt5",
+            "scripts": {"fetch": None,
+                        "send": "scripts/send_api/send_to_gpt.py",
+                        "parse": "scripts/parse_response/parse_gpt_response.py"},
+            "response": "resp.txt",
+            "skip": {"fetch": False, "send": True, "parse": True},
+        },
+        "fetch": {"symbol": "TEST", "time_fetch": "2024-01-01 00:00:00"},
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+
+    recorded = {}
+
+    async def fake_run(step, script, *args):
+        idx = args.index("--config") + 1
+        cfg_file = Path(args[idx])
+        recorded[step] = json.loads(cfg_file.read_text())
+
+    with patch.object(
+        sys,
+        "argv",
+        ["main.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
+    ), patch("main._run_step", fake_run):
+        asyncio.run(entry_main())
+
+    assert recorded["fetch"]["time_fetch"] == "2024-01-01 00:00:00"

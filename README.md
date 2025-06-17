@@ -65,6 +65,10 @@ Example `scripts/fetch/config/fetch_mt5.json`:
 }
 ```
 
+The `fetch` section inside `config/main.json` accepts the same keys as the
+individual fetcher configuration files, so you can provide `time_fetch` there as
+well when running the combined workflow with `main.py`.
+
 The script `scripts/fetch/fetch_yf_data.py` provides similar functionality using yfinance.
 It loads `scripts/fetch/config/fetch_yf.json` and accepts the same command-line options.
 When fetching currency pairs from Yahoo Finance use the `=X` suffix (e.g. `EURUSD=X`).
