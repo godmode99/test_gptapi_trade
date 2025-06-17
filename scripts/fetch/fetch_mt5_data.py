@@ -145,7 +145,14 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
     fetch_bars = int(config.get("fetch_bars", 20))
 
     time_fetch_str = str(config.get("time_fetch", "")).strip()
-    end_time = pd.to_datetime(time_fetch_str) if time_fetch_str else None
+    if time_fetch_str:
+        end_time = pd.to_datetime(time_fetch_str, errors="coerce")
+        if pd.isna(end_time):
+            raise ValueError(
+                "Timestamp format must be YYYY-MM-DD HH:MM:SS and the chosen date may not be available"
+            )
+    else:
+        end_time = None
 
     frames = []
     for item in timeframes_conf:
@@ -162,6 +169,10 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
         frames.append(df)
 
     combined = pd.concat(frames, ignore_index=True)
+    if combined.empty:
+        raise ValueError(
+            "Timestamp format must be YYYY-MM-DD HH:MM:SS and the chosen date may not be available"
+        )
     # Reorder columns
     cols = [
         "timestamp",
