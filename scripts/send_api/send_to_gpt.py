@@ -6,6 +6,7 @@ import json
 import logging
 import os
 from pathlib import Path
+from datetime import datetime
 
 from openai import OpenAI
 
@@ -37,6 +38,22 @@ def _find_latest_csv(directory: Path) -> Path:
     if not csv_files:
         raise FileNotFoundError(f"No CSV files found in {directory}")
     return max(csv_files, key=lambda p: p.stat().st_mtime)
+
+
+def _timestamp_code(ts: datetime) -> str:
+    """Return a string like '250616_153045' for *ts*."""
+    return ts.strftime("%d%m%y_%H%M%S")
+
+
+def _save_prompt_copy(
+    csv_path: Path, csv_text: str, prompt: str, out_dir: Path
+) -> None:
+    """Save *csv_text* and *prompt* to *out_dir* with a unique name."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    ts = _timestamp_code(datetime.utcnow())
+    base = f"{csv_path.stem}_{ts}"
+    (out_dir / f"{base}.csv").write_text(csv_text, encoding="utf-8")
+    (out_dir / f"{base}_prompt.txt").write_text(prompt, encoding="utf-8")
 
 
 def _call_gpt(csv_text: str, prompt: str, model: str, client: OpenAI) -> str:
@@ -85,6 +102,11 @@ def main() -> None:
         help="Model name",
         default=config.get("model", "gpt-4o"),
     )
+    parser.add_argument(
+        "--save-dir",
+        default=config.get("save_prompt_dir", "data/save_prompt_api"),
+        help="Directory to save CSV and prompt copies",
+    )
     parser.add_argument("--output", help="Save raw response to file")
 
     args = parser.parse_args(remaining)
@@ -130,6 +152,11 @@ def main() -> None:
 
     if prompt is None:
         prompt = DEFAULT_PROMPT % csv_path.stem
+
+    try:
+        _save_prompt_copy(csv_path, csv_text, prompt, Path(args.save_dir))
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.warning("Failed to save prompt copy: %s", exc)
 
     api_key = os.getenv("OPENAI_API_KEY") or config.get("openai_api_key")
     if not api_key:

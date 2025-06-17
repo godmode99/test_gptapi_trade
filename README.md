@@ -79,7 +79,8 @@ Example `scripts/send_api/config/gpt.json`:
   "openai_api_key": "YOUR_API_KEY",
   "model": "gpt-4o",
   "csv_file": "",
-  "csv_path": "data/fetch"
+  "csv_path": "data/fetch",
+  "save_prompt_dir": "data/save_prompt_api"
 }
 ```
 
@@ -93,7 +94,9 @@ unless an absolute path is given.
 
 If you omit the positional `csv` argument, `send_to_gpt.py` uses the config
 values described above. The `--data-dir` option defaults to `csv_path` and can
-be used to override the search directory.
+be used to override the search directory. The script also saves a copy of the
+CSV data and the final prompt to `data/save_prompt_api` by default. Use
+`--save-dir` or the `save_prompt_dir` config value to change this location.
 
 The parser `scripts/parse_response/parse_gpt_response.py` reads a raw GPT reply and writes the structured result to a JSON file. Default paths are loaded from `scripts/parse_response/config/parse.json` which defines where to store the CSV log, JSON signals and the latest response file. Use `--csv-log`, `--json-dir`, `--latest-response` or `--tz-shift` to override these values. Each run appends a row to the CSV log and saves the parsed data in a uniquely named file like `250616_153045.json` inside the configured directory.
 
