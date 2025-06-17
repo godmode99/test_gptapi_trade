@@ -13,7 +13,7 @@ from main import main as entry_main
 def test_default_fetcher_loaded(tmp_path):
     cfg = {
         "workflow": {
-            "fetch_type": "yf",
+            "fetch_type": "mt5",
             "scripts": {
                 "fetch": None,
                 "send": "scripts/send_api/send_to_gpt.py",
@@ -40,5 +40,5 @@ def test_default_fetcher_loaded(tmp_path):
         asyncio.run(entry_main())
 
     fetch_script, fetch_args = called["fetch"]
-    assert str(fetch_script).endswith("scripts/fetch/fetch_yf_data.py")
+    assert str(fetch_script).endswith("scripts/fetch/fetch_mt5_data.py")
     assert "--config" in fetch_args

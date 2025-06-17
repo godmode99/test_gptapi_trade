@@ -25,7 +25,7 @@
 ```json
 {
   "workflow": {
-    "fetch_type": "yf",
+    "fetch_type": "mt5",
     "scripts": {
       "fetch": null,
       "send": "scripts/send_api/send_to_gpt.py",
@@ -35,7 +35,7 @@
     "skip": {"fetch": false, "send": false, "parse": false}
   },
   "fetch": {
-    "symbol": "GC=F"
+    "symbol": "XAUUSD"
   },
   "send": {
     "openai_api_key": "YOUR_API_KEY"

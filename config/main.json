@@ -1,6 +1,6 @@
 {
   "workflow": {
-    "fetch_type": "yf",
+    "fetch_type": "mt5",
     "scripts": {
       "fetch": null,
       "send": "scripts/send_api/send_to_gpt.py",
@@ -15,7 +15,7 @@
   },
   "fetch": {
     "tz_shift": 7,
-    "symbol": "GC=F",
+    "symbol": "XAUUSD",
     "fetch_bars": 30,
     "save_as_path": "data/fetch",
     "timeframes": [
