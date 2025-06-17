@@ -95,7 +95,7 @@ async def main() -> None:
     )
     args = parser.parse_args(remaining)
 
-    if args.fetch_script is None:
+    if not args.fetch_script:
         fetch_map = {
             "yf": "scripts/fetch/fetch_yf_data.py",
             "mt5": "scripts/fetch/fetch_mt5_data.py",
