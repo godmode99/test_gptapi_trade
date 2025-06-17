@@ -4,29 +4,45 @@
 เรียกขั้นตอนการดึงข้อมูล ส่งข้อมูลไป GPT และแปลงผลลัพธ์เป็นไฟล์สัญญาณ
 โดยสามารถปรับแต่งค่าต่าง ๆ ได้ดังนี้
 
-| คีย์ | คำอธิบาย |
-|------|-----------|
-| `fetch_type` | กำหนดประเภทตัวดึงข้อมูลอัตโนมัติ ระบุ `yf` (Yahoo Finance) หรือ `mt5` |
-| `fetch_script` | พาธไปยังสคริปต์ดึงข้อมูลเอง หากระบุค่านี้จะไม่ใช้ `fetch_type` |
-| `send_script` | พาธสคริปต์ส่งข้อมูลไปยัง GPT API |
-| `parse_script` | พาธสคริปต์แปลงผลลัพธ์จาก GPT |
-| `response` | ไฟล์เก็บข้อความตอบกลับดิบจาก GPT ชั่วคราว |
-| `skip_fetch` | ตั้งค่าเป็น `true` เพื่อข้ามขั้นตอนดึงข้อมูล |
-| `skip_send` | ตั้งค่าเป็น `true` เพื่อข้ามการส่งข้อมูลไป GPT |
-| `skip_parse` | ตั้งค่าเป็น `true` เพื่อข้ามการแปลงผลลัพธ์ |
+โครงสร้างไฟล์แบ่งออกเป็นหมวดหมู่ดังนี้
 
-ตัวอย่างเนื้อหาเริ่มต้นในไฟล์มีดังนี้:
+| หมวด | คีย์ย่อย | คำอธิบาย |
+|------|---------|-----------|
+| `workflow.fetch_type` |  | กำหนดประเภทตัวดึงข้อมูลอัตโนมัติ (`yf` หรือ `mt5`) |
+| `workflow.scripts.fetch` |  | พาธสคริปต์ดึงข้อมูล (ไม่ระบุเพื่อใช้ตัวในระบบ) |
+| `workflow.scripts.send` |  | พาธสคริปต์ส่งข้อมูลไป GPT |
+| `workflow.scripts.parse` |  | พาธสคริปต์แปลงผลลัพธ์จาก GPT |
+| `workflow.response` |  | ไฟล์เก็บข้อความตอบกลับดิบจาก GPT |
+| `workflow.skip.fetch` |  | ตั้งค่า `true` เพื่อข้ามขั้นตอนดึงข้อมูล |
+| `workflow.skip.send` |  | ตั้งค่า `true` เพื่อข้ามการส่งข้อมูล |
+| `workflow.skip.parse` |  | ตั้งค่า `true` เพื่อข้ามการแปลงผลลัพธ์ |
+| `fetch` |  | คอนฟิกสำหรับขั้นตอนดึงข้อมูล |
+| `send` |  | คอนฟิกสำหรับขั้นตอนส่งข้อมูลไป GPT |
+| `parse` |  | คอนฟิกสำหรับขั้นตอนแปลงผลลัพธ์ |
+
+ตัวอย่างโครงสร้างไฟล์:
 
 ```json
 {
-  "fetch_type": "yf",
-  "fetch_script": null,
-  "send_script": "scripts/send_api/send_to_gpt.py",
-  "parse_script": "scripts/parse_response/parse_gpt_response.py",
-  "response": "data/signals/latest_response.txt",
-  "skip_fetch": false,
-  "skip_send": false,
-  "skip_parse": false
+  "workflow": {
+    "fetch_type": "yf",
+    "scripts": {
+      "fetch": null,
+      "send": "scripts/send_api/send_to_gpt.py",
+      "parse": "scripts/parse_response/parse_gpt_response.py"
+    },
+    "response": "data/signals/latest_response.txt",
+    "skip": {"fetch": false, "send": false, "parse": false}
+  },
+  "fetch": {
+    "symbol": "GC=F"
+  },
+  "send": {
+    "openai_api_key": "YOUR_API_KEY"
+  },
+  "parse": {
+    "tz_shift": 7
+  }
 }
 ```
 

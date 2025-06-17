@@ -48,57 +48,61 @@ async def main() -> None:
         description="Fetch data, send to GPT and parse the response sequentially",
         parents=[pre_parser],
     )
+    workflow = config.get("workflow", {})
+    scripts_cfg = workflow.get("scripts", {})
+    skip_cfg = workflow.get("skip", {})
+
     parser.add_argument(
         "--fetch-type",
         choices=["yf", "mt5"],
-        default=config.get("fetch_type", "yf"),
+        default=workflow.get("fetch_type", "yf"),
         help="Select built-in data fetcher (ignored if --fetch-script is set)",
     )
     parser.add_argument(
         "--fetch-script",
-        default=config.get("fetch_script"),
+        default=scripts_cfg.get("fetch"),
         help="Path to data fetching script (overrides --fetch-type)",
     )
     parser.add_argument(
         "--send-script",
-        default=config.get("send_script", "scripts/send_api/send_to_gpt.py"),
+        default=scripts_cfg.get("send", "scripts/send_api/send_to_gpt.py"),
         help="Path to GPT API script",
     )
     parser.add_argument(
         "--parse-script",
-        default=config.get(
-            "parse_script", "scripts/parse_response/parse_gpt_response.py"
+        default=scripts_cfg.get(
+            "parse", "scripts/parse_response/parse_gpt_response.py"
         ),
         help="Path to response parsing script",
     )
     parser.add_argument(
         "--response",
-        default=config.get("response", "data/signals/latest_response.txt"),
+        default=workflow.get("response", "data/signals/latest_response.txt"),
         help="Temporary file to store raw GPT response",
     )
     parser.add_argument(
         "--skip-fetch",
         action="store_true",
-        default=bool(config.get("skip_fetch", False)),
+        default=bool(skip_cfg.get("fetch", False)),
         help="Skip the data fetching step",
     )
     parser.add_argument(
         "--skip-send",
         action="store_true",
-        default=bool(config.get("skip_send", False)),
+        default=bool(skip_cfg.get("send", False)),
         help="Skip sending data to GPT",
     )
     parser.add_argument(
         "--skip-parse",
         action="store_true",
-        default=bool(config.get("skip_parse", False)),
+        default=bool(skip_cfg.get("parse", False)),
         help="Skip parsing the GPT response",
     )
     args = parser.parse_args(remaining)
 
-    fetch_cfg = config.get("fetch_config")
-    send_cfg = config.get("send_config")
-    parse_cfg = config.get("parse_config")
+    fetch_cfg = config.get("fetch")
+    send_cfg = config.get("send")
+    parse_cfg = config.get("parse")
 
     if not args.fetch_script:
         fetch_map = {

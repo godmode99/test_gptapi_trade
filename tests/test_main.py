@@ -12,15 +12,17 @@ from main import main as entry_main
 
 def test_default_fetcher_loaded(tmp_path):
     cfg = {
-        "fetch_type": "yf",
-        "fetch_script": None,
-        "send_script": "scripts/send_api/send_to_gpt.py",
-        "parse_script": "scripts/parse_response/parse_gpt_response.py",
-        "response": "resp.txt",
-        "skip_fetch": False,
-        "skip_send": True,
-        "skip_parse": True,
-        "fetch_config": {"symbol": "TEST"},
+        "workflow": {
+            "fetch_type": "yf",
+            "scripts": {
+                "fetch": None,
+                "send": "scripts/send_api/send_to_gpt.py",
+                "parse": "scripts/parse_response/parse_gpt_response.py",
+            },
+            "response": "resp.txt",
+            "skip": {"fetch": False, "send": True, "parse": True},
+        },
+        "fetch": {"symbol": "TEST"},
     }
     cfg_path = tmp_path / "cfg.json"
     cfg_path.write_text(json.dumps(cfg))
@@ -30,7 +32,11 @@ def test_default_fetcher_loaded(tmp_path):
     async def fake_run(step, script, *args):
         called[step] = (script, args)
 
-    with patch.object(sys, "argv", ["main.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"]), patch("main._run_step", fake_run):
+    with patch.object(
+        sys,
+        "argv",
+        ["main.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
+    ), patch("main._run_step", fake_run):
         asyncio.run(entry_main())
 
     fetch_script, fetch_args = called["fetch"]

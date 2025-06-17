@@ -1,13 +1,19 @@
 {
-  "fetch_type": "yf",
-  "fetch_script": null,
-  "send_script": "scripts/send_api/send_to_gpt.py",
-  "parse_script": "scripts/parse_response/parse_gpt_response.py",
-  "response": "data/signals/latest_response.txt",
-  "skip_fetch": false,
-  "skip_send": false,
-  "skip_parse": false,
-  "fetch_config": {
+  "workflow": {
+    "fetch_type": "yf",
+    "scripts": {
+      "fetch": null,
+      "send": "scripts/send_api/send_to_gpt.py",
+      "parse": "scripts/parse_response/parse_gpt_response.py"
+    },
+    "response": "data/signals/latest_response.txt",
+    "skip": {
+      "fetch": false,
+      "send": false,
+      "parse": false
+    }
+  },
+  "fetch": {
     "tz_shift": 7,
     "symbol": "GC=F",
     "fetch_bars": 30,
@@ -18,14 +24,14 @@
       {"tf": "H1", "keep": 4}
     ]
   },
-  "send_config": {
+  "send": {
     "openai_api_key": "YOUR_API_KEY",
     "model": "gpt-4o",
     "csv_file": "",
     "csv_path": "data/fetch",
     "save_prompt_dir": "data/save_prompt_api"
   },
-  "parse_config": {
+  "parse": {
     "path_signals_csv": "data/signals/signals_csv",
     "file_signal_report": "csv_signal_report.csv",
     "path_signals_json": "data/signals/signals_json",
