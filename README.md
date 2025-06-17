@@ -112,7 +112,8 @@ The `ea/CustomIndicator.mq5` file is a simple MT5 indicator that can be compiled
 with **MetaEditor**. The indicator calculates RSI‑14, SMA‑20 and ATR‑14 for the
 current chart timeframe. If the `DisplaySignals` parameter is enabled it reads
 the latest JSON file from the `signals_json/` directory and shows the parsed values
-on the chart.
+on the chart. Each JSON signal must include the fields `signal_id`, `entry`, `sl`,
+`tp`, `pending_order_type` and `confidence`.
 
 ### Compile & Attach
 
