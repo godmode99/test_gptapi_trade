@@ -40,9 +40,10 @@ json
 "entry": 12,
 "sl": 10,
 "tp": 20,
-"pending_order_type": "buy limit",
+"pending_order_type": "buy_limit",
 "confidence": 77
 }
+
 3.5 Parse response to JSON file & save to folder
 แปลงข้อความจาก GPT เป็น JSON
 
@@ -91,9 +92,13 @@ Modular, debug/ปรับปรุงทุกจุดได้
    "entry": 2332.14,
    "sl": 2327.50,
    "tp": 2340.50,
-   "pending_order_type": "buy limit",
+   "pending_order_type": "buy_limit",
    "confidence": 81
    }
+หมายเหตุ:
+- pending_order_type เลือกได้จาก [buy_limit, sell_limit, buy_stop, sell_stop]
+- confidence แสดงเป็นเปอร์เซ็นต์ช่วง 1-100%
+
 7. Extensibility
    เพิ่ม simulation/backtest ได้
 
