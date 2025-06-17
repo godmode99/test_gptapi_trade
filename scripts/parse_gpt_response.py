@@ -40,7 +40,9 @@ def _extract_json(text: str) -> dict:
     if fence:
         text = fence.group(1)
 
-    match = re.search(r"{.*}", text, flags=re.DOTALL)
+    # Use a non-greedy pattern so additional text or JSON blocks after the
+    # first one do not get included in the match.
+    match = re.search(r"{.*?}", text, flags=re.DOTALL)
     if not match:
         raise ValueError("No JSON object found in response")
     return json.loads(match.group(0))

@@ -26,3 +26,8 @@ def test_extract_json_fenced_plain():
 def test_extract_json_missing():
     with pytest.raises(ValueError):
         _extract_json("no json here")
+
+
+def test_extract_json_multiple_objects():
+    text = "first {\"a\": 1} second {\"b\": 2}"
+    assert _extract_json(text) == {"a": 1}
