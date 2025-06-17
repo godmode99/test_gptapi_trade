@@ -1,3 +1,10 @@
 ```json
-{"signal_id": "xauusd-20250616_14hr", "entry": 3411, "sl": 3402, "tp": 3425, "pending_order_type": "buy_limit", "confidence": 77}
+{
+  "signal_id": "xauusd_170625_20H",
+  "entry": 3394.63,
+  "sl": 3388.57,
+  "tp": 3400.14,
+  "pending_order_type": "buy_stop",
+  "confidence": 75
+}
 ```

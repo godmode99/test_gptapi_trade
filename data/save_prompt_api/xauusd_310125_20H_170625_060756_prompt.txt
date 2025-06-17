@@ -1,1 +1,0 @@
-Generate a trading signal and reply only with a JSON object like {"signal_id": "xauusd_310125_20H", "entry": , "sl": , "tp": , "pending_order_type": "", "confidence":  }. pending_order_type must be one of [buy_limit, sell_limit, buy_stop, sell_stop] and confidence is an integer percentage between 1 and 100.
