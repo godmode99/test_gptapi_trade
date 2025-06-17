@@ -17,7 +17,9 @@ LOGGER = logging.getLogger(__name__)
 DEFAULT_PROMPT = (
     "Generate a trading signal and reply only with a JSON object like "
     '{"signal_id": "%s", "entry": , "sl": , "tp": , '
-    '"pending_order_type": "", "confidence":  }'
+    '"pending_order_type": "", "confidence":  }. '
+    "pending_order_type must be one of [buy_limit, sell_limit, buy_stop, "
+    "sell_stop] and confidence is an integer percentage between 1 and 100."
 )
 
 
