@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import tempfile
 import logging
 import sys
 from pathlib import Path
@@ -95,6 +96,10 @@ async def main() -> None:
     )
     args = parser.parse_args(remaining)
 
+    fetch_cfg = config.get("fetch_config")
+    send_cfg = config.get("send_config")
+    parse_cfg = config.get("parse_config")
+
     if not args.fetch_script:
         fetch_map = {
             "yf": "scripts/fetch/fetch_yf_data.py",
@@ -108,11 +113,40 @@ async def main() -> None:
     )
 
     if not args.skip_fetch:
-        await _run_step("fetch", Path(args.fetch_script))
+        if fetch_cfg:
+            with tempfile.NamedTemporaryFile("w", delete=False, suffix=".json") as tmp:
+                json.dump(fetch_cfg, tmp)
+            try:
+                await _run_step("fetch", Path(args.fetch_script), "--config", tmp.name)
+            finally:
+                Path(tmp.name).unlink(missing_ok=True)
+        else:
+            await _run_step("fetch", Path(args.fetch_script))
     if not args.skip_send:
-        await _run_step("send", Path(args.send_script), "--output", args.response)
+        send_args = ["--output", args.response]
+        if send_cfg:
+            with tempfile.NamedTemporaryFile("w", delete=False, suffix=".json") as tmp:
+                json.dump(send_cfg, tmp)
+            send_args.extend(["--config", tmp.name])
+            try:
+                await _run_step("send", Path(args.send_script), *send_args)
+            finally:
+                Path(tmp.name).unlink(missing_ok=True)
+        else:
+            await _run_step("send", Path(args.send_script), *send_args)
     if not args.skip_parse:
-        await _run_step("parse", Path(args.parse_script), args.response)
+        parse_args = []
+        if parse_cfg:
+            with tempfile.NamedTemporaryFile("w", delete=False, suffix=".json") as tmp:
+                json.dump(parse_cfg, tmp)
+            parse_args.extend(["--config", tmp.name])
+            parse_args.append(args.response)
+            try:
+                await _run_step("parse", Path(args.parse_script), *parse_args)
+            finally:
+                Path(tmp.name).unlink(missing_ok=True)
+        else:
+            await _run_step("parse", Path(args.parse_script), args.response)
 
 
 if __name__ == "__main__":

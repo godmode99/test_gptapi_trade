@@ -6,5 +6,30 @@
   "response": "data/signals/latest_response.txt",
   "skip_fetch": false,
   "skip_send": false,
-  "skip_parse": false
+  "skip_parse": false,
+  "fetch_config": {
+    "tz_shift": 7,
+    "symbol": "GC=F",
+    "fetch_bars": 30,
+    "save_as_path": "data/fetch",
+    "timeframes": [
+      {"tf": "M5", "keep": 10},
+      {"tf": "M15", "keep": 6},
+      {"tf": "H1", "keep": 4}
+    ]
+  },
+  "send_config": {
+    "openai_api_key": "YOUR_API_KEY",
+    "model": "gpt-4o",
+    "csv_file": "",
+    "csv_path": "data/fetch",
+    "save_prompt_dir": "data/save_prompt_api"
+  },
+  "parse_config": {
+    "path_signals_csv": "data/signals/signals_csv",
+    "file_signal_report": "csv_signal_report.csv",
+    "path_signals_json": "data/signals/signals_json",
+    "path_latest_response": "data/signals/latest_response.txt",
+    "tz_shift": 7
+  }
 }

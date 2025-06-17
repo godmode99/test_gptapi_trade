@@ -116,7 +116,9 @@ python main.py
 
 `main.py` reads default settings from `config/main.json`. Pass `--config` with a
 different path to use custom values. Command-line options override the config
-entries.
+entries. The file can also include nested dictionaries named `fetch_config`,
+`send_config` and `parse_config`. When present these sections are passed to the
+respective scripts so all parameters can be managed in one place.
 
 The `main.py` helper runs the fetch step, sends the result to the GPT API and
 parses the raw response into a JSON signal. Use `--fetch-script`, `--send-script`
