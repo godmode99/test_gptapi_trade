@@ -2,8 +2,12 @@ import sys
 import importlib
 from types import ModuleType
 from pathlib import Path
+import json
+import logging
+from unittest.mock import patch
 
 import pandas as pd
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -97,3 +101,24 @@ def test_fetch_multi_tf_with_time_fetch() -> None:
     assert list(df["timestamp"]) == list(sample_times)
     assert called["start"].strftime("%Y-%m-%d %H:%M:%S") == "2024-01-01 00:00:00"
     assert called["end"].strftime("%Y-%m-%d %H:%M:%S") == "2024-01-01 00:04:00"
+
+
+def test_main_error_on_empty_df(tmp_path, caplog) -> None:
+    """main() should exit with SystemExit when no data is fetched."""
+    cfg = {
+        "symbol": "TEST",
+        "fetch_bars": 1,
+        "timeframes": [{"tf": "M1", "keep": 1}],
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+
+    with patch.object(sys, "argv", ["fetch_mt5_data.py", "--config", str(cfg_path)]), patch(
+        "scripts.fetch.fetch_mt5_data.fetch_multi_tf", return_value=pd.DataFrame()
+    ), patch("scripts.fetch.fetch_mt5_data._init_mt5"), patch(
+        "scripts.fetch.fetch_mt5_data._shutdown_mt5"
+    ):
+        with caplog.at_level(logging.ERROR), pytest.raises(SystemExit) as exc:
+            importlib.import_module("scripts.fetch.fetch_mt5_data").main()
+        assert exc.value.code == 1
+        assert "No data available" in caplog.text

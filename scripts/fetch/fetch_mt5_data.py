@@ -231,10 +231,15 @@ def main() -> None:
     try:
         _init_mt5()
         df = fetch_multi_tf(symbol, config, tz_shift=args.tz_shift)
+        if df.empty:
+            LOGGER.error("No data available for the requested time_fetch")
+            raise SystemExit(1)
         if output is None:
             h1_label = _tf_label("H1")
             h1_df = df[df["timeframe"] == h1_label]
             last_ts = h1_df["timestamp"].max() if not h1_df.empty else df["timestamp"].max()
+            if pd.isna(last_ts):
+                raise RuntimeError("No timestamp found in fetched data")
             name = _timestamp_code(last_ts)
             output = Path("data/fetch") / f"{symbol.lower()}_{name}.csv"
         output.parent.mkdir(parents=True, exist_ok=True)
