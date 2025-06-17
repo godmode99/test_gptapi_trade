@@ -158,6 +158,15 @@ on the chart. Each JSON signal must include the fields `signal_id`, `entry`, `sl
 
 Refer to `Work_flow.md` for the full workflow description.
 
+## Running Tests
+
+Install the dependencies and run the unit tests with `pytest`:
+
+```bash
+pip install -r requirements.txt
+pytest
+```
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
