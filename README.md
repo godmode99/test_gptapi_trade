@@ -100,6 +100,10 @@ a single command:
 python main.py
 ```
 
+`main.py` reads default settings from `config/main.json`. Pass `--config` with a
+different path to use custom values. Command-line options override the config
+entries.
+
 The `main.py` helper runs the fetch step, sends the result to the GPT API and
 parses the raw response into a JSON signal. Use `--fetch-script`, `--send-script`
 and `--parse-script` to override the default script locations. You can also
