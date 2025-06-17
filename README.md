@@ -34,7 +34,9 @@ using `--config`. The configuration defines:
 - `tz_shift` – hours to shift timestamps. If omitted the default is `0`.
 
 You can adjust timestamps with the `--tz-shift` option. For example, if the
-server time is GMT+3 and you need GMT+7 data, pass `--tz-shift 4`.
+server time is GMT+3 and you need GMT+7 data, pass `--tz-shift 4`. The shift is
+always applied *after* the raw data has been fetched so the CSV output uses the
+same timezone regardless of whether the source is MT5 or Yahoo Finance.
 
 If you do not specify an output path, `fetch_mt5_data.py` automatically
 saves to `data/fetch/` with a unique filename in the form
@@ -58,7 +60,8 @@ Example `scripts/fetch/config/fetch_mt5.json`:
 The script `scripts/fetch/fetch_yf_data.py` provides similar functionality using yfinance.
 It loads `scripts/fetch/config/fetch_yf.json` and accepts the same command-line options.
 When fetching currency pairs from Yahoo Finance use the `=X` suffix (e.g. `EURUSD=X`).
-To download gold prices for `XAUUSD` configure the symbol as `GC=F`.
+To download gold prices for `XAUUSD` configure the symbol as `GC=F`. Like the MT5 fetcher,
+the yfinance version shifts timestamps only after the data has been downloaded.
 
 The `scripts/send_api/send_to_gpt.py` script reads its API key and other settings from
 `scripts/send_api/config/gpt.json`. Copy `scripts/send_api/config/gpt.example.json`
