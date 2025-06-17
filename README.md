@@ -102,7 +102,15 @@ python main.py
 
 The `main.py` helper runs the fetch step, sends the result to the GPT API and
 parses the raw response into a JSON signal. Use `--fetch-script`, `--send-script`
-and `--parse-script` to override the default script locations.
+and `--parse-script` to override the default script locations. You can also
+select a built-in fetcher with `--fetch-type yf|mt5` (default is `yf`) or skip
+individual stages with `--skip-fetch`, `--skip-send` and `--skip-parse`.
+
+Example fetching from MT5 and only parsing a previous response:
+
+```bash
+python main.py --fetch-type mt5 --skip-fetch --skip-send
+```
 
 ## CustomIndicator
 

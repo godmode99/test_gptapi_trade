@@ -25,9 +25,14 @@ async def main() -> None:
         description="Fetch data, send to GPT and parse the response sequentially",
     )
     parser.add_argument(
+        "--fetch-type",
+        choices=["yf", "mt5"],
+        default="yf",
+        help="Select built-in data fetcher (ignored if --fetch-script is set)",
+    )
+    parser.add_argument(
         "--fetch-script",
-        default="scripts/fetch/fetch_yf_data.py",
-        help="Path to data fetching script",
+        help="Path to data fetching script (overrides --fetch-type)",
     )
     parser.add_argument(
         "--send-script",
@@ -44,13 +49,41 @@ async def main() -> None:
         default="data/signals/latest_response.txt",
         help="Temporary file to store raw GPT response",
     )
+    parser.add_argument(
+        "--skip-fetch",
+        action="store_true",
+        help="Skip the data fetching step",
+    )
+    parser.add_argument(
+        "--skip-send",
+        action="store_true",
+        help="Skip sending data to GPT",
+    )
+    parser.add_argument(
+        "--skip-parse",
+        action="store_true",
+        help="Skip parsing the GPT response",
+    )
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+    if args.fetch_script is None:
+        fetch_map = {
+            "yf": "scripts/fetch/fetch_yf_data.py",
+            "mt5": "scripts/fetch/fetch_mt5_data.py",
+        }
+        args.fetch_script = fetch_map[args.fetch_type]
 
-    await _run_step("fetch", Path(args.fetch_script))
-    await _run_step("send", Path(args.send_script), "--output", args.response)
-    await _run_step("parse", Path(args.parse_script), args.response)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+    )
+
+    if not args.skip_fetch:
+        await _run_step("fetch", Path(args.fetch_script))
+    if not args.skip_send:
+        await _run_step("send", Path(args.send_script), "--output", args.response)
+    if not args.skip_parse:
+        await _run_step("parse", Path(args.parse_script), args.response)
 
 
 if __name__ == "__main__":
