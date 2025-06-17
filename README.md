@@ -21,6 +21,11 @@ This project requires the OpenAI Python library version 1.0 or newer.
 - `ea/` – Expert Advisor or trading automation code
 - `logs/` – log files for debugging and monitoring
 
+## Coding Standards
+
+The scripts in this repository aim to keep input/output operations separate from
+business logic. See [CODE_STANDARD.md](CODE_STANDARD.md) for details.
+
 ## Configuration
 
 The script `scripts/fetch/fetch_mt5_data.py` reads its parameters from
