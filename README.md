@@ -12,10 +12,12 @@ This project implements an automated trading workflow that uses data from MT5 an
 
 ## Installation
 
-Install the pinned Python dependencies using the helper script:
+Install the pinned Python dependencies using the helper script and make the
+`gpt_trader` package available:
 
 ```bash
 ./scripts/install_deps.sh
+pip install -e .
 ```
 
 This project requires specific versions of `pandas`, `MetaTrader5`, `openai` and
@@ -172,7 +174,7 @@ Once the individual scripts are configured you can execute the whole process in
 a single command:
 
 ```bash
-python src/gpt_trader/cli/main_liveTrade.py
+python -m gpt_trader.cli.main_liveTrade
 ```
 
 `main_liveTrade.py` reads default settings from `config/setting_live_trade.json` (the
