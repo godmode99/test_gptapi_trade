@@ -156,6 +156,8 @@ cp live_trade/config/setting_main.example.json \
 See [`live_trade/docs/config_main_th.md`](live_trade/docs/config_main_th.md) for
 an explanation of each key.
 
+For Thai users: สำหรับภาษาไทย ดูเอกสารที่ `live_trade/docs/usage_th.md`.
+
 ## Running the complete workflow
 
 Once the individual scripts are configured you can execute the whole process in
