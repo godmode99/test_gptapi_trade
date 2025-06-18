@@ -198,7 +198,9 @@ python main_liveTrade.py --fetch-type mt5 --skip-fetch --skip-send
 ### Automated execution
 
 Run `src/gpt_trader/cli/scheduler_example.py` to execute the workflow once per hour. The
-script uses APScheduler to call `main_liveTrade.py` on a schedule:
+script uses APScheduler to call `main_liveTrade.py` on a schedule. Since
+`main_liveTrade.py` now prepends the repository root to `sys.path`, the
+scheduler can be executed directly from the project root:
 
 ```bash
 python src/gpt_trader/cli/scheduler_example.py
