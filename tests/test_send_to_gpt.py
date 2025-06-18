@@ -1,9 +1,6 @@
-import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from scripts.send_api.send_to_gpt import _build_messages
+from gpt_trader.send.send_to_gpt import _build_messages
 
 
 def test_build_messages() -> None:

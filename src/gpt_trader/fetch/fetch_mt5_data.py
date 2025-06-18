@@ -15,7 +15,7 @@ from typing import Any, Dict, Optional
 
 import pandas as pd
 import MetaTrader5 as mt5
-from scripts.utils.indicators import compute_indicators
+from gpt_trader.utils.indicators import compute_indicators
 
 
 LOGGER = logging.getLogger(__name__)

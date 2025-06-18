@@ -34,7 +34,7 @@ This project requires specific versions of `pandas`, `MetaTrader5`, `openai` and
 Copy the example configuration and insert your API key:
 
 ```bash
-cp scripts/send_api/config/gpt.example.json scripts/send_api/config/gpt.json
+cp src/gpt_trader/send/config/gpt.example.json src/gpt_trader/send/config/gpt.json
 ```
 
 Edit `gpt.json` and replace `YOUR_API_KEY` with your OpenAI key. You can also
@@ -47,7 +47,7 @@ value in the JSON file.
   - `fetch/` – fetched OHLC data
   - `signals/signals_json/` – stored trading signals in JSON format
   - `signals/signals_csv/` – CSV log of parsed signals
-- `scripts/` – Python scripts for data fetching, GPT communication and parsing
+- `src/gpt_trader/` – package containing the workflow code
 - `ea/` – Expert Advisor or trading automation code
 - `logs/` – log files for debugging and monitoring
 
@@ -58,8 +58,8 @@ business logic. See [CODE_STANDARD.md](CODE_STANDARD.md) for details.
 
 ## Configuration
 
-The script `scripts/fetch/fetch_mt5_data.py` reads its parameters from
-`scripts/fetch/config/fetch_mt5.json` by default and you can pass an alternative JSON file
+The script `src/gpt_trader/fetch/fetch_mt5_data.py` reads its parameters from
+`src/gpt_trader/fetch/config/fetch_mt5.json` by default and you can pass an alternative JSON file
 using `--config`. The configuration defines:
 
 - `symbol` – trading pair (e.g., `XAUUSD`).
@@ -81,7 +81,7 @@ If you do not specify an output path, `fetch_mt5_data.py` automatically
 saves to `data/live_trade/fetch/` with a unique filename in the form
 `<symbol>_<ddmmyy>_<HH>H.csv` (e.g. `xauusd_250616_16H.csv`).
 
-Example `scripts/fetch/config/fetch_mt5.json`:
+Example `src/gpt_trader/fetch/config/fetch_mt5.json`:
 
 ```json
 {
@@ -97,23 +97,23 @@ Example `scripts/fetch/config/fetch_mt5.json`:
 }
 ```
 
-The `fetch` section inside `live_trade/config/setting_main.json` accepts the same keys as the
+The `fetch` section inside `src/gpt_trader/cli/live_trade_config/setting_main.json` accepts the same keys as the
 individual fetcher configuration files, so you can provide `time_fetch` there as
 well when running the combined workflow with `main_liveTrade.py`.
 
-The script `scripts/fetch/fetch_yf_data.py` provides similar functionality using yfinance.
-It loads `scripts/fetch/config/fetch_yf.json` and accepts the same command-line options.
+The script `src/gpt_trader/fetch/fetch_yf_data.py` provides similar functionality using yfinance.
+It loads `src/gpt_trader/fetch/config/fetch_yf.json` and accepts the same command-line options.
 When fetching currency pairs from Yahoo Finance use the `=X` suffix (e.g. `EURUSD=X`).
 To download gold prices for `XAUUSD` configure the symbol as `GC=F`. Like the MT5 fetcher,
 the yfinance version shifts timestamps only after the data has been downloaded.
 
-The `scripts/send_api/send_to_gpt.py` script reads its API key and other settings from
-`scripts/send_api/config/gpt.json`. Copy `scripts/send_api/config/gpt.example.json`
-to `scripts/send_api/config/gpt.json` and fill in your API key. The prompt is
+The `src/gpt_trader/send/send_to_gpt.py` script reads its API key and other settings from
+`src/gpt_trader/send/config/gpt.json`. Copy `src/gpt_trader/send/config/gpt.example.json`
+to `src/gpt_trader/send/config/gpt.json` and fill in your API key. The prompt is
 generated automatically from the CSV file name unless you override it on the
-command line. The script loads `scripts/send_api/config/gpt.json` unless you pass
+command line. The script loads `src/gpt_trader/send/config/gpt.json` unless you pass
 an alternative path with `--config`.
-Example `scripts/send_api/config/gpt.json`:
+Example `src/gpt_trader/send/config/gpt.json`:
 
 ```json
 {
@@ -139,18 +139,18 @@ be used to override the search directory. The script also saves a copy of the
 CSV data and the final prompt to `data/live_trade/save_prompt_api` by default. Use
 `--save-dir` or the `save_prompt_dir` config value to change this location.
 
-The parser `scripts/parse_response/parse_gpt_response.py` reads a raw GPT reply and writes the structured result to a JSON file. Default paths are loaded from `scripts/parse_response/config/parse.json` which defines where to store the CSV log, JSON signals and the latest response file. Use `--csv-log`, `--json-dir`, `--latest-response` or `--tz-shift` to override these values. Each run appends a row to the CSV log and saves the parsed data in a uniquely named file like `250616_153045.json` inside the configured directory.
+The parser `src/gpt_trader/parse/parse_gpt_response.py` reads a raw GPT reply and writes the structured result to a JSON file. Default paths are loaded from `src/gpt_trader/parse/config/parse.json` which defines where to store the CSV log, JSON signals and the latest response file. Use `--csv-log`, `--json-dir`, `--latest-response` or `--tz-shift` to override these values. Each run appends a row to the CSV log and saves the parsed data in a uniquely named file like `250616_153045.json` inside the configured directory.
 
 ### Creating `setting_main.json`
 
 The combined workflow expects a configuration file named
-`live_trade/config/setting_main.json`. A template is provided as
-`live_trade/config/setting_main_liveTrade.example.json`. Copy it and edit the values
-before running `live_trade/main_liveTrade.py`:
+`src/gpt_trader/cli/live_trade_config/setting_main.json`. A template is provided as
+`src/gpt_trader/cli/live_trade_config/setting_main_liveTrade.example.json`. Copy it and edit the values
+before running `src/gpt_trader/cli/main_liveTrade.py`:
 
 ```bash
-cp live_trade/config/setting_main_liveTrade.example.json \
-   live_trade/config/setting_main.json
+cp src/gpt_trader/cli/live_trade_config/setting_main_liveTrade.example.json \
+   src/gpt_trader/cli/live_trade_config/setting_main.json
 ```
 
 See [`live_trade/docs/config_main_th.md`](live_trade/docs/config_main_th.md) for
@@ -164,10 +164,10 @@ Once the individual scripts are configured you can execute the whole process in
 a single command:
 
 ```bash
-python live_trade/main_liveTrade.py
+python src/gpt_trader/cli/main_liveTrade.py
 ```
 
-`main_liveTrade.py` reads default settings from `live_trade/config/setting_main.json` (the
+`main_liveTrade.py` reads default settings from `src/gpt_trader/cli/live_trade_config/setting_main.json` (the
 file you created in the previous step). Pass `--config` with a different path to
 use custom values. Command-line options override the config entries. The
 configuration is divided into `workflow`, `fetch`, `send` and `parse` sections so
@@ -182,16 +182,16 @@ individual stages with `--skip-fetch`, `--skip-send` and `--skip-parse`.
 Example fetching from MT5 and only parsing a previous response:
 
 ```bash
-python live_trade/main_liveTrade.py --fetch-type mt5 --skip-fetch --skip-send
+python src/gpt_trader/cli/main_liveTrade.py --fetch-type mt5 --skip-fetch --skip-send
 ```
 
 ### Automated execution
 
-Run `scripts/scheduler_example.py` to execute the workflow once per hour. The
+Run `src/gpt_trader/cli/scheduler_example.py` to execute the workflow once per hour. The
 script uses APScheduler to call `main_liveTrade.py` on a schedule:
 
 ```bash
-python scripts/scheduler_example.py
+python src/gpt_trader/cli/scheduler_example.py
 ```
 
 Press **Ctrl+C** to stop the scheduler.
@@ -214,7 +214,7 @@ at least:
 Execute a backtest with the provided example config:
 
 ```bash
-python back_test/main.py --config back_test/backtest.json
+python src/gpt_trader/cli/main_backtest.py --config back_test/backtest.json
 ```
 
 The resulting CSV defined by `signal_table` (default
