@@ -30,7 +30,7 @@ def _start_countdown(job) -> None:
 
     def _loop() -> None:
         while True:
-            next_run = job.next_run_time
+            next_run = getattr(job, "next_run_time", getattr(job, "next_fire_time", None))
             if next_run is None:
                 time.sleep(1)
                 continue
