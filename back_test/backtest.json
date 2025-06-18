@@ -7,11 +7,7 @@
       "parse": "scripts/parse_response/parse_gpt_response.py"
     },
     "response": "data/back_test/signals/latest_response.txt",
-    "skip": {
-      "fetch": false,
-      "send": false,
-      "parse": false
-    }
+    "skip": {"fetch": false, "send": false, "parse": false}
   },
   "fetch": {
     "tz_shift": 4,
