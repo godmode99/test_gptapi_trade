@@ -281,6 +281,9 @@ pytest
 ## Additional documentation
 
 - [การใช้งานระบบภาษาไทย](live_trade/docs/usage_th.md)
+- [คู่มือใช้งาน Live Trade และ Backtest](docs/usage_overall_th.md)
+- [สรุปรายการไฟล์ในโครงการ](docs/files_overview_th.md)
+- [ภาพรวม flow การทำงาน](docs/flow_overview_th.md)
 
 
 ## License
