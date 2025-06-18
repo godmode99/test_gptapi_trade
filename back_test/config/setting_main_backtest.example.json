@@ -6,7 +6,7 @@
       "send": "scripts/send_api/send_to_gpt.py",
       "parse": "scripts/parse_response/parse_gpt_response.py"
     },
-    "response": "live_trade/data/signals/latest_response.txt",
+    "response": "data/back_test/signals/latest_response.txt",
     "skip": {
       "fetch": false,
       "send": false,
@@ -18,7 +18,7 @@
     "symbol": "XAUUSD",
     "fetch_bars": 30,
     "time_fetch": "",
-    "save_as_path": "live_trade/data/fetch",
+    "save_as_path": "data/back_test/fetch",
     "timeframes": [
       {"tf": "M5", "keep": 10},
       {"tf": "M15", "keep": 6},
@@ -29,14 +29,14 @@
     "openai_api_key": "YOUR_API_KEY",
     "model": "gpt-4o",
     "csv_file": "",
-    "csv_path": "live_trade/data/fetch",
-    "save_prompt_dir": "live_trade/data/save_prompt_api"
+    "csv_path": "data/back_test/fetch",
+    "save_prompt_dir": "data/back_test/save_prompt_api"
   },
   "parse": {
-    "path_signals_csv": "live_trade/data/signals/signals_csv",
+    "path_signals_csv": "data/back_test/signals/signals_csv",
     "file_signal_report": "csv_signal_report.csv",
-    "path_signals_json": "live_trade/data/signals/signals_json",
-    "path_latest_response": "live_trade/data/signals/latest_response.txt",
+    "path_signals_json": "data/back_test/signals/signals_json",
+    "path_latest_response": "data/back_test/signals/latest_response.txt",
     "tz_shift": 4
   }
 }
