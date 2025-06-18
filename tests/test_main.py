@@ -36,7 +36,7 @@ def test_default_fetcher_loaded(tmp_path):
         sys,
         "argv",
         ["live_trade/main_liveTrade.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
-    ), patch("live_trade.main_liveTrade._run_step", fake_run):
+    ), patch("scripts.common._run_step", fake_run):
         asyncio.run(entry_main())
 
     fetch_script, fetch_args = called["fetch"]
@@ -70,7 +70,7 @@ def test_time_fetch_passed(tmp_path):
         sys,
         "argv",
         ["live_trade/main_liveTrade.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
-    ), patch("live_trade.main_liveTrade._run_step", fake_run):
+    ), patch("scripts.common._run_step", fake_run):
         asyncio.run(entry_main())
 
     assert recorded["fetch"]["time_fetch"] == "2024-01-01 00:00:00"

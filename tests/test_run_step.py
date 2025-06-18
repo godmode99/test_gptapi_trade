@@ -6,7 +6,7 @@ import asyncio
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from live_trade.main_liveTrade import _run_step
+from scripts.common import _run_step
 
 
 class DummyProc:
