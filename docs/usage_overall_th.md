@@ -26,7 +26,8 @@
    สามารถระบุอาร์กิวเมนต์เพิ่มเติมได้ เช่น `--config path/to/file.json`
    หรือ `--skip-fetch` เพื่อข้ามขั้นตอนดึงข้อมูล
 3. สำหรับการรันแบบอัตโนมัติ ให้เรียก `src/gpt_trader/cli/scheduler_example.py`
-   เพื่อทำงานทุกชั่วโมง
+   เพื่อทำงานทุกชั่วโมง สคริปต์นี้สามารถรันได้โดยตรง เพราะ
+   `main_liveTrade.py` จะเพิ่ม path ของโปรเจกต์ให้อัตโนมัติ
    ```bash
    python src/gpt_trader/cli/scheduler_example.py
    ```
