@@ -113,6 +113,21 @@ CSV data and the final prompt to `live_trade/data/save_prompt_api` by default. U
 
 The parser `scripts/parse_response/parse_gpt_response.py` reads a raw GPT reply and writes the structured result to a JSON file. Default paths are loaded from `scripts/parse_response/config/parse.json` which defines where to store the CSV log, JSON signals and the latest response file. Use `--csv-log`, `--json-dir`, `--latest-response` or `--tz-shift` to override these values. Each run appends a row to the CSV log and saves the parsed data in a uniquely named file like `250616_153045.json` inside the configured directory.
 
+### Creating `setting_main.json`
+
+The combined workflow expects a configuration file named
+`live_trade/config/setting_main.json`. A template is provided as
+`live_trade/config/setting_main.example.json`. Copy it and edit the values
+before running `main.py`:
+
+```bash
+cp live_trade/config/setting_main.example.json \
+   live_trade/config/setting_main.json
+```
+
+See [`live_trade/docs/config_main_th.md`](live_trade/docs/config_main_th.md) for
+an explanation of each key.
+
 ## Running the complete workflow
 
 Once the individual scripts are configured you can execute the whole process in
@@ -122,10 +137,11 @@ a single command:
 python main.py
 ```
 
-`main.py` reads default settings from `live_trade/config/setting_main.json`. Pass `--config` with a
-different path to use custom values. Command-line options override the config
-entries. The configuration is divided into `workflow`, `fetch`, `send` and
-`parse` sections so all parameters can be managed in one place.
+`main.py` reads default settings from `live_trade/config/setting_main.json` (the
+file you created in the previous step). Pass `--config` with a different path to
+use custom values. Command-line options override the config entries. The
+configuration is divided into `workflow`, `fetch`, `send` and `parse` sections so
+all parameters can be managed in one place.
 
 The `main.py` helper runs the fetch step, sends the result to the GPT API and
 parses the raw response into a JSON signal. Use `--fetch-script`, `--send-script`
