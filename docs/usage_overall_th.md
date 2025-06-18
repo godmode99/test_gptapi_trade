@@ -5,9 +5,10 @@
 
 ## 1. เตรียมสภาพแวดล้อม
 
-1. ติดตั้งไลบรารีทั้งหมดตามไฟล์ `requirements.txt`
+1. ติดตั้งไลบรารีทั้งหมดตามไฟล์ `requirements.txt` และติดตั้งแพ็กเกจ
    ```bash
    ./scripts/install_deps.sh
+   pip install -e .
    ```
 2. สร้างไฟล์คอนฟิกจากตัวอย่างในโฟลเดอร์ `config/`
    - `setting_live_trade.example.json`
@@ -21,7 +22,7 @@
 1. ตรวจสอบไฟล์ `config/setting_live_trade.json` ว่ากำหนดค่าถูกต้องแล้ว
 2. รันสคริปต์หลัก
    ```bash
-   python src/gpt_trader/cli/main_liveTrade.py
+   python -m gpt_trader.cli.main_liveTrade
    ```
    สามารถระบุอาร์กิวเมนต์เพิ่มเติมได้ เช่น `--config path/to/file.json`
    หรือ `--skip-fetch` เพื่อข้ามขั้นตอนดึงข้อมูล
