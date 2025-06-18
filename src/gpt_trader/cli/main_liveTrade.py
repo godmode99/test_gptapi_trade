@@ -24,11 +24,9 @@ def _load_config(path: Path) -> dict:
 
 async def main() -> None:
     pre_parser = argparse.ArgumentParser(add_help=False)
-    default_cfg = (
-        Path(__file__).resolve().parents[3]
-        / "config"
-        / "setting_live_trade.json"
-    )
+
+    root_dir = Path(__file__).resolve().parents[3]
+    default_cfg = root_dir / "config" / "setting_live_trade.json"
     pre_parser.add_argument(
         "--config", help="Path to JSON config", default=str(default_cfg)
     )
@@ -61,13 +59,25 @@ async def main() -> None:
     )
     parser.add_argument(
         "--send-script",
-        default=scripts_cfg.get("send", "src/gpt_trader/send/send_to_gpt.py"),
+        default=str(
+            scripts_cfg.get(
+                "send",
+                root_dir / "src" / "gpt_trader" / "send" / "send_to_gpt.py",
+            )
+        ),
         help="Path to GPT API script",
     )
     parser.add_argument(
         "--parse-script",
-        default=scripts_cfg.get(
-            "parse", "src/gpt_trader/parse/parse_gpt_response.py"
+        default=str(
+            scripts_cfg.get(
+                "parse",
+                root_dir
+                / "src"
+                / "gpt_trader"
+                / "parse"
+                / "parse_gpt_response.py",
+            )
         ),
         help="Path to response parsing script",
     )
@@ -98,16 +108,29 @@ async def main() -> None:
     )
     args = parser.parse_args(remaining)
 
+    def _resolve_path(p: str | None) -> str | None:
+        if p is None:
+            return None
+        path = Path(p)
+        if not path.is_absolute():
+            path = root_dir / path
+        return str(path)
+
+    args.fetch_script = _resolve_path(args.fetch_script)
+    args.send_script = _resolve_path(args.send_script)
+    args.parse_script = _resolve_path(args.parse_script)
+    args.response = _resolve_path(args.response)
+
     fetch_cfg = config.get("fetch")
     send_cfg = config.get("send")
     parse_cfg = config.get("parse")
 
     if not args.fetch_script:
         fetch_map = {
-            "yf": "src/gpt_trader/fetch/fetch_yf_data.py",
-            "mt5": "src/gpt_trader/fetch/fetch_mt5_data.py",
+            "yf": root_dir / "src" / "gpt_trader" / "fetch" / "fetch_yf_data.py",
+            "mt5": root_dir / "src" / "gpt_trader" / "fetch" / "fetch_mt5_data.py",
         }
-        args.fetch_script = fetch_map[args.fetch_type]
+        args.fetch_script = str(fetch_map[args.fetch_type])
 
     logging.basicConfig(
         level=logging.INFO,
