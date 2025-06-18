@@ -1,6 +1,6 @@
-# คู่มือการใช้งาน `config/setting_main.json`
+# คู่มือการใช้งาน `live_trade/config/setting_main.json`
 
-ไฟล์ `config/setting_main.json` ใช้กำหนดค่าสำหรับรันสคริปต์ `main.py` ซึ่งทำหน้าที่
+ไฟล์ `live_trade/config/setting_main.json` ใช้กำหนดค่าสำหรับรันสคริปต์ `main.py` ซึ่งทำหน้าที่
 เรียกขั้นตอนการดึงข้อมูล ส่งข้อมูลไป GPT และแปลงผลลัพธ์เป็นไฟล์สัญญาณ
 โดยสามารถปรับแต่งค่าต่าง ๆ ได้ดังนี้
 
@@ -31,7 +31,7 @@
       "send": "scripts/send_api/send_to_gpt.py",
       "parse": "scripts/parse_response/parse_gpt_response.py"
     },
-    "response": "data/signals/latest_response.txt",
+    "response": "live_trade/data/signals/latest_response.txt",
     "skip": {"fetch": false, "send": false, "parse": false}
   },
   "fetch": {

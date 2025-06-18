@@ -4,13 +4,13 @@ __pycache__/
 logs/
 
 # Ignore signal data but keep directory structure
-data/signals/
-!data/signals/**
+live_trade/data/signals/
+!live_trade/data/signals/**
 
 # Ignore fetched CSV data
-data/fetch/*
-!data/fetch/.gitkeep
+live_trade/data/fetch/*
+!live_trade/data/fetch/.gitkeep
 gpt.json
 
 # Local settings
-config/setting_main.json
+live_trade/config/setting_main.json
