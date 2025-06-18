@@ -1,0 +1,2 @@
+Provide a trading signal as a JSON object based on the supplied CSV data.
+Include fields signal_id, entry, sl, tp, pending_order_type and confidence.

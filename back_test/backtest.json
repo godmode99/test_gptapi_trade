@@ -1,0 +1,12 @@
+{
+  "symbol": "XAUUSD",
+  "timeframe": "M15",
+  "tz_shift": 0,
+  "fetch_bars": 30,
+  "start_time": "2024-01-01 00:00:00",
+  "end_time": "2024-01-02 00:00:00",
+  "loop_every_minutes": 60,
+  "gpt_model": "gpt-4o",
+  "prompt_template": "prompts/backtest_prompt.txt",
+  "signal_table": "signals/backtest/backtest_signals.csv"
+}
