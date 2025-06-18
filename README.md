@@ -85,8 +85,9 @@ server time is GMT+3 and you need GMT+7 data, pass `--tz-shift 4`. The shift is
 always applied *after* the raw data has been fetched so the CSV output uses the
 same timezone regardless of whether the source is MT5 or Yahoo Finance.
 
-If you do not specify an output path, `fetch_mt5_data.py` automatically
-saves to `data/live_trade/fetch/` with a unique filename in the form
+If you do not specify an output path, `fetch_mt5_data.py` saves the CSV
+in the directory specified by `save_as_path` in the config (defaults to
+`data/live_trade/fetch`) with a unique filename in the form
 `<symbol>_<ddmmyy>_<HH>H.csv` (e.g. `xauusd_250616_16H.csv`).
 
 Example `src/gpt_trader/fetch/config/fetch_mt5.json`:

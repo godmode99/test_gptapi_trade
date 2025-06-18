@@ -1,8 +1,8 @@
 import importlib
 from types import ModuleType
-from pathlib import Path
 import json
 import logging
+import sys
 from unittest.mock import patch
 
 import pandas as pd
@@ -161,3 +161,43 @@ def test_main_error_on_empty_df(tmp_path, caplog) -> None:
             importlib.import_module("gpt_trader.fetch.fetch_mt5_data").main()
         assert exc.value.code == 1
         assert "No data available" in caplog.text
+
+
+def test_main_writes_to_save_as_path(tmp_path) -> None:
+    """main() should write CSV to the save_as_path directory."""
+    cfg = {
+        "symbol": "TEST",
+        "fetch_bars": 1,
+        "timeframes": [{"tf": "M1", "keep": 1}],
+        "save_as_path": str(tmp_path),
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+
+    df = pd.DataFrame(
+        {
+            "timestamp": [pd.Timestamp("2024-01-01")],
+            "open": [1],
+            "high": [1],
+            "low": [1],
+            "close": [1],
+            "tick_volume": [1],
+            "atr14": [0],
+            "rsi14": [0],
+            "sma20": [0],
+            "timeframe": ["1m"],
+        }
+    )
+
+    with patch.object(sys, "argv", ["fetch_mt5_data.py", "--config", str(cfg_path)]), patch(
+        "gpt_trader.fetch.fetch_mt5_data.fetch_multi_tf",
+        return_value=df,
+    ), patch("gpt_trader.fetch.fetch_mt5_data._init_mt5"), patch(
+        "gpt_trader.fetch.fetch_mt5_data._shutdown_mt5"
+    ):
+        importlib.import_module("gpt_trader.fetch.fetch_mt5_data").main()
+
+    files = list(tmp_path.glob("*.csv"))
+    assert len(files) == 1
+    assert files[0].is_file()
+
