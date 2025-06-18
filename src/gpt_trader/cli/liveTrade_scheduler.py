@@ -1,4 +1,4 @@
-"""Example scheduler that runs main_liveTrade.py every hour."""
+"""Scheduler that runs :mod:`main_liveTrade.py` every hour."""
 from __future__ import annotations
 
 import asyncio
