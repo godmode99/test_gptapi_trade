@@ -37,6 +37,6 @@
     "file_signal_report": "csv_signal_report.csv",
     "path_signals_json": "data/live_trade/signals/signals_json",
     "path_latest_response": "data/live_trade/signals/latest_response.txt",
-    "tz_shift": 4
+    "tz_shift": 7
   }
 }
