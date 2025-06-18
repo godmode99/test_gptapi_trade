@@ -40,12 +40,15 @@ def _extract_json(text: str) -> dict:
     if fence:
         text = fence.group(1)
 
-    # Use a non-greedy pattern so additional text or JSON blocks after the
-    # first one do not get included in the match.
-    match = re.search(r"{.*?}", text, flags=re.DOTALL)
-    if not match:
+    decoder = json.JSONDecoder()
+    start = text.find("{")
+    if start == -1:
         raise ValueError("No JSON object found in response")
-    return json.loads(match.group(0))
+    try:
+        obj, _ = decoder.raw_decode(text[start:])
+    except json.JSONDecodeError as exc:  # noqa: FBT001
+        raise ValueError(f"Invalid JSON object: {exc}") from exc
+    return obj
 
 
 def _timestamp_code(ts: datetime) -> str:

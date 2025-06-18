@@ -31,3 +31,8 @@ def test_extract_json_missing():
 def test_extract_json_multiple_objects():
     text = "first {\"a\": 1} second {\"b\": 2}"
     assert _extract_json(text) == {"a": 1}
+
+
+def test_extract_json_nested_objects():
+    text = "```json\n{\"a\": {\"b\": 2}}\n```"
+    assert _extract_json(text) == {"a": {"b": 2}}
