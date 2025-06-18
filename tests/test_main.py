@@ -7,7 +7,7 @@ import asyncio
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from main import main as entry_main
+from live_trade.main_liveTrade import main as entry_main
 
 
 def test_default_fetcher_loaded(tmp_path):
@@ -35,8 +35,8 @@ def test_default_fetcher_loaded(tmp_path):
     with patch.object(
         sys,
         "argv",
-        ["main.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
-    ), patch("main._run_step", fake_run):
+        ["live_trade/main_liveTrade.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
+    ), patch("live_trade.main_liveTrade._run_step", fake_run):
         asyncio.run(entry_main())
 
     fetch_script, fetch_args = called["fetch"]
@@ -69,8 +69,8 @@ def test_time_fetch_passed(tmp_path):
     with patch.object(
         sys,
         "argv",
-        ["main.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
-    ), patch("main._run_step", fake_run):
+        ["live_trade/main_liveTrade.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
+    ), patch("live_trade.main_liveTrade._run_step", fake_run):
         asyncio.run(entry_main())
 
     assert recorded["fetch"]["time_fetch"] == "2024-01-01 00:00:00"

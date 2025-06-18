@@ -99,7 +99,7 @@ Example `scripts/fetch/config/fetch_mt5.json`:
 
 The `fetch` section inside `live_trade/config/setting_main.json` accepts the same keys as the
 individual fetcher configuration files, so you can provide `time_fetch` there as
-well when running the combined workflow with `main.py`.
+well when running the combined workflow with `main_liveTrade.py`.
 
 The script `scripts/fetch/fetch_yf_data.py` provides similar functionality using yfinance.
 It loads `scripts/fetch/config/fetch_yf.json` and accepts the same command-line options.
@@ -145,11 +145,11 @@ The parser `scripts/parse_response/parse_gpt_response.py` reads a raw GPT reply 
 
 The combined workflow expects a configuration file named
 `live_trade/config/setting_main.json`. A template is provided as
-`live_trade/config/setting_main.example.json`. Copy it and edit the values
-before running `main.py`:
+`live_trade/config/setting_main_liveTrade.example.json`. Copy it and edit the values
+before running `live_trade/main_liveTrade.py`:
 
 ```bash
-cp live_trade/config/setting_main.example.json \
+cp live_trade/config/setting_main_liveTrade.example.json \
    live_trade/config/setting_main.json
 ```
 
@@ -164,16 +164,16 @@ Once the individual scripts are configured you can execute the whole process in
 a single command:
 
 ```bash
-python main.py
+python live_trade/main_liveTrade.py
 ```
 
-`main.py` reads default settings from `live_trade/config/setting_main.json` (the
+`main_liveTrade.py` reads default settings from `live_trade/config/setting_main.json` (the
 file you created in the previous step). Pass `--config` with a different path to
 use custom values. Command-line options override the config entries. The
 configuration is divided into `workflow`, `fetch`, `send` and `parse` sections so
 all parameters can be managed in one place.
 
-The `main.py` helper runs the fetch step, sends the result to the GPT API and
+The `main_liveTrade.py` helper runs the fetch step, sends the result to the GPT API and
 parses the raw response into a JSON signal. Use `--fetch-script`, `--send-script`
 and `--parse-script` to override the default script locations. You can also
 select a built-in fetcher with `--fetch-type mt5|yf` (default is `mt5`) or skip
@@ -182,13 +182,13 @@ individual stages with `--skip-fetch`, `--skip-send` and `--skip-parse`.
 Example fetching from MT5 and only parsing a previous response:
 
 ```bash
-python main.py --fetch-type mt5 --skip-fetch --skip-send
+python live_trade/main_liveTrade.py --fetch-type mt5 --skip-fetch --skip-send
 ```
 
 ### Automated execution
 
 Run `scripts/scheduler_example.py` to execute the workflow once per hour. The
-script uses APScheduler to call `main.py` on a schedule:
+script uses APScheduler to call `main_liveTrade.py` on a schedule:
 
 ```bash
 python scripts/scheduler_example.py

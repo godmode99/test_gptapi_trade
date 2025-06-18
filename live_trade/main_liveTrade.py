@@ -24,7 +24,7 @@ async def _run_step(step: str, script: Path, *args: str) -> None:
             module = ".".join(
                 script.with_suffix("")
                 .resolve()
-                .relative_to(Path(__file__).resolve().parent)
+                .relative_to(Path(__file__).resolve().parents[1])
                 .parts
             )
         except ValueError:
@@ -49,12 +49,7 @@ def _load_config(path: Path) -> dict:
 
 async def main() -> None:
     pre_parser = argparse.ArgumentParser(add_help=False)
-    default_cfg = (
-        Path(__file__).resolve().parent
-        / "live_trade"
-        / "config"
-        / "setting_main.json"
-    )
+    default_cfg = Path(__file__).resolve().parent / "config" / "setting_main.json"
     pre_parser.add_argument(
         "--config", help="Path to JSON config", default=str(default_cfg)
     )
