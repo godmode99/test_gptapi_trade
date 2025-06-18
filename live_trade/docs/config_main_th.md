@@ -31,7 +31,7 @@
       "send": "scripts/send_api/send_to_gpt.py",
       "parse": "scripts/parse_response/parse_gpt_response.py"
     },
-    "response": "live_trade/data/signals/latest_response.txt",
+    "response": "data/live_trade/signals/latest_response.txt",
     "skip": {"fetch": false, "send": false, "parse": false}
   },
   "fetch": {
