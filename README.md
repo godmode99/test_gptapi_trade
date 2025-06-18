@@ -253,15 +253,18 @@ Refer to `Work_flow.md` for the full workflow description.
 
 ## Running tests
 
-Install the pinned dependencies before executing the test suite:
+Install the pinned dependencies *before* executing the test suite. The tests
+import optional packages that will be missing in a fresh clone unless you run
+the helper script:
 
 ```bash
 ./scripts/install_deps.sh
 ```
 
 You can also install the packages listed in `requirements.txt` manually. The
-tests rely on optional modules such as `MetaTrader5`, `openai` and `yfinance` to
-run to completion.
+tests rely on optional modules such as `MetaTrader5`, `openai` and `yfinance`.
+If these modules are missing the test discovery step will raise a clear error
+from `tests/__init__.py`.
 
 Run the tests with:
 
