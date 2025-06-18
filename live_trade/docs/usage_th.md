@@ -1,0 +1,54 @@
+# วิธีใช้งานระบบเทรด (ภาษาไทย)
+
+เอกสารนี้อธิบายขั้นตอนการเตรียมระบบและคำสั่งพื้นฐานสำหรับรัน workflow อัตโนมัติ
+โดยใช้ไฟล์ตัวอย่างและสคริปต์ที่มีในโปรเจกต์
+
+## ติดตั้งไลบรารีที่จำเป็น
+
+รันสคริปต์ `scripts/install_deps.sh` เพื่อดาวน์โหลดและติดตั้งไลบรารีทั้งหมดจาก `requirements.txt`
+
+```bash
+./scripts/install_deps.sh
+```
+
+## สร้างไฟล์ตั้งค่า `setting_main.json`
+
+โปรเจกต์มีเทมเพลต `live_trade/config/setting_main.example.json` อยู่แล้ว
+คัดลอกไฟล์นี้เป็น `setting_main.json` แล้วแก้ไขค่า `openai_api_key`
+
+```bash
+cp live_trade/config/setting_main.example.json \
+   live_trade/config/setting_main.json
+# แก้ไขค่าคีย์ให้เป็น API key ของคุณ
+```
+
+## รันสคริปต์หลัก
+
+สคริปต์ `main.py` จะเรียกขั้นตอน fetch → send → parse ตามค่าที่กำหนดใน `setting_main.json`
+
+```bash
+python main.py
+```
+
+สามารถกำหนดอาร์กิวเมนต์เพิ่มเติมได้ เช่น
+
+- `--config PATH` ใช้ไฟล์คอนฟิกอื่นแทนค่าเริ่มต้น
+- `--fetch-type mt5|yf` เลือกตัวดึงข้อมูล
+- `--skip-fetch`, `--skip-send`, `--skip-parse` ข้ามบางขั้นตอน
+
+ตัวอย่างรันโดยใช้ไฟล์คอนฟิกอื่นและข้ามการดึงข้อมูล
+
+```bash
+python main.py --config my_config.json --skip-fetch
+```
+
+## การรันแบบอัตโนมัติ
+
+ใช้สคริปต์ `scripts/scheduler_example.py` เพื่อเรียก `main.py` ทุก ๆ ชั่วโมง
+
+```bash
+python scripts/scheduler_example.py
+```
+
+กด **Ctrl+C** เพื่อหยุดการทำงานของ scheduler
+

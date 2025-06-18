@@ -242,6 +242,10 @@ pytest
   dependencies from `requirements.txt`.
 - **Authentication errors from OpenAI** – verify that `OPENAI_API_KEY` is set or
   that your `gpt.json` contains the correct key.
+## Additional documentation
+
+- [การใช้งานระบบภาษาไทย](live_trade/docs/usage_th.md)
+
 
 ## License
 
