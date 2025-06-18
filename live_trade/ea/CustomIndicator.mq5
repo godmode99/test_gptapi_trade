@@ -3,6 +3,7 @@
 #property indicator_plots   3
 
 #include <stdlib.mqh>
+#include "JsonParser.mqh"
 
 #property indicator_label1 "RSI14"
 #property indicator_type1   DRAW_LINE
@@ -189,24 +190,14 @@ bool LoadLatestSignal()
 
 void ParseSignal(string json, SignalData &sig)
   {
-   sig.id = GetValue(json,"signal_id");
-   sig.entry = StringToDouble(GetValue(json,"entry"));
-   sig.sl = StringToDouble(GetValue(json,"sl"));
-   sig.tp = StringToDouble(GetValue(json,"tp"));
-   sig.order_type = GetValue(json,"pending_order_type");
-   sig.confidence = StringToDouble(GetValue(json,"confidence"));
-  }
+   JsonParser parser;
+   if(!parser.Parse(json))
+      return;
 
-string GetValue(string text,string key)
-  {
-   string pattern = "\""+key+"\"";
-   int pos = StringFind(text,pattern);
-   if(pos==-1) return "";
-   pos = StringFind(text,":",pos);
-   if(pos==-1) return "";
-   pos++;
-   while(pos<StringLen(text) && (text[pos]==' ' || text[pos]=='\"')) pos++;
-   int end=pos;
-   while(end<StringLen(text) && text[end]!='\"' && text[end]!=',' && text[end]!='}' && text[end]!='\n' && text[end]!='\r') end++;
-   return StringSubstr(text,pos,end-pos);
+   sig.id         = parser.GetString("signal_id");
+   sig.entry      = parser.GetDouble("entry");
+   sig.sl         = parser.GetDouble("sl");
+   sig.tp         = parser.GetDouble("tp");
+   sig.order_type = parser.GetString("pending_order_type");
+   sig.confidence = parser.GetDouble("confidence");
   }
