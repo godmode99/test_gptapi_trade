@@ -1,4 +1,4 @@
-"""Example scheduler that runs main.py every hour."""
+"""Example scheduler that runs main_liveTrade.py every hour."""
 from __future__ import annotations
 
 import asyncio
@@ -6,7 +6,7 @@ import logging
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-from main import main as run_main
+from live_trade.main_liveTrade import main as run_main
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,9 +17,9 @@ def _run_workflow() -> None:
     try:
         asyncio.run(run_main())
     except SystemExit as exc:
-        LOGGER.error("main.py exited with code %s", exc.code)
+        LOGGER.error("main_liveTrade.py exited with code %s", exc.code)
     except Exception as exc:  # noqa: BLE001
-        LOGGER.error("main.py failed: %s", exc)
+        LOGGER.error("main_liveTrade.py failed: %s", exc)
 
 
 def main() -> None:

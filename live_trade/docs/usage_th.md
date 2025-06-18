@@ -13,21 +13,21 @@
 
 ## สร้างไฟล์ตั้งค่า `setting_main.json`
 
-โปรเจกต์มีเทมเพลต `live_trade/config/setting_main.example.json` อยู่แล้ว
+โปรเจกต์มีเทมเพลต `live_trade/config/setting_main_liveTrade.example.json` อยู่แล้ว
 คัดลอกไฟล์นี้เป็น `setting_main.json` แล้วแก้ไขค่า `openai_api_key`
 
 ```bash
-cp live_trade/config/setting_main.example.json \
+cp live_trade/config/setting_main_liveTrade.example.json \
    live_trade/config/setting_main.json
 # แก้ไขค่าคีย์ให้เป็น API key ของคุณ
 ```
 
 ## รันสคริปต์หลัก
 
-สคริปต์ `main.py` จะเรียกขั้นตอน fetch → send → parse ตามค่าที่กำหนดใน `setting_main.json`
+สคริปต์ `main_liveTrade.py` จะเรียกขั้นตอน fetch → send → parse ตามค่าที่กำหนดใน `setting_main.json`
 
 ```bash
-python main.py
+python live_trade/main_liveTrade.py
 ```
 
 สามารถกำหนดอาร์กิวเมนต์เพิ่มเติมได้ เช่น
@@ -39,12 +39,12 @@ python main.py
 ตัวอย่างรันโดยใช้ไฟล์คอนฟิกอื่นและข้ามการดึงข้อมูล
 
 ```bash
-python main.py --config my_config.json --skip-fetch
+python live_trade/main_liveTrade.py --config my_config.json --skip-fetch
 ```
 
 ## การรันแบบอัตโนมัติ
 
-ใช้สคริปต์ `scripts/scheduler_example.py` เพื่อเรียก `main.py` ทุก ๆ ชั่วโมง
+ใช้สคริปต์ `scripts/scheduler_example.py` เพื่อเรียก `main_liveTrade.py` ทุก ๆ ชั่วโมง
 
 ```bash
 python scripts/scheduler_example.py
