@@ -21,7 +21,7 @@
 1. ตรวจสอบไฟล์ `config/setting_live_trade.json` ว่ากำหนดค่าถูกต้องแล้ว
 2. รันสคริปต์หลัก
    ```bash
-   python src/gpt_trader/cli/main_liveTrade.py
+   python main_liveTrade.py
    ```
    สามารถระบุอาร์กิวเมนต์เพิ่มเติมได้ เช่น `--config path/to/file.json`
    หรือ `--skip-fetch` เพื่อข้ามขั้นตอนดึงข้อมูล

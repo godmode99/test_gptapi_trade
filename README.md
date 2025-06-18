@@ -154,7 +154,7 @@ The parser `src/gpt_trader/parse/parse_gpt_response.py` reads a raw GPT reply an
 The combined workflow expects a configuration file named
 `config/setting_live_trade.json`. A template is provided as
 `config/setting_live_trade.example.json`. Copy it and edit the values
-before running `src/gpt_trader/cli/main_liveTrade.py`:
+before running `main_liveTrade.py`:
 
 ```bash
 cp config/setting_live_trade.example.json \
@@ -172,7 +172,7 @@ Once the individual scripts are configured you can execute the whole process in
 a single command:
 
 ```bash
-python src/gpt_trader/cli/main_liveTrade.py
+python main_liveTrade.py
 ```
 
 `main_liveTrade.py` reads default settings from `config/setting_live_trade.json` (the
@@ -190,7 +190,7 @@ individual stages with `--skip-fetch`, `--skip-send` and `--skip-parse`.
 Example fetching from MT5 and only parsing a previous response:
 
 ```bash
-python src/gpt_trader/cli/main_liveTrade.py --fetch-type mt5 --skip-fetch --skip-send
+python main_liveTrade.py --fetch-type mt5 --skip-fetch --skip-send
 ```
 
 ### Automated execution
