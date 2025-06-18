@@ -4,12 +4,14 @@ This project implements an automated trading workflow that uses data from MT5 an
 
 ## Installation
 
-Install the Python dependencies:
+Install the pinned Python dependencies using the helper script:
 
 ```bash
-pip install -r requirements.txt
+./scripts/install_deps.sh
 ```
-This project requires the OpenAI Python library version 1.0 or newer.
+
+This project requires specific versions of `pandas`, `MetaTrader5`, `openai` and
+`yfinance` which are defined in `requirements.txt`.
 
 ## Directory Structure
 
