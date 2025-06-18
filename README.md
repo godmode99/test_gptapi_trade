@@ -218,6 +218,7 @@ at least:
 - `gpt_model` – OpenAI model to call
 - `prompt_template` – path to the prompt used for each request
 - `signal_table` – output CSV file for generated signals
+- [`back_test/backtest_flow.md`](back_test/backtest_flow.md) – overview of the backtest workflow
 
 Execute a backtest with the provided example config:
 
