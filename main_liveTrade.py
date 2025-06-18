@@ -11,6 +11,9 @@ import logging
 import sys
 from pathlib import Path
 
+repo_root = Path(__file__).resolve().parent
+sys.path.insert(0, str(repo_root / "src"))
+
 from gpt_trader.cli.common import _run_step
 
 
