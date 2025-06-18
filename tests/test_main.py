@@ -5,9 +5,7 @@ from unittest.mock import patch
 
 import asyncio
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from live_trade.main_liveTrade import main as entry_main
+from gpt_trader.cli.main_liveTrade import main as entry_main
 
 
 def test_default_fetcher_loaded(tmp_path):
@@ -35,12 +33,12 @@ def test_default_fetcher_loaded(tmp_path):
     with patch.object(
         sys,
         "argv",
-        ["live_trade/main_liveTrade.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
-    ), patch("scripts.common._run_step", fake_run):
+        ["src/gpt_trader/cli/main_liveTrade.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
+    ), patch("gpt_trader.cli.common._run_step", fake_run):
         asyncio.run(entry_main())
 
     fetch_script, fetch_args = called["fetch"]
-    assert str(fetch_script).endswith("scripts/fetch/fetch_mt5_data.py")
+    assert str(fetch_script).endswith("src/gpt_trader/fetch/fetch_mt5_data.py")
     assert "--config" in fetch_args
 
 
@@ -69,8 +67,8 @@ def test_time_fetch_passed(tmp_path):
     with patch.object(
         sys,
         "argv",
-        ["live_trade/main_liveTrade.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
-    ), patch("scripts.common._run_step", fake_run):
+        ["src/gpt_trader/cli/main_liveTrade.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
+    ), patch("gpt_trader.cli.common._run_step", fake_run):
         asyncio.run(entry_main())
 
     assert recorded["fetch"]["time_fetch"] == "2024-01-01 00:00:00"

@@ -16,13 +16,10 @@ async def _run_step(step: str, script: Path, *args: str) -> None:
     directly with the current Python interpreter.
     """
     if script.suffix == ".py":
+        root = Path(__file__).resolve().parents[1]
         try:
-            module = ".".join(
-                script.with_suffix("")
-                .resolve()
-                .relative_to(Path(__file__).resolve().parents[1])
-                .parts
-            )
+            rel = script.with_suffix("").resolve().relative_to(root)
+            module = ".".join((root.name, *rel.parts))
         except ValueError:
             module = ".".join(script.with_suffix("").parts)
         cmd = [sys.executable, "-m", module, *args]

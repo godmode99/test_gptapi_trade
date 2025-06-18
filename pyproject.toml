@@ -1,0 +1,8 @@
+[project]
+name = "gpt_trader"
+version = "0.0.0"
+packages = [{include = "gpt_trader", from = "src"}]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

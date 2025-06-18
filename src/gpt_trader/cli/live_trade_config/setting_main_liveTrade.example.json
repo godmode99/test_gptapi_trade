@@ -3,8 +3,8 @@
     "fetch_type": "mt5",
     "scripts": {
       "fetch": null,
-      "send": "scripts/send_api/send_to_gpt.py",
-      "parse": "scripts/parse_response/parse_gpt_response.py"
+      "send": "src/gpt_trader/send/send_to_gpt.py",
+      "parse": "src/gpt_trader/parse/parse_gpt_response.py"
     },
     "response": "data/live_trade/signals/latest_response.txt",
     "skip": {

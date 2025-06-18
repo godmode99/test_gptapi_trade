@@ -9,7 +9,7 @@ from typing import Any, Dict, List
 
 import pandas as pd
 import yfinance as yf
-from scripts.utils.indicators import compute_indicators
+from gpt_trader.utils.indicators import compute_indicators
 
 LOGGER = logging.getLogger(__name__)
 

@@ -1,4 +1,3 @@
-import sys
 import importlib
 from types import ModuleType
 from pathlib import Path
@@ -9,7 +8,6 @@ from unittest.mock import patch
 import pandas as pd
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
 def test_fetch_multi_tf_tz_shift_and_latest_bar() -> None:
@@ -42,7 +40,7 @@ def test_fetch_multi_tf_tz_shift_and_latest_bar() -> None:
     with importlib.import_module("unittest.mock").patch.dict(
         sys.modules, {"MetaTrader5": mt5}
     ):
-        fetch_mt5_data = importlib.import_module("scripts.fetch.fetch_mt5_data")
+        fetch_mt5_data = importlib.import_module("gpt_trader.fetch.fetch_mt5_data")
         importlib.reload(fetch_mt5_data)
 
         config = {"fetch_bars": 5, "timeframes": [{"tf": "M1", "keep": 5}]}
@@ -88,7 +86,7 @@ def test_fetch_multi_tf_with_time_fetch() -> None:
     mt5.copy_rates_range = _range
 
     with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
-        fetch_mt5_data = importlib.import_module("scripts.fetch.fetch_mt5_data")
+        fetch_mt5_data = importlib.import_module("gpt_trader.fetch.fetch_mt5_data")
         importlib.reload(fetch_mt5_data)
 
         config = {
@@ -110,7 +108,7 @@ def test_fetch_multi_tf_invalid_time_fetch() -> None:
         "time_fetch": "not a date",
         "timeframes": [{"tf": "M1", "keep": 5}],
     }
-    fetch_mt5_data = importlib.import_module("scripts.fetch.fetch_mt5_data")
+    fetch_mt5_data = importlib.import_module("gpt_trader.fetch.fetch_mt5_data")
     with pytest.raises(ValueError):
         fetch_mt5_data.fetch_multi_tf("TEST", config)
 
@@ -132,7 +130,7 @@ def test_fetch_multi_tf_time_fetch_no_data() -> None:
     mt5.copy_rates_range = _range
 
     with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
-        fetch_mt5_data = importlib.import_module("scripts.fetch.fetch_mt5_data")
+        fetch_mt5_data = importlib.import_module("gpt_trader.fetch.fetch_mt5_data")
         importlib.reload(fetch_mt5_data)
 
         config = {
@@ -155,11 +153,11 @@ def test_main_error_on_empty_df(tmp_path, caplog) -> None:
     cfg_path.write_text(json.dumps(cfg))
 
     with patch.object(sys, "argv", ["fetch_mt5_data.py", "--config", str(cfg_path)]), patch(
-        "scripts.fetch.fetch_mt5_data.fetch_multi_tf", return_value=pd.DataFrame()
-    ), patch("scripts.fetch.fetch_mt5_data._init_mt5"), patch(
-        "scripts.fetch.fetch_mt5_data._shutdown_mt5"
+        "gpt_trader.fetch.fetch_mt5_data.fetch_multi_tf", return_value=pd.DataFrame()
+    ), patch("gpt_trader.fetch.fetch_mt5_data._init_mt5"), patch(
+        "gpt_trader.fetch.fetch_mt5_data._shutdown_mt5"
     ):
         with caplog.at_level(logging.ERROR), pytest.raises(SystemExit) as exc:
-            importlib.import_module("scripts.fetch.fetch_mt5_data").main()
+            importlib.import_module("gpt_trader.fetch.fetch_mt5_data").main()
         assert exc.value.code == 1
         assert "No data available" in caplog.text

@@ -6,7 +6,7 @@ import logging
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-from live_trade.main_liveTrade import main as run_main
+from gpt_trader.cli.main_liveTrade import main as run_main
 
 LOGGER = logging.getLogger(__name__)
 
