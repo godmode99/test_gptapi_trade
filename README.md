@@ -97,7 +97,7 @@ Example `src/gpt_trader/fetch/config/fetch_mt5.json`:
 }
 ```
 
-The `fetch` section inside `src/gpt_trader/cli/live_trade_config/setting_main.json` accepts the same keys as the
+The `fetch` section inside `config/setting_live_trade.json` accepts the same keys as the
 individual fetcher configuration files, so you can provide `time_fetch` there as
 well when running the combined workflow with `main_liveTrade.py`.
 
@@ -144,13 +144,13 @@ The parser `src/gpt_trader/parse/parse_gpt_response.py` reads a raw GPT reply an
 ### Creating `setting_main.json`
 
 The combined workflow expects a configuration file named
-`src/gpt_trader/cli/live_trade_config/setting_main.json`. A template is provided as
-`src/gpt_trader/cli/live_trade_config/setting_main_liveTrade.example.json`. Copy it and edit the values
+`config/setting_live_trade.json`. A template is provided as
+`config/setting_live_trade.example.json`. Copy it and edit the values
 before running `src/gpt_trader/cli/main_liveTrade.py`:
 
 ```bash
-cp src/gpt_trader/cli/live_trade_config/setting_main_liveTrade.example.json \
-   src/gpt_trader/cli/live_trade_config/setting_main.json
+cp config/setting_live_trade.example.json \
+   config/setting_live_trade.json
 ```
 
 See [`live_trade/docs/config_main_th.md`](live_trade/docs/config_main_th.md) for
@@ -167,7 +167,7 @@ a single command:
 python src/gpt_trader/cli/main_liveTrade.py
 ```
 
-`main_liveTrade.py` reads default settings from `src/gpt_trader/cli/live_trade_config/setting_main.json` (the
+`main_liveTrade.py` reads default settings from `config/setting_live_trade.json` (the
 file you created in the previous step). Pass `--config` with a different path to
 use custom values. Command-line options override the config entries. The
 configuration is divided into `workflow`, `fetch`, `send` and `parse` sections so
