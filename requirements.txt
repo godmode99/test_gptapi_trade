@@ -1,4 +1,4 @@
-pandas
-MetaTrader5
-openai>=1.0
-yfinance
+pandas==2.2.2
+MetaTrader5==5.0.45
+openai==1.14.3
+yfinance==0.2.37
