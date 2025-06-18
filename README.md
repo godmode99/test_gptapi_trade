@@ -215,6 +215,24 @@ on the chart. Each JSON signal must include the fields `signal_id`, `entry`, `sl
 
 Refer to `Work_flow.md` for the full workflow description.
 
+## Running tests
+
+Install the pinned dependencies before executing the test suite:
+
+```bash
+./scripts/install_deps.sh
+```
+
+You can also install the packages listed in `requirements.txt` manually. The
+tests rely on optional modules such as `MetaTrader5`, `openai` and `yfinance` to
+run to completion.
+
+Run the tests with:
+
+```bash
+pytest
+```
+
 ## Troubleshooting
 
 - **`MetaTrader5.initialize()` fails** – ensure the desktop terminal is installed
