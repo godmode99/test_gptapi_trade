@@ -206,7 +206,8 @@ scheduler can be executed directly from the project root:
 python src/gpt_trader/cli/scheduler_example.py
 ```
 
-Press **Ctrl+C** to stop the scheduler.
+The script prints a countdown showing how long remains until the next scheduled
+execution. Press **Ctrl+C** to stop the scheduler.
 
 ## Backtesting
 
