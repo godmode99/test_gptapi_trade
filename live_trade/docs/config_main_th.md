@@ -69,4 +69,3 @@ python live_trade/main_liveTrade.py --skip-fetch --skip-send
 ```
 
 เพื่อทดสอบเพียงขั้นตอน parse เป็นต้น
-
