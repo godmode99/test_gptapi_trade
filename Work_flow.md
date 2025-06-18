@@ -4,10 +4,7 @@
    เอกสารนี้อธิบายโครงสร้างและการทำงานของระบบ AI Trading (Auto Signal & Execution) ที่ใช้ GPT API วิเคราะห์กราฟจาก MT5 แล้วส่งคำสั่งเทรดแบบอัตโนมัติ พร้อม Risk Management
 
 2. Flow Chart Diagram
-   (แนบไฟล์ภาพ flow chart นี้ในเอกสาร)
-   เช่น
-   ไฟล์ภาพ Work_flow_chart.png
-   [แทรกภาพ flow chart]
+   ![AI Trading Workflow](Work_flow_chart.png)
 3. Step-by-Step Description
    3.1 MT5: OHLCV, RSI14, SMA20, ATR14
    ดึงข้อมูลกราฟ (OHLCV) และค่า indicator (RSI, SMA, ATR) หลาย timeframe จาก MT5
