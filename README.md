@@ -196,6 +196,31 @@ python scripts/scheduler_example.py
 
 Press **Ctrl+C** to stop the scheduler.
 
+## Backtesting
+
+The `back_test` directory contains a helper script for running an offline
+simulation. Configuration values are loaded from a JSON file and must specify
+at least:
+
+- `symbol` – instrument to download historical data for
+- `timeframe` – timeframe of the bars
+- `start_time` and `end_time` – begin and end timestamps for the loop
+- `loop_every_minutes` – step size between iterations
+- `fetch_bars` – number of bars to retrieve per step
+- `gpt_model` – OpenAI model to call
+- `prompt_template` – path to the prompt used for each request
+- `signal_table` – output CSV file for generated signals
+
+Execute a backtest with the provided example config:
+
+```bash
+python back_test/main.py --config back_test/backtest.json
+```
+
+The resulting CSV defined by `signal_table` (default
+`signals/backtest/backtest_signals.csv`) can be imported into MT5 for evaluation
+inside the strategy tester.
+
 ## CustomIndicator
 
 The `ea/CustomIndicator.mq5` file is a simple MT5 indicator that can be compiled
