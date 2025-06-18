@@ -1,7 +1,9 @@
 [project]
 name = "gpt_trader"
 version = "0.0.0"
-packages = [{include = "gpt_trader", from = "src"}]
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [build-system]
 requires = ["setuptools"]
