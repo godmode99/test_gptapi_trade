@@ -29,7 +29,7 @@
 
 - `cli/main_liveTrade.py` — รันขั้นตอน fetch → send → parse ตามค่าคอนฟิก
 - `cli/main_backtest.py` — รันการทดสอบย้อนหลังตามช่วงเวลาในคอนฟิก
-- `cli/scheduler_example.py` — ตัวอย่างตั้งเวลาเรียก `main_liveTrade.py`
+- `cli/liveTrade_scheduler.py` — ตัวอย่างตั้งเวลาเรียก `main_liveTrade.py`
 - `fetch/fetch_mt5_data.py` — ดึงข้อมูลราคาและคำนวณ indicator ผ่าน MT5
 - `fetch/fetch_yf_data.py` — ดึงข้อมูลจาก yfinance
 - `send/send_to_gpt.py` — ส่งข้อมูลไป GPT และบันทึกสำเนา prompt

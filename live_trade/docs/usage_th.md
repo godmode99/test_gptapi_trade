@@ -44,10 +44,10 @@ python main_liveTrade.py --config my_config.json --skip-fetch
 
 ## การรันแบบอัตโนมัติ
 
-ใช้สคริปต์ `scripts/scheduler_example.py` เพื่อเรียก `main_liveTrade.py` ทุก ๆ ชั่วโมง
+ใช้สคริปต์ `src/gpt_trader/cli/liveTrade_scheduler.py` เพื่อเรียก `main_liveTrade.py` ทุก ๆ ชั่วโมง
 
 ```bash
-python scripts/scheduler_example.py
+python src/gpt_trader/cli/liveTrade_scheduler.py
 ```
 
 กด **Ctrl+C** เพื่อหยุดการทำงานของ scheduler
