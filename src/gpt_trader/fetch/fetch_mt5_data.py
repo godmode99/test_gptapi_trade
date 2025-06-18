@@ -175,6 +175,7 @@ def main() -> None:
     pre_args, remaining = pre_parser.parse_known_args()
     config = _load_config(Path(pre_args.config))
     default_tz = int(config.get("tz_shift", 0))
+    default_save_path = config.get("save_as_path", "data/live_trade/fetch")
 
     parser = argparse.ArgumentParser(
         description="Fetch MT5 OHLC data", parents=[pre_parser]
@@ -224,7 +225,7 @@ def main() -> None:
             if pd.isna(last_ts):
                 raise RuntimeError("No timestamp found in fetched data")
             name = _timestamp_code(last_ts)
-            output = Path("data/fetch") / f"{symbol.lower()}_{name}.csv"
+            output = Path(default_save_path) / f"{symbol.lower()}_{name}.csv"
         output.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(output, index=False)
         LOGGER.info("Saved data to %s", output)
