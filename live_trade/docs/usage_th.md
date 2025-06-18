@@ -11,20 +11,20 @@
 ./scripts/install_deps.sh
 ```
 
-## สร้างไฟล์ตั้งค่า `setting_main.json`
+## สร้างไฟล์ตั้งค่า `setting_live_trade.json`
 
-โปรเจกต์มีเทมเพลต `live_trade/config/setting_main_liveTrade.example.json` อยู่แล้ว
-คัดลอกไฟล์นี้เป็น `setting_main.json` แล้วแก้ไขค่า `openai_api_key`
+โปรเจกต์มีเทมเพลต `config/setting_live_trade.example.json` อยู่แล้ว
+คัดลอกไฟล์นี้เป็น `setting_live_trade.json` แล้วแก้ไขค่า `openai_api_key`
 
 ```bash
-cp live_trade/config/setting_main_liveTrade.example.json \
-   live_trade/config/setting_main.json
+cp config/setting_live_trade.example.json \
+   config/setting_live_trade.json
 # แก้ไขค่าคีย์ให้เป็น API key ของคุณ
 ```
 
 ## รันสคริปต์หลัก
 
-สคริปต์ `main_liveTrade.py` จะเรียกขั้นตอน fetch → send → parse ตามค่าที่กำหนดใน `setting_main.json`
+สคริปต์ `main_liveTrade.py` จะเรียกขั้นตอน fetch → send → parse ตามค่าที่กำหนดใน `setting_live_trade.json`
 
 ```bash
 python live_trade/main_liveTrade.py

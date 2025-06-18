@@ -1,6 +1,6 @@
-# คู่มือการใช้งาน `live_trade/config/setting_main.json`
+# คู่มือการใช้งาน `config/setting_live_trade.json`
 
-ไฟล์ `live_trade/config/setting_main.json` ใช้กำหนดค่าสำหรับรันสคริปต์ `main_liveTrade.py` ซึ่งทำหน้าที่
+ไฟล์ `config/setting_live_trade.json` ใช้กำหนดค่าสำหรับรันสคริปต์ `main_liveTrade.py` ซึ่งทำหน้าที่
 เรียกขั้นตอนการดึงข้อมูล ส่งข้อมูลไป GPT และแปลงผลลัพธ์เป็นไฟล์สัญญาณ
 โดยสามารถปรับแต่งค่าต่าง ๆ ได้ดังนี้
 

@@ -26,9 +26,9 @@ def _load_config(path: Path) -> dict:
 async def main() -> None:
     pre_parser = argparse.ArgumentParser(add_help=False)
     default_cfg = (
-        Path(__file__).resolve().parent
+        Path(__file__).resolve().parents[3]
         / "config"
-        / "setting_main_backtest.json"
+        / "setting_backtest.json"
     )
     pre_parser.add_argument(
         "--config", help="Path to JSON config", default=str(default_cfg)
