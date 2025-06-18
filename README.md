@@ -13,6 +13,34 @@ Install the pinned Python dependencies using the helper script:
 This project requires specific versions of `pandas`, `MetaTrader5`, `openai` and
 `yfinance` which are defined in `requirements.txt`.
 
+### Installing MetaTrader5
+
+1. Download the **MetaTrader 5** desktop terminal from the official website and
+   install it.
+2. Ensure the terminal architecture matches your Python interpreter
+   (typically 64‑bit).
+3. Keep the path to `terminal64.exe` handy. If `mt5.initialize()` cannot find
+   the terminal automatically, pass the path manually:
+
+   ```python
+   mt5.initialize(path="C:\\Program Files\\MetaTrader 5\\terminal64.exe")
+   ```
+
+   On Linux under Wine the path might look like
+   `~/.wine/drive_c/Program Files/MetaTrader 5/terminal64.exe`.
+
+### Setting the OpenAI API key
+
+Copy the example configuration and insert your API key:
+
+```bash
+cp scripts/send_api/config/gpt.example.json scripts/send_api/config/gpt.json
+```
+
+Edit `gpt.json` and replace `YOUR_API_KEY` with your OpenAI key. You can also
+set the `OPENAI_API_KEY` environment variable which takes precedence over the
+value in the JSON file.
+
 ## Directory Structure
 
 - `live_trade/data/` – stores all CSV and JSON output
@@ -175,6 +203,16 @@ on the chart. Each JSON signal must include the fields `signal_id`, `entry`, `sl
    RSI/SMA/ATR or set it to `true` to display parsed signals.
 
 Refer to `Work_flow.md` for the full workflow description.
+
+## Troubleshooting
+
+- **`MetaTrader5.initialize()` fails** – ensure the desktop terminal is installed
+  and that the path passed to `mt5.initialize()` is correct. The Python package
+  must match the terminal architecture.
+- **Missing modules** – run `./scripts/install_deps.sh` to install all
+  dependencies from `requirements.txt`.
+- **Authentication errors from OpenAI** – verify that `OPENAI_API_KEY` is set or
+  that your `gpt.json` contains the correct key.
 
 ## License
 
