@@ -183,6 +183,17 @@ Example fetching from MT5 and only parsing a previous response:
 python main.py --fetch-type mt5 --skip-fetch --skip-send
 ```
 
+### Automated execution
+
+Run `scripts/scheduler_example.py` to execute the workflow once per hour. The
+script uses APScheduler to call `main.py` on a schedule:
+
+```bash
+python scripts/scheduler_example.py
+```
+
+Press **Ctrl+C** to stop the scheduler.
+
 ## CustomIndicator
 
 The `ea/CustomIndicator.mq5` file is a simple MT5 indicator that can be compiled
