@@ -27,7 +27,7 @@ cp config/setting_live_trade.example.json \
 สคริปต์ `main_liveTrade.py` จะเรียกขั้นตอน fetch → send → parse ตามค่าที่กำหนดใน `setting_live_trade.json`
 
 ```bash
-python live_trade/main_liveTrade.py
+python main_liveTrade.py
 ```
 
 สามารถกำหนดอาร์กิวเมนต์เพิ่มเติมได้ เช่น
@@ -39,7 +39,7 @@ python live_trade/main_liveTrade.py
 ตัวอย่างรันโดยใช้ไฟล์คอนฟิกอื่นและข้ามการดึงข้อมูล
 
 ```bash
-python live_trade/main_liveTrade.py --config my_config.json --skip-fetch
+python main_liveTrade.py --config my_config.json --skip-fetch
 ```
 
 ## การรันแบบอัตโนมัติ

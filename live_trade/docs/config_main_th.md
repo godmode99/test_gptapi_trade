@@ -53,19 +53,19 @@
 ตัวอย่างรันโดยใช้การตั้งค่าในไฟล์:
 
 ```bash
-python live_trade/main_liveTrade.py
+python main_liveTrade.py
 ```
 
 หรือใช้ไฟล์คอนฟิกอื่น:
 
 ```bash
-python live_trade/main_liveTrade.py --config path/to/other.json
+python main_liveTrade.py --config path/to/other.json
 ```
 
 สามารถเลือกข้ามบางขั้นตอนด้วยอาร์กิวเมนต์ เช่น
 
 ```bash
-python live_trade/main_liveTrade.py --skip-fetch --skip-send
+python main_liveTrade.py --skip-fetch --skip-send
 ```
 
 เพื่อทดสอบเพียงขั้นตอน parse เป็นต้น
