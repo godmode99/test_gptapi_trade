@@ -149,16 +149,17 @@ CSV data and the final prompt to `data/live_trade/save_prompt_api` by default. U
 
 The parser `src/gpt_trader/parse/parse_gpt_response.py` reads a raw GPT reply and writes the structured result to a JSON file. Default paths are loaded from `src/gpt_trader/parse/config/parse.json` which defines where to store the CSV log, JSON signals and the latest response file. Use `--csv-log`, `--json-dir`, `--latest-response` or `--tz-shift` to override these values. Each run appends a row to the CSV log and saves the parsed data in a uniquely named file like `250616_153045.json` inside the configured directory.
 
-### Creating `setting_main.json`
+### Creating configuration files
 
-The combined workflow expects a configuration file named
-`config/setting_live_trade.json`. A template is provided as
-`config/setting_live_trade.example.json`. Copy it and edit the values
-before running `main_liveTrade.py`:
+The combined workflow expects configuration files named
+`config/setting_live_trade.json` and `config/setting_backtest.json`.
+Templates are provided as
+`config/setting_live_trade.example.json` and
+`config/setting_backtest.example.json`. Copy them before editing:
 
 ```bash
-cp config/setting_live_trade.example.json \
-   config/setting_live_trade.json
+cp config/setting_live_trade.example.json config/setting_live_trade.json
+cp config/setting_backtest.example.json config/setting_backtest.json
 ```
 
 See [`live_trade/docs/config_main_th.md`](live_trade/docs/config_main_th.md) for
