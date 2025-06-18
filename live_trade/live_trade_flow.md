@@ -10,9 +10,6 @@
 Logging, monitoring, config เดียวคุมทุกอย่าง
 
 2. High Level Flow (ตาม flowchart)
-   pgsql
-   คัดลอก
-   แก้ไข
    [APScheduler]
    |
    [python main_liveTrade.py (entry point)]
@@ -138,9 +135,6 @@ Scale ไป backtest หรือ multi-symbol ได้ทันที
 สร้าง dashboard monitor ทุก signal/ทุกเทรด
 
 7. ตัวอย่าง signals.csv
-   c
-   คัดลอก
-   แก้ไข
    timestamp,entry,sl,tp,pending_order_type,confidence,comment
    2024-06-18 09:00,2320.5,2315.0,2335.0,buy_limit,91,"prompt_v2"
 8. Logging & Monitoring
