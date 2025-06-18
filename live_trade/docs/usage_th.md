@@ -51,4 +51,3 @@ python scripts/scheduler_example.py
 ```
 
 กด **Ctrl+C** เพื่อหยุดการทำงานของ scheduler
-

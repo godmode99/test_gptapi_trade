@@ -1,4 +1,4 @@
-📄 Live Trade Flow - GPT-Driven EA Signal System
+# 📄 Live Trade Flow - GPT-Driven EA Signal System
 
 1. เป้าหมายของ Live Trade Mode
    รันสัญญาณเทรดจริงแบบ Real-time ทุก 1 ชั่วโมง (หรือเวลาที่มึงตั้ง)
