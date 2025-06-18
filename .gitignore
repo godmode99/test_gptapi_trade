@@ -18,3 +18,5 @@ gpt.json
 
 # Local settings
 live_trade/config/setting_main.json
+back_test/config/setting_main_backtest.json
+live_trade/config/setting_main_liveTrade.json
