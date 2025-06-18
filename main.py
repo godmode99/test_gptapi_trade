@@ -32,7 +32,12 @@ def _load_config(path: Path) -> dict:
 
 async def main() -> None:
     pre_parser = argparse.ArgumentParser(add_help=False)
-    default_cfg = Path(__file__).resolve().parent / "config" / "setting_main.json"
+    default_cfg = (
+        Path(__file__).resolve().parent
+        / "live_trade"
+        / "config"
+        / "setting_main.json"
+    )
     pre_parser.add_argument(
         "--config", help="Path to JSON config", default=str(default_cfg)
     )
@@ -77,7 +82,9 @@ async def main() -> None:
     )
     parser.add_argument(
         "--response",
-        default=workflow.get("response", "data/signals/latest_response.txt"),
+        default=workflow.get(
+            "response", "live_trade/data/signals/latest_response.txt"
+        ),
         help="Temporary file to store raw GPT response",
     )
     parser.add_argument(
