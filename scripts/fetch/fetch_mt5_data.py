@@ -15,6 +15,7 @@ from typing import Any, Dict, Optional
 
 import pandas as pd
 import MetaTrader5 as mt5
+from scripts.utils.indicators import compute_indicators
 
 
 LOGGER = logging.getLogger(__name__)
@@ -108,35 +109,6 @@ def _fetch_rates(
     return df
 
 
-def _compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
-    """Compute ATR14, RSI14 and SMA20 for the dataframe."""
-    df = df.copy()
-
-    # ATR14
-    prev_close = df["close"].shift(1)
-    tr = pd.concat(
-        [
-            df["high"] - df["low"],
-            (df["high"] - prev_close).abs(),
-            (df["low"] - prev_close).abs(),
-        ],
-        axis=1,
-    ).max(axis=1)
-    df["atr14"] = tr.rolling(window=14).mean()
-
-    # RSI14
-    delta = df["close"].diff()
-    gain = delta.clip(lower=0)
-    loss = -delta.clip(upper=0)
-    avg_gain = gain.rolling(window=14).mean()
-    avg_loss = loss.rolling(window=14).mean()
-    rs = avg_gain / avg_loss
-    df["rsi14"] = 100 - 100 / (1 + rs)
-
-    # SMA20
-    df["sma20"] = df["close"].rolling(window=20).mean()
-
-    return df
 
 
 def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd.DataFrame:
@@ -163,7 +135,7 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
             raise ValueError(f"Unsupported timeframe: {tf_name}")
         label = _tf_label(tf_name)
         df = _fetch_rates(symbol, tf_const, fetch_bars, tz_shift, end_time)
-        df = _compute_indicators(df)
+        df = compute_indicators(df)
         df = df.tail(keep)
         df["timeframe"] = label
         frames.append(df)
