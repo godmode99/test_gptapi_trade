@@ -19,7 +19,7 @@
 | `fetch` |  | คอนฟิกสำหรับขั้นตอนดึงข้อมูล |
 | `send` |  | คอนฟิกสำหรับขั้นตอนส่งข้อมูลไป GPT |
 | `parse` |  | คอนฟิกสำหรับขั้นตอนแปลงผลลัพธ์ |
-| `notify` |  | ตั้งค่าการแจ้งเตือนผ่าน LINE หรือ Telegram |
+| `notify` |  | ตั้งค่าการแจ้งเตือนผ่าน LINE หรือ Telegram (ใช้คีย์ `line` และ `telegram`) |
 
 ตัวอย่างโครงสร้างไฟล์:
 
@@ -45,10 +45,8 @@
     "tz_shift": 7
   },
   "notify": {
-    "enabled": true,
-    "line_token": "YOUR_LINE_TOKEN",
-    "telegram_token": "",
-    "telegram_chat_id": ""
+    "line": {"enabled": true, "token": "YOUR_LINE_TOKEN"},
+    "telegram": {"enabled": false, "token": "", "chat_id": ""}
   }
 }
 ```

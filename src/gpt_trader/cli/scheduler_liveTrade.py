@@ -36,19 +36,26 @@ def _load_config(path: Path) -> dict:
 
 def _notify_summary(notify_cfg: dict, entry: str) -> None:
     """Send *entry* via LINE and Telegram if configured."""
-    if not notify_cfg or not notify_cfg.get("enabled"):
+    if not notify_cfg:
         return
-    try:
-        if notify_cfg.get("line_token"):
-            send_line(entry, notify_cfg["line_token"])
-        if notify_cfg.get("telegram_token") and notify_cfg.get("telegram_chat_id"):
-            send_telegram(
-                entry,
-                notify_cfg["telegram_token"],
-                notify_cfg["telegram_chat_id"],
-            )
-    except Exception as exc:  # noqa: BLE001
-        LOGGER.warning("Notification failed: %s", exc)
+
+    line_cfg = notify_cfg.get("line", {})
+    if line_cfg.get("enabled") and line_cfg.get("token"):
+        try:
+            send_line(entry, line_cfg["token"])
+        except Exception as exc:  # noqa: BLE001
+            LOGGER.warning("Notification failed: %s", exc)
+
+    telegram_cfg = notify_cfg.get("telegram", {})
+    if (
+        telegram_cfg.get("enabled")
+        and telegram_cfg.get("token")
+        and telegram_cfg.get("chat_id")
+    ):
+        try:
+            send_telegram(entry, telegram_cfg["token"], telegram_cfg["chat_id"])
+        except Exception as exc:  # noqa: BLE001
+            LOGGER.warning("Notification failed: %s", exc)
 
 
 def _run_workflow() -> None:
