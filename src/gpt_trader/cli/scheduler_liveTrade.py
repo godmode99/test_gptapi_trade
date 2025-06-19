@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 from datetime import datetime
 import logging
 import threading
@@ -17,19 +18,66 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from main_liveTrade import main as run_main
+from gpt_trader.notify import send_line, send_telegram
 
 LOGGER = logging.getLogger(__name__)
+
+DEFAULT_CFG = ROOT / "config" / "setting_live_trade.json"
+LOG_FILE = ROOT / "logs" / "run.log"
+
+
+def _load_config(path: Path) -> dict:
+    """Load JSON configuration from *path*."""
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        raise RuntimeError(f"Failed to read config: {exc}") from exc
+
+
+def _notify_summary(notify_cfg: dict, entry: str) -> None:
+    """Send *entry* using the configured notification method."""
+    if not notify_cfg or not notify_cfg.get("enabled"):
+        return
+    method = notify_cfg.get("method", "line")
+    token = notify_cfg.get("token", "")
+    chat_id = notify_cfg.get("chat_id", "")
+    try:
+        if method == "telegram":
+            send_telegram(entry, token, chat_id)
+        else:
+            send_line(entry, token)
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.warning("Notification failed: %s", exc)
 
 
 def _run_workflow() -> None:
     """Execute the main workflow once."""
     LOGGER.info("Starting scheduled workflow run")
+    status = "success"
     try:
         asyncio.run(run_main())
     except SystemExit as exc:
         LOGGER.error("main_liveTrade.py exited with code %s", exc.code)
+        status = f"exit {exc.code}"
     except Exception as exc:  # noqa: BLE001
         LOGGER.error("main_liveTrade.py failed: %s", exc)
+        status = "error"
+
+    entry = f"{datetime.now().isoformat(timespec='seconds')} - {status}"
+    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with LOG_FILE.open("a", encoding="utf-8") as f:
+            f.write(entry + "\n")
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.warning("Failed to update run log: %s", exc)
+
+    try:
+        cfg = _load_config(DEFAULT_CFG)
+        notify_cfg = cfg.get("notify", {})
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.warning("Failed to load notify config: %s", exc)
+        notify_cfg = {}
+    _notify_summary(notify_cfg, entry)
 
 
 def _start_countdown(job) -> None:
