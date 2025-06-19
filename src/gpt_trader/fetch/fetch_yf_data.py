@@ -75,6 +75,7 @@ def _fetch_rates(symbol: str, interval: str, bars: int, tz_shift: int = 0) -> pd
 def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd.DataFrame:
     """Fetch data for several timeframes and merge into one DataFrame."""
     timeframes_conf: List[Dict[str, Any]] = config.get("timeframes", [])
+    indicators_conf = config.get("indicators")
     fetch_bars = int(config.get("fetch_bars", 20))
 
     frames: List[pd.DataFrame] = []
@@ -86,7 +87,7 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
             raise ValueError(f"Unsupported timeframe: {tf_name}")
         label = _tf_label(tf_name)
         df = _fetch_rates(symbol, interval, fetch_bars, tz_shift)
-        df = compute_indicators(df)
+        df = compute_indicators(df, indicators_conf)
         df = df.tail(keep)
         df["timeframe"] = label
         frames.append(df)

@@ -15,7 +15,7 @@
 |
 [แต่ละรอบเวลา:]
 ├─ fetch mt5 ohlcv + sync time
-├─ calculate indicators (SMA, ATR, RSI)
+├─ calculate indicators (SMA, ATR, RSI) ตามการตั้งค่า `indicators`
 ├─ save fetch data as csv
 ├─ build prompt + call GPT API
 ├─ parse response → signal

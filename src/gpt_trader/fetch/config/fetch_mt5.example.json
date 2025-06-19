@@ -2,6 +2,7 @@
   "tz_shift": 4,
   "symbol": "XAUUSD",
   "fetch_bars": 30,
+  "indicators": {"atr14": true, "rsi14": true, "sma20": true},
   "time_fetch": "2024-01-31 12:00:00",
   "timeframes": [
     {"tf": "M5", "keep": 10},
