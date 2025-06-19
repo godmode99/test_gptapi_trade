@@ -153,7 +153,9 @@ def main() -> None:
             output = Path(default_save_path) / f"{symbol.lower()}_{name}.csv"
         output.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(output, index=False)
-        LOGGER.info("Saved data to %s", output)
+        json_out = output.with_suffix(".json")
+        df.to_json(json_out, orient="records", date_format="iso")
+        LOGGER.info("Saved data to %s and %s", output, json_out)
     except Exception as exc:  # noqa: BLE001
         LOGGER.error("Error fetching data: %s", exc)
         raise SystemExit(1)

@@ -11,13 +11,13 @@
 
 รองรับ multi-timeframe analysis
 
-3.2 Python: Fetch multi-timeframe data & save as CSV
+3.2 Python: Fetch multi-timeframe data & save as CSV + JSON
 สคริปต์ Python ดึงข้อมูลจาก MT5 หลาย TF
 
-แปลงข้อมูลเป็นไฟล์ .CSV พร้อม export indicator
+แปลงข้อมูลเป็นไฟล์ .CSV และ .JSON พร้อม export indicator
 
-3.3 Python: Send CSV + prompt to GPT API
-Python script ส่งไฟล์ CSV + คำสั่ง (prompt) ไป GPT API (OpenAI)
+3.3 Python: Send JSON + prompt to GPT API
+Python script ส่งไฟล์ JSON + คำสั่ง (prompt) ไป GPT API (OpenAI)
 
 อธิบาย logic ที่อยากให้ AI วิเคราะห์ เช่น ขอ entry/sl/tp/position
 

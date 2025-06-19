@@ -1,4 +1,4 @@
-"""Send CSV data and prompts to GPT API and return raw response."""
+"""Send JSON data and prompts to GPT API and return raw response."""
 from __future__ import annotations
 
 import argparse
@@ -15,7 +15,7 @@ if TYPE_CHECKING:  # pragma: no cover - only for type hints
 
 LOGGER = logging.getLogger(__name__)
 
-# Template for the default prompt. The CSV filename will be inserted
+# Template for the default prompt. The JSON filename will be inserted
 # in place of ``%s`` to become the ``signal_id`` value.
 DEFAULT_PROMPT = (
     "Generate a trading signal and reply only with a JSON object like "
@@ -34,12 +34,12 @@ def _load_config(path: Path) -> dict:
         raise RuntimeError(f"Failed to read config: {exc}") from exc
 
 
-def _find_latest_csv(directory: Path) -> Path:
-    """Return the most recently modified CSV file in *directory*."""
-    csv_files = list(directory.glob("*.csv"))
-    if not csv_files:
-        raise FileNotFoundError(f"No CSV files found in {directory}")
-    return max(csv_files, key=lambda p: p.stat().st_mtime)
+def _find_latest_json(directory: Path) -> Path:
+    """Return the most recently modified JSON file in *directory*."""
+    json_files = list(directory.glob("*.json"))
+    if not json_files:
+        raise FileNotFoundError(f"No JSON files found in {directory}")
+    return max(json_files, key=lambda p: p.stat().st_mtime)
 
 
 def _timestamp_code(ts: datetime) -> str:
@@ -48,24 +48,24 @@ def _timestamp_code(ts: datetime) -> str:
 
 
 def _save_prompt_copy(
-    csv_path: Path, csv_text: str, prompt: str, out_dir: Path
+    json_path: Path, json_text: str, prompt: str, out_dir: Path
 ) -> None:
-    """Save *csv_text* and *prompt* to *out_dir* with a unique name."""
+    """Save *json_text* and *prompt* to *out_dir* with a unique name."""
     out_dir.mkdir(parents=True, exist_ok=True)
     ts = _timestamp_code(datetime.utcnow())
-    base = f"{csv_path.stem}_{ts}"
-    (out_dir / f"{base}.csv").write_text(csv_text, encoding="utf-8")
+    base = f"{json_path.stem}_{ts}"
+    (out_dir / f"{base}.json").write_text(json_text, encoding="utf-8")
     (out_dir / f"{base}_prompt.txt").write_text(prompt, encoding="utf-8")
 
 
-def _build_messages(csv_text: str, prompt: str) -> list[dict[str, str]]:
-    """Return OpenAI chat messages for *csv_text* and *prompt*."""
+def _build_messages(json_text: str, prompt: str) -> list[dict[str, str]]:
+    """Return OpenAI chat messages for *json_text* and *prompt*."""
     return [
         {
             "role": "system",
             "content": "You analyze trading data and produce JSON signals.",
         },
-        {"role": "user", "content": f"{prompt}\n\nCSV Data:\n{csv_text}"},
+        {"role": "user", "content": f"{prompt}\n\nJSON Data:\n{json_text}"},
     ]
 
 
@@ -93,13 +93,13 @@ def main() -> None:
         raise SystemExit(1)
 
     parser = argparse.ArgumentParser(
-        description="Send CSV data to GPT API", parents=[pre_parser]
+        description="Send JSON data to GPT API", parents=[pre_parser]
     )
-    parser.add_argument("csv", nargs="?", help="CSV data file")
+    parser.add_argument("json", nargs="?", help="JSON data file")
     parser.add_argument(
         "--data-dir",
-        default=config.get("csv_path", "data/fetch"),
-        help="Directory containing CSV files",
+        default=config.get("json_path", "data/fetch"),
+        help="Directory containing JSON files",
     )
     parser.add_argument("--prompt", help="Prompt text")
     parser.add_argument("--prompt-file", help="Read prompt from file")
@@ -111,12 +111,12 @@ def main() -> None:
     parser.add_argument(
         "--save-dir",
         default=config.get("save_prompt_dir", "data/save_prompt_api"),
-        help="Directory to save CSV and prompt copies",
+        help="Directory to save JSON and prompt copies",
     )
     parser.add_argument("--output", help="Save raw response to file")
 
     args = parser.parse_args(remaining)
-    config_csv = config.get("csv_file") or None
+    config_json = config.get("json_file") or None
 
     logging.basicConfig(
         level=logging.INFO,
@@ -125,27 +125,27 @@ def main() -> None:
 
     data_dir = Path(args.data_dir)
 
-    if args.csv:
-        csv_path = Path(args.csv)
+    if args.json:
+        json_path = Path(args.json)
         src = "CLI"
-    elif config_csv:
-        csv_path = Path(config_csv)
-        if not csv_path.is_absolute():
-            csv_path = data_dir / csv_path
-        src = "config csv_file"
+    elif config_json:
+        json_path = Path(config_json)
+        if not json_path.is_absolute():
+            json_path = data_dir / json_path
+        src = "config json_file"
     else:
         try:
-            csv_path = _find_latest_csv(data_dir)
+            json_path = _find_latest_json(data_dir)
             src = f"directory scan ({data_dir})"
         except FileNotFoundError as exc:  # noqa: BLE001
             LOGGER.error("%s", exc)
             raise SystemExit(1)
-    LOGGER.info("Using CSV file %s from %s", csv_path, src)
+    LOGGER.info("Using JSON file %s from %s", json_path, src)
 
     try:
-        csv_text = csv_path.read_text(encoding="utf-8")
+        json_text = json_path.read_text(encoding="utf-8")
     except Exception as exc:  # noqa: BLE001
-        LOGGER.error("Failed to read CSV: %s", exc)
+        LOGGER.error("Failed to read JSON: %s", exc)
         raise SystemExit(1)
 
     prompt = args.prompt
@@ -157,10 +157,10 @@ def main() -> None:
             raise SystemExit(1)
 
     if prompt is None:
-        prompt = DEFAULT_PROMPT % csv_path.stem
+        prompt = DEFAULT_PROMPT % json_path.stem
 
     try:
-        _save_prompt_copy(csv_path, csv_text, prompt, Path(args.save_dir))
+        _save_prompt_copy(json_path, json_text, prompt, Path(args.save_dir))
     except Exception as exc:  # noqa: BLE001
         LOGGER.warning("Failed to save prompt copy: %s", exc)
 
@@ -174,7 +174,7 @@ def main() -> None:
         raise SystemExit(1)
     client = OpenAI(api_key=api_key)
 
-    messages = _build_messages(csv_text, prompt)
+    messages = _build_messages(json_text, prompt)
 
     try:
         response = _call_gpt(messages, args.model, client)
