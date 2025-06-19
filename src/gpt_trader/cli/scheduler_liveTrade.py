@@ -41,10 +41,13 @@ def _notify_summary(notify_cfg: dict, entry: str) -> None:
 
     line_cfg = notify_cfg.get("line", {})
     if line_cfg.get("enabled") and line_cfg.get("token"):
+        LOGGER.info("Sending LINE notification")
         try:
             send_line(entry, line_cfg["token"])
         except Exception as exc:  # noqa: BLE001
             LOGGER.warning("Notification failed: %s", exc)
+        else:
+            LOGGER.info("LINE notified")
 
     telegram_cfg = notify_cfg.get("telegram", {})
     if (
@@ -52,10 +55,13 @@ def _notify_summary(notify_cfg: dict, entry: str) -> None:
         and telegram_cfg.get("token")
         and telegram_cfg.get("chat_id")
     ):
+        LOGGER.info("Sending Telegram notification")
         try:
             send_telegram(entry, telegram_cfg["token"], telegram_cfg["chat_id"])
         except Exception as exc:  # noqa: BLE001
             LOGGER.warning("Notification failed: %s", exc)
+        else:
+            LOGGER.info("Telegram notified")
 
 
 def _run_workflow() -> None:
@@ -124,7 +130,12 @@ def _start_countdown(job) -> None:
 
 def main() -> None:
     """Configure and start the hourly scheduler."""
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
+    )
     scheduler = BlockingScheduler()
     job = scheduler.add_job(_run_workflow, "interval", hours=1)
     _start_countdown(job)
