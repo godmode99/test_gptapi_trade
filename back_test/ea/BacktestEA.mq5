@@ -1,5 +1,6 @@
 #property strict
 #include <Trade/Trade.mqh>
+#include "../../live_trade/ea/RiskUtils.mqh"
 
 //+------------------------------------------------------------------+
 //| Expert Advisor to execute backtest signals from CSV              |
@@ -52,36 +53,6 @@ bool LoadLatestSignal(Signal &sig)
    return(true);
   }
 
-//+------------------------------------------------------------------+
-//| Compute risk percent from confidence                              |
-//+------------------------------------------------------------------+
-double ComputeRisk(double conf)
-  {
-   if(conf > 80)  return(0.05);
-   if(conf > 70)  return(0.03);
-   return(DefaultRisk);
-  }
-
-//+------------------------------------------------------------------+
-//| Calculate lot size using risk management                          |
-//+------------------------------------------------------------------+
-double CalcLot(double entry,double sl,double risk)
-  {
-   double distance = MathAbs(entry - sl);
-   if(distance <= 0) return(0);
-
-   double tick_value = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_VALUE);
-   double lots = (AccountInfoDouble(ACCOUNT_BALANCE) * risk) /
-                 (distance / _Point * tick_value);
-
-   double step = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_STEP);
-   double minv = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN);
-   lots = MathMax(lots, minv);
-   lots = MathFloor(lots / step) * step;
-   return(lots);
-  }
-
-//+------------------------------------------------------------------+
 //| Check new bar and execute the latest signal                       |
 //+------------------------------------------------------------------+
 void OnTick()
@@ -99,8 +70,7 @@ void OnTick()
       return; // already executed
    last_processed = sig.timestamp;
 
-   double risk = ComputeRisk(sig.conf);
-   double lot  = CalcLot(sig.entry, sig.sl, risk);
+   double lot  = CalcLot(sig.entry, sig.sl, sig.conf);
    if(lot <= 0)
       return;
 

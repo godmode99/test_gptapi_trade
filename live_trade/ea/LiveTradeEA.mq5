@@ -1,5 +1,6 @@
 #property strict
 #include <Trade/Trade.mqh>
+#include "RiskUtils.mqh"
 
 //+------------------------------------------------------------------+
 //| Expert Advisor to execute live trade signals from CSV             |
@@ -48,25 +49,7 @@ bool LoadLatestSignal(Signal &sig)
    return(true);
   }
 
-double ComputeRisk(double conf)
-  {
-   if(conf>80) return(0.05);
-   if(conf>70) return(0.03);
-   return(DefaultRisk);
-  }
 
-double CalcLot(double entry,double sl,double risk)
-  {
-   double distance=MathAbs(entry-sl);
-   if(distance<=0) return(0);
-   double tick_value=SymbolInfoDouble(_Symbol,SYMBOL_TRADE_TICK_VALUE);
-   double lots=(AccountInfoDouble(ACCOUNT_BALANCE)*risk)/(distance/_Point*tick_value);
-   double step=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_STEP);
-   double minv=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_MIN);
-   lots=MathMax(lots,minv);
-   lots=MathFloor(lots/step)*step;
-   return(lots);
-  }
 
 void OnTick()
   {
@@ -83,8 +66,7 @@ void OnTick()
       return;
    last_processed=sig.timestamp;
 
-   double risk=ComputeRisk(sig.conf);
-   double lot=CalcLot(sig.entry,sig.sl,risk);
+   double lot=CalcLot(sig.entry,sig.sl,sig.conf);
    if(lot<=0) return;
 
    MqlTradeRequest req; MqlTradeResult res;
