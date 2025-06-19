@@ -21,7 +21,7 @@ Install the pinned Python dependencies using the helper script:
 This project requires specific versions of `pandas`, `MetaTrader5`, `openai` and
 `yfinance` which are defined in `requirements.txt`.
 `APScheduler` is also needed if you plan to use
-`src/gpt_trader/cli/liveTrade_scheduler.py`. The helper script above installs it
+`src/gpt_trader/cli/scheduler_liveTrade.py`. The helper script above installs it
 automatically.
 
 ### Installing MetaTrader5
@@ -200,7 +200,7 @@ python main_liveTrade.py --fetch-type mt5 --skip-fetch --skip-send
 
 ### Automated execution
 
-Run `src/gpt_trader/cli/liveTrade_scheduler.py` to execute the workflow once per hour. The
+Run `src/gpt_trader/cli/scheduler_liveTrade.py` to execute the workflow once per hour. The
 script uses APScheduler to call `main_liveTrade.py` on a schedule. APScheduler
 version 3.x is expected but the code attempts to handle version 4.x as well.
 Since
@@ -208,7 +208,7 @@ Since
 scheduler can be executed directly from the project root:
 
 ```bash
-python src/gpt_trader/cli/liveTrade_scheduler.py
+python src/gpt_trader/cli/scheduler_liveTrade.py
 ```
 
 The script prints a countdown showing how long remains until the next scheduled
