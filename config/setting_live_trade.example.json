@@ -17,6 +17,7 @@
     "tz_shift": 4,
     "symbol": "XAUUSD",
     "fetch_bars": 30,
+    "indicators": {"atr14": true, "rsi14": true, "sma20": true},
     "time_fetch": "",
     "save_as_path": "data/live_trade/fetch",
     "timeframes": [

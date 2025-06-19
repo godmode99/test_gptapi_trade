@@ -48,9 +48,10 @@ Logging, monitoring, config เดียวคุมทุกอย่าง
 sync เวลาให้ตรงกับ server/broker เพื่อกันเวลาเพี้ยน
 
 3.2 calculate indicators (SMA, ATR, RSI)
-คำนวณค่า indicators ตาม config
+คำนวณค่า indicators ตาม config และสามารถเปิดหรือปิดการคำนวณแต่ละตัวได้
+ผ่านพารามิเตอร์ `indicators`
 
-สามารถเพิ่ม/ลดได้ทันทีโดยเปลี่ยน config
+สามารถเพิ่ม/ลดได้ทันทีโดยเปลี่ยนค่าคอนฟิก
 
 3.3 save fetch data as csv file
 Save ข้อมูล ohlcv + indicator ไว้ (debug/monitor/backtest)
