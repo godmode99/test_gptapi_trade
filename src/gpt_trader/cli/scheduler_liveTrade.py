@@ -34,6 +34,15 @@ def _load_config(path: Path) -> dict:
         raise RuntimeError(f"Failed to read config: {exc}") from exc
 
 
+def _load_latest_signal(json_dir: Path) -> dict:
+    """Return contents of the newest JSON file in *json_dir*."""
+    json_files = list(json_dir.glob("*.json"))
+    if not json_files:
+        raise FileNotFoundError(f"No JSON files found in {json_dir}")
+    latest = max(json_files, key=lambda p: p.stat().st_mtime)
+    return json.loads(latest.read_text(encoding="utf-8"))
+
+
 def _notify_summary(notify_cfg: dict, entry: str) -> None:
     """Send *entry* via LINE and Telegram if configured."""
     if not notify_cfg:
@@ -83,23 +92,41 @@ def _run_workflow() -> None:
     detail = " ".join(
         f"{k}:{results.get(k, 'n/a')}" for k in ("fetch", "send", "parse")
     ) if results else ""
-    entry = (
+    message = (
         f"{datetime.now().isoformat(timespec='seconds')} - {detail} ({status})"
     )
+    signal = None
+    try:
+        cfg = _load_config(DEFAULT_CFG)
+        parse_cfg = cfg.get("parse", {})
+        notify_cfg = cfg.get("notify", {})
+        if results and results.get("parse") == "success":
+            json_dir = parse_cfg.get(
+                "path_signals_json",
+                "data/live_trade/signals/signals_json",
+            )
+            signal = _load_latest_signal(Path(json_dir))
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.warning("Failed to load config or signal data: %s", exc)
+        notify_cfg = {}
+    if signal:
+        sig_parts = [
+            f"signal_id:{signal.get('signal_id')}",
+            f"entry:{signal.get('entry')}",
+            f"sl:{signal.get('sl')}",
+            f"tp:{signal.get('tp')}",
+            f"pending_order_type:{signal.get('pending_order_type')}",
+            f"confidence:{signal.get('confidence')}",
+        ]
+        message = f"{message} {' '.join(sig_parts)}"
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     try:
         with LOG_FILE.open("a", encoding="utf-8") as f:
-            f.write(entry + "\n")
+            f.write(message + "\n")
     except Exception as exc:  # noqa: BLE001
         LOGGER.warning("Failed to update run log: %s", exc)
 
-    try:
-        cfg = _load_config(DEFAULT_CFG)
-        notify_cfg = cfg.get("notify", {})
-    except Exception as exc:  # noqa: BLE001
-        LOGGER.warning("Failed to load notify config: %s", exc)
-        notify_cfg = {}
-    _notify_summary(notify_cfg, entry)
+    _notify_summary(notify_cfg, message)
 
 
 def _start_countdown(job) -> None:
