@@ -35,17 +35,18 @@ def _load_config(path: Path) -> dict:
 
 
 def _notify_summary(notify_cfg: dict, entry: str) -> None:
-    """Send *entry* using the configured notification method."""
+    """Send *entry* via LINE and Telegram if configured."""
     if not notify_cfg or not notify_cfg.get("enabled"):
         return
-    method = notify_cfg.get("method", "line")
-    token = notify_cfg.get("token", "")
-    chat_id = notify_cfg.get("chat_id", "")
     try:
-        if method == "telegram":
-            send_telegram(entry, token, chat_id)
-        else:
-            send_line(entry, token)
+        if notify_cfg.get("line_token"):
+            send_line(entry, notify_cfg["line_token"])
+        if notify_cfg.get("telegram_token") and notify_cfg.get("telegram_chat_id"):
+            send_telegram(
+                entry,
+                notify_cfg["telegram_token"],
+                notify_cfg["telegram_chat_id"],
+            )
     except Exception as exc:  # noqa: BLE001
         LOGGER.warning("Notification failed: %s", exc)
 
@@ -54,8 +55,11 @@ def _run_workflow() -> None:
     """Execute the main workflow once."""
     LOGGER.info("Starting scheduled workflow run")
     status = "success"
+    results: dict[str, str] | None = None
     try:
-        asyncio.run(run_main())
+        results = asyncio.run(run_main())
+        if any(v == "error" for v in results.values()):
+            status = "error"
     except SystemExit as exc:
         LOGGER.error("main_liveTrade.py exited with code %s", exc.code)
         status = f"exit {exc.code}"
@@ -63,7 +67,12 @@ def _run_workflow() -> None:
         LOGGER.error("main_liveTrade.py failed: %s", exc)
         status = "error"
 
-    entry = f"{datetime.now().isoformat(timespec='seconds')} - {status}"
+    detail = " ".join(
+        f"{k}:{results.get(k, 'n/a')}" for k in ("fetch", "send", "parse")
+    ) if results else ""
+    entry = (
+        f"{datetime.now().isoformat(timespec='seconds')} - {detail} ({status})"
+    )
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     try:
         with LOG_FILE.open("a", encoding="utf-8") as f:
