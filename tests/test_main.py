@@ -77,10 +77,8 @@ def test_time_fetch_passed(tmp_path):
 def test_notify_called(tmp_path):
     cfg = {
         "notify": {
-            "enabled": True,
-            "line_token": "t",
-            "telegram_token": "tg",
-            "telegram_chat_id": "id",
+            "line": {"enabled": True, "token": "t"},
+            "telegram": {"enabled": True, "token": "tg", "chat_id": "id"},
         }
     }
     cfg_path = tmp_path / "cfg.json"
@@ -94,4 +92,46 @@ def test_notify_called(tmp_path):
     ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn:
         sched._run_workflow()
     line_fn.assert_called()
+    tg_fn.assert_called()
+
+
+def test_notify_line_only(tmp_path):
+    cfg = {
+        "notify": {
+            "line": {"enabled": True, "token": "t"},
+            "telegram": {"enabled": False, "token": "", "chat_id": ""},
+        }
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+    log_path = tmp_path / "run.log"
+
+    import gpt_trader.cli.scheduler_liveTrade as sched
+
+    with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
+        sched, "LOG_FILE", log_path
+    ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn:
+        sched._run_workflow()
+    line_fn.assert_called()
+    tg_fn.assert_not_called()
+
+
+def test_notify_telegram_only(tmp_path):
+    cfg = {
+        "notify": {
+            "line": {"enabled": False, "token": ""},
+            "telegram": {"enabled": True, "token": "tg", "chat_id": "id"},
+        }
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+    log_path = tmp_path / "run.log"
+
+    import gpt_trader.cli.scheduler_liveTrade as sched
+
+    with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
+        sched, "LOG_FILE", log_path
+    ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn:
+        sched._run_workflow()
+    line_fn.assert_not_called()
     tg_fn.assert_called()

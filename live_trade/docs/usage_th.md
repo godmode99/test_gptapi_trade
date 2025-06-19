@@ -54,5 +54,5 @@ python src/gpt_trader/cli/liveTrade_scheduler.py
 
 ## การแจ้งเตือนผลการรัน
 
-หากกำหนดส่วน `notify` ในไฟล์คอนฟิกและเปิด `enabled: true` ระบบจะส่งสรุปหลังจากแต่ละรอบผ่าน LINE หรือ Telegram ตามค่าในคีย์
-`line_token`, `telegram_token` และ `telegram_chat_id`
+หากกำหนด `notify` และเปิด `line.enabled` หรือ `telegram.enabled` ระบบจะส่งสรุปผลการรัน
+ผ่าน LINE หรือ Telegram ตามค่า token และ chat_id ในแต่ละส่วน
