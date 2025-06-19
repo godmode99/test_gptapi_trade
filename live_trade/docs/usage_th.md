@@ -51,3 +51,7 @@ python src/gpt_trader/cli/liveTrade_scheduler.py
 ```
 
 กด **Ctrl+C** เพื่อหยุดการทำงานของ scheduler
+
+## การแจ้งเตือนผลการรัน
+
+หากกำหนดส่วน `notify` ในไฟล์คอนฟิกและเปิด `enabled: true` ระบบจะส่งสรุปหลังจากแต่ละรอบผ่าน LINE หรือ Telegram ตามที่ตั้งค่าไว้

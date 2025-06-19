@@ -72,3 +72,18 @@ def test_time_fetch_passed(tmp_path):
         asyncio.run(entry_main())
 
     assert recorded["fetch"]["time_fetch"] == "2024-01-01 00:00:00"
+
+
+def test_notify_called(tmp_path):
+    cfg = {"notify": {"method": "line", "token": "t", "chat_id": "", "enabled": True}}
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+    log_path = tmp_path / "run.log"
+
+    import gpt_trader.cli.scheduler_liveTrade as sched
+
+    with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
+        sched, "LOG_FILE", log_path
+    ), patch.object(sched, "run_main"), patch.object(sched, "send_line") as line_fn:
+        sched._run_workflow()
+    line_fn.assert_called()
