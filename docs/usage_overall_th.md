@@ -47,7 +47,7 @@
 - ข้อมูลที่ดึงมาเก็บใน `data/*/fetch/`
 - ไฟล์สัญญาณ CSV อยู่ใน `data/*/signals/signals_csv/`
 - ไฟล์สัญญาณ JSON อยู่ใน `data/*/signals/signals_json/`
-- สำเนา prompt และ CSV ที่ส่งให้ GPT จะอยู่ใน `data/*/save_prompt_api/`
+- สำเนา prompt และ JSON ที่ส่งให้ GPT จะอยู่ใน `data/*/save_prompt_api/`
 
 ศึกษา flow รายละเอียดเพิ่มเติมได้ใน [Work_flow.md](../Work_flow.md)
 และไฟล์ในโฟลเดอร์ `live_trade/docs/`

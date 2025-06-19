@@ -85,12 +85,12 @@ If the specified `time_fetch` has no matching bars, the script will exit with an
 
 You can adjust timestamps with the `--tz-shift` option. For example, if the
 server time is GMT+3 and you need GMT+7 data, pass `--tz-shift 4`. The shift is
-always applied *after* the raw data has been fetched so the CSV output uses the
-same timezone regardless of whether the source is MT5 or Yahoo Finance.
+always applied *after* the raw data has been fetched so the CSV and JSON output
+use the same timezone regardless of whether the source is MT5 or Yahoo Finance.
 
 If you do not specify an output path, `fetch_mt5_data.py` saves the CSV
-in the directory specified by `save_as_path` in the config (defaults to
-`data/live_trade/fetch`) with a unique filename in the form
+and an equivalent JSON file in the directory specified by `save_as_path`
+(defaults to `data/live_trade/fetch`). The file name has the form
 `<symbol>_<ddmmyy>_<HH>H.csv` (e.g. `xauusd_250616_16H.csv`).
 
 Example `src/gpt_trader/fetch/config/fetch_mt5.json`:
@@ -122,7 +122,7 @@ the yfinance version shifts timestamps only after the data has been downloaded.
 The `src/gpt_trader/send/send_to_gpt.py` script reads its API key and other settings from
 `src/gpt_trader/send/config/gpt.json`. Copy `src/gpt_trader/send/config/gpt.example.json`
 to `src/gpt_trader/send/config/gpt.json` and fill in your API key. The prompt is
-generated automatically from the CSV file name unless you override it on the
+generated automatically from the JSON file name unless you override it on the
 command line. The script loads `src/gpt_trader/send/config/gpt.json` unless you pass
 an alternative path with `--config`.
 Example `src/gpt_trader/send/config/gpt.json`:
@@ -131,8 +131,8 @@ Example `src/gpt_trader/send/config/gpt.json`:
 {
   "openai_api_key": "YOUR_API_KEY",
   "model": "gpt-4o",
-  "csv_file": "",
-  "csv_path": "data/live_trade/fetch",
+  "json_file": "",
+  "json_path": "data/live_trade/fetch",
   "save_prompt_dir": "data/live_trade/save_prompt_api"
 }
 ```
@@ -141,14 +141,14 @@ Values provided on the command line override those in the config file.
 For the API key the `OPENAI_API_KEY` environment variable takes precedence over
 the `openai_api_key` value in the JSON config.
 
-If `csv_file` is empty, the script picks the newest `*.csv` file from
-`csv_path`. When a file name is specified it is loaded from that directory
+If `json_file` is empty, the script picks the newest `*.json` file from
+`json_path`. When a file name is specified it is loaded from that directory
 unless an absolute path is given.
 
-If you omit the positional `csv` argument, `send_to_gpt.py` uses the config
-values described above. The `--data-dir` option defaults to `csv_path` and can
+If you omit the positional `json` argument, `send_to_gpt.py` uses the config
+values described above. The `--data-dir` option defaults to `json_path` and can
 be used to override the search directory. The script also saves a copy of the
-CSV data and the final prompt to `data/live_trade/save_prompt_api` by default. Use
+JSON data and the final prompt to `data/live_trade/save_prompt_api` by default. Use
 `--save-dir` or the `save_prompt_dir` config value to change this location.
 
 The parser `src/gpt_trader/parse/parse_gpt_response.py` reads a raw GPT reply and writes the structured result to a JSON file. Default paths are loaded from `src/gpt_trader/parse/config/parse.json` which defines where to store the CSV log, JSON signals and the latest response file. Use `--csv-log`, `--json-dir`, `--latest-response` or `--tz-shift` to override these values. Each run appends a row to the CSV log and saves the parsed data in a uniquely named file like `250616_153045.json` inside the configured directory.

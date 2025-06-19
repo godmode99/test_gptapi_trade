@@ -28,8 +28,8 @@
   "send": {
     "openai_api_key": "YOUR_API_KEY",
     "model": "gpt-4o",
-    "csv_file": "",
-    "csv_path": "data/back_test/fetch",
+    "json_file": "",
+    "json_path": "data/back_test/fetch",
     "save_prompt_dir": "data/back_test/save_prompt_api"
   },
   "parse": {

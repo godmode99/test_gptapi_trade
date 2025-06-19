@@ -1,8 +1,8 @@
 {
   "openai_api_key": "YOUR_API_KEY",
   "model": "gpt-4o",
-  "csv_file": "",
-  "csv_path": "data/live_trade/fetch",
+  "json_file": "",
+  "json_path": "data/live_trade/fetch",
   "save_prompt_dir": "data/save_prompt_api"
 
 }

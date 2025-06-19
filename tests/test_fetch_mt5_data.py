@@ -197,7 +197,10 @@ def test_main_writes_to_save_as_path(tmp_path) -> None:
     ):
         importlib.import_module("gpt_trader.fetch.fetch_mt5_data").main()
 
-    files = list(tmp_path.glob("*.csv"))
-    assert len(files) == 1
-    assert files[0].is_file()
+    csv_files = list(tmp_path.glob("*.csv"))
+    json_files = list(tmp_path.glob("*.json"))
+    assert len(csv_files) == 1
+    assert len(json_files) == 1
+    assert csv_files[0].is_file()
+    assert json_files[0].is_file()
 
