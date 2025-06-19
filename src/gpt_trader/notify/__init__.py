@@ -17,6 +17,7 @@ def send_line(message: str, token: str) -> None:
     resp = requests.post(url, headers=headers, data=data, timeout=10)
     try:
         resp.raise_for_status()
+        LOGGER.info("LINE notification sent")
     except Exception as exc:  # noqa: BLE001
         LOGGER.error("LINE notify failed: %s", exc)
         raise
@@ -29,6 +30,7 @@ def send_telegram(message: str, bot_token: str, chat_id: str) -> None:
     resp = requests.post(url, data=data, timeout=10)
     try:
         resp.raise_for_status()
+        LOGGER.info("Telegram notification sent")
     except Exception as exc:  # noqa: BLE001
         LOGGER.error("Telegram notify failed: %s", exc)
         raise
