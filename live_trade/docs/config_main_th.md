@@ -45,10 +45,10 @@
     "tz_shift": 7
   },
   "notify": {
-    "method": "line",
-    "token": "YOUR_LINE_TOKEN",
-    "chat_id": "",
-    "enabled": true
+    "enabled": true,
+    "line_token": "YOUR_LINE_TOKEN",
+    "telegram_token": "",
+    "telegram_chat_id": ""
   }
 }
 ```
