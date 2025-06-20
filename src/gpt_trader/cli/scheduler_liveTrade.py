@@ -1,9 +1,10 @@
-"""Scheduler that runs :mod:`main_liveTrade.py` every hour."""
+"""Schedule :mod:`main_liveTrade.py` at a configurable interval."""
 from __future__ import annotations
 
+import argparse
 import asyncio
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import threading
 import time
@@ -185,20 +186,47 @@ def _start_countdown(job) -> None:
 
 
 def main() -> None:
-    """Configure and start the hourly scheduler."""
+    """Configure and start the scheduler."""
+    parser = argparse.ArgumentParser(description="Run live trade workflow on a schedule")
+    parser.add_argument(
+        "--interval",
+        type=int,
+        default=30,
+        help="Minutes between each run",
+    )
+    parser.add_argument(
+        "--start-in",
+        type=int,
+        default=0,
+        help="Delay first run by this many minutes",
+    )
+    args = parser.parse_args()
+
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(message)s",
         handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
     )
+
     scheduler = BlockingScheduler()
-    job = scheduler.add_job(_run_workflow, "interval", minutes=30)
+    first_run = datetime.now() + timedelta(minutes=args.start_in)
+    job = scheduler.add_job(
+        _run_workflow,
+        "interval",
+        minutes=args.interval,
+        next_run_time=first_run,
+    )
+
     _start_countdown(job)
-    LOGGER.info("Scheduler started; press Ctrl+C to exit")
+    LOGGER.info(
+        "Scheduler started (first run at %s, interval %s minutes); press Ctrl+C to exit",
+        first_run.isoformat(timespec="seconds"),
+        args.interval,
+    )
     try:
         scheduler.start()
-        
+
     except (KeyboardInterrupt, SystemExit):  # pragma: no cover - manual stop
         LOGGER.info("Scheduler stopped")
 

@@ -206,19 +206,21 @@ python main_liveTrade.py --fetch-type mt5 --skip-fetch --skip-send
 
 ### Automated execution
 
-Run `src/gpt_trader/cli/scheduler_liveTrade.py` to execute the workflow once per hour. The
-script uses APScheduler to call `main_liveTrade.py` on a schedule. APScheduler
+Run `src/gpt_trader/cli/scheduler_liveTrade.py` to execute the workflow on a schedule.
+The script uses APScheduler to call `main_liveTrade.py` repeatedly. APScheduler
 version 3.x is expected but the code attempts to handle version 4.x as well.
 Since
 `main_liveTrade.py` now prepends the repository root to `sys.path`, the
-scheduler can be executed directly from the project root:
+scheduler can be executed directly from the project root. By default it runs every
+30 minutes, but you can override the interval and the initial delay:
 
 ```bash
-python src/gpt_trader/cli/scheduler_liveTrade.py
+python src/gpt_trader/cli/scheduler_liveTrade.py --start-in 15 --interval 30
 ```
 
-The script prints a countdown showing how long remains until the next scheduled
-execution. Press **Ctrl+C** to stop the scheduler.
+The command above waits 15 minutes before the first run and then repeats every
+30 minutes. The script prints a countdown showing how long remains until the next
+scheduled execution. Press **Ctrl+C** to stop the scheduler.
 
 After each run the file `latest_response.json` is generated and passed to
 `TradeSignalSender` which submits the pending order to MT5 automatically.
