@@ -15,7 +15,7 @@
   },
   "fetch": {
     "tz_shift": 4,
-    "symbol": "XAUUSD",
+    "symbol": "XAUUSDm",
     "symbol_signal": "xauusd",
     "fetch_bars": 30,
     "indicators": {"atr14": true, "rsi14": true, "sma20": true},
