@@ -20,6 +20,7 @@ if str(ROOT) not in sys.path:
 
 from main_liveTrade import main as run_main
 from gpt_trader.notify import send_line, send_telegram
+from gpt_trader.cli.lastest_signal_to_mt5 import TradeSignalSender
 
 LOGGER = logging.getLogger(__name__)
 
@@ -128,6 +129,17 @@ def _run_workflow() -> None:
         LOGGER.warning("Failed to update run log: %s", exc)
 
     _notify_summary(notify_cfg, message)
+
+    if results and results.get("parse") == "success":
+        latest_txt = parse_cfg.get(
+            "path_latest_response",
+            "data/live_trade/signals/latest_response.txt",
+        )
+        latest_json = Path(latest_txt).with_suffix(".json")
+        try:
+            TradeSignalSender(str(latest_json))
+        except Exception as exc:  # noqa: BLE001
+            LOGGER.warning("Failed to send MT5 signal: %s", exc)
  
 
 def _start_countdown(job) -> None:

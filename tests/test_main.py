@@ -89,7 +89,7 @@ def test_notify_called(tmp_path):
 
     with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
         sched, "LOG_FILE", log_path
-    ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn:
+    ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn, patch.object(sched, "TradeSignalSender") as sender_cls:
         sched._run_workflow()
     line_fn.assert_called()
     tg_fn.assert_called()
@@ -111,7 +111,7 @@ def test_notify_line_only(tmp_path):
 
     with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
         sched, "LOG_FILE", log_path
-    ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn:
+    ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn, patch.object(sched, "TradeSignalSender") as sender_cls:
         sched._run_workflow()
     line_fn.assert_called()
     tg_fn.assert_not_called()
@@ -132,7 +132,7 @@ def test_notify_telegram_only(tmp_path):
 
     with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
         sched, "LOG_FILE", log_path
-    ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn:
+    ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn, patch.object(sched, "TradeSignalSender") as sender_cls:
         sched._run_workflow()
     line_fn.assert_not_called()
     tg_fn.assert_called()

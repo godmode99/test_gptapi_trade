@@ -180,6 +180,14 @@ def main() -> None:
 
     LOGGER.info("Saved signal to %s", output)
 
+    latest_json = Path(args.latest_response).with_suffix(".json")
+    latest_json.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with latest_json.open("w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.warning("Failed to update %s: %s", latest_json, exc)
+
 
 if __name__ == "__main__":
     main()

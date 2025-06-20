@@ -152,7 +152,7 @@ be used to override the search directory. The script also saves a copy of the
 JSON data and the final prompt to `data/live_trade/save_prompt_api` by default. Use
 `--save-dir` or the `save_prompt_dir` config value to change this location.
 
-The parser `src/gpt_trader/parse/parse_gpt_response.py` reads a raw GPT reply and writes the structured result to a JSON file. Default paths are loaded from `src/gpt_trader/parse/config/parse.json` which defines where to store the CSV log, JSON signals and the latest response file. Use `--csv-log`, `--json-dir`, `--latest-response` or `--tz-shift` to override these values. Each run appends a row to the CSV log and saves the parsed data in a uniquely named file like `250616_153045.json` inside the configured directory.
+The parser `src/gpt_trader/parse/parse_gpt_response.py` reads a raw GPT reply and writes the structured result to a JSON file. Default paths are loaded from `src/gpt_trader/parse/config/parse.json` which defines where to store the CSV log, JSON signals and the latest response file. Use `--csv-log`, `--json-dir`, `--latest-response` or `--tz-shift` to override these values. Each run appends a row to the CSV log and saves the parsed data in a uniquely named file like `250616_153045.json` inside the configured directory. A copy of the parsed data is also written to `latest_response.json` alongside the text file for easy access.
 
 ### Creating configuration files
 
@@ -214,6 +214,9 @@ python src/gpt_trader/cli/scheduler_liveTrade.py
 
 The script prints a countdown showing how long remains until the next scheduled
 execution. Press **Ctrl+C** to stop the scheduler.
+
+After each run the file `latest_response.json` is generated and passed to
+`TradeSignalSender` which submits the pending order to MT5 automatically.
 
 ## Backtesting
 
