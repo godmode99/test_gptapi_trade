@@ -193,7 +193,7 @@ def main() -> None:
         handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
     )
     scheduler = BlockingScheduler()
-    job = scheduler.add_job(_run_workflow, "interval", seconds=30)
+    job = scheduler.add_job(_run_workflow, "interval", minutes=30)
     _start_countdown(job)
     LOGGER.info("Scheduler started; press Ctrl+C to exit")
     try:
