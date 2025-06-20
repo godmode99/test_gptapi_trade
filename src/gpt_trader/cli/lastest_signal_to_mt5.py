@@ -1,12 +1,23 @@
+"""Send the most recent parsed signal to MetaTrader5."""
+
 import json
 import re
 import MetaTrader5 as mt5
 
+# Map signal prefixes to the actual MT5 symbol names.  Brokers sometimes use
+# slightly different naming conventions for the same instrument.  Adjust this
+# mapping to suit your trading terminal.
+SYMBOL_MAP = {
+    "XAUUSDM": "XAUUSDm",
+    "XAUUSD": "XAUUSDm",  # GPT may omit the trailing 'm'
+}
+
 class TradeSignalSender:
-    def __init__(self, signal_path: str):
+    def __init__(self, signal_path: str, symbol_map: dict | None = None):
         self.signal_path = signal_path
         self.signal = self.load_signal()
         self.symbol_base = self.extract_symbol_base()
+        self.symbol_map = {k.upper(): v for k, v in (symbol_map or SYMBOL_MAP).items()}
         self.symbol = None
         self.entry = None
         self.sl = None
@@ -32,8 +43,12 @@ class TradeSignalSender:
         return match.group(1).upper()
 
     def find_matching_symbol(self, base: str):
+        base_up = base.upper()
+        mapped = self.symbol_map.get(base_up)
+        if mapped:
+            return mapped
         for sym in mt5.symbols_get():
-            if sym.name.startswith(base.upper()):
+            if sym.name.upper().startswith(base_up):
                 return sym.name
         return None
 
