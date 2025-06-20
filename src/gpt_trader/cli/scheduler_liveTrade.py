@@ -10,6 +10,7 @@ import time
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 
+
 from pathlib import Path
 import sys
 
@@ -127,7 +128,7 @@ def _run_workflow() -> None:
         LOGGER.warning("Failed to update run log: %s", exc)
 
     _notify_summary(notify_cfg, message)
-
+ 
 
 def _start_countdown(job) -> None:
     """Display a simple countdown until *job* runs."""
@@ -164,14 +165,16 @@ def main() -> None:
         handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
     )
     scheduler = BlockingScheduler()
-    job = scheduler.add_job(_run_workflow, "interval", hours=1)
+    job = scheduler.add_job(_run_workflow, "interval", seconds=30)
     _start_countdown(job)
     LOGGER.info("Scheduler started; press Ctrl+C to exit")
     try:
         scheduler.start()
+        
     except (KeyboardInterrupt, SystemExit):  # pragma: no cover - manual stop
         LOGGER.info("Scheduler stopped")
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry point
     main()
+    
