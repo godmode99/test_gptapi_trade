@@ -92,7 +92,7 @@ use the same timezone regardless of whether the source is MT5 or Yahoo Finance.
 If you do not specify an output path, `fetch_mt5_data.py` saves the CSV
 and an equivalent JSON file in the directory specified by `save_as_path`
 (defaults to `data/live_trade/fetch`). The file name has the form
-`<symbol>_<ddmmyy>_<HH>H.csv` (e.g. `xauusd_250616_16H.csv`).
+`<symbol>_<ddmmyy>_<HH>H_<MM>m.csv` (e.g. `xauusd_250616_16H_30m.csv`).
 
 Example `src/gpt_trader/fetch/config/fetch_mt5.json`:
 

@@ -70,8 +70,8 @@ def _tf_label(tf: str) -> str:
 
 
 def _timestamp_code(ts: pd.Timestamp) -> str:
-    """Return a string like '250616_16H' for a timestamp."""
-    return ts.strftime("%d%m%y_%H") + "H"
+    """Return a string like '250616_16H_30m' for a timestamp."""
+    return ts.strftime("%d%m%y_%HH_%M") + "m"
 
 
 def _fetch_rates(
