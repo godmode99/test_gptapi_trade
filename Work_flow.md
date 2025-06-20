@@ -28,7 +28,7 @@ AI วิเคราะห์ข้อมูลและตอบกลับ�
 
 json
 {
-"signal_id": "xauusd-20250616_14hr",
+"signal_id": "xauusd-20250616_14H_30m",
 "entry": 12,
 "sl": 10,
 "tp": 20,
@@ -78,7 +78,7 @@ Modular, debug/ปรับปรุงทุกจุดได้
 6. Example JSON Signal Structure
    json
    {
-   "signal_id": "xauusd-20250616_14hr",
+   "signal_id": "xauusd-20250616_14H_30m",
    "entry": 2332.14,
    "sl": 2327.50,
    "tp": 2340.50,
