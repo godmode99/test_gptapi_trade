@@ -50,12 +50,14 @@ def _timestamp_code(ts: datetime) -> str:
 def _save_prompt_copy(
     json_path: Path, json_text: str, prompt: str, out_dir: Path
 ) -> None:
-    """Save *json_text* and *prompt* to *out_dir* with a unique name."""
+    """Save *json_text* and *prompt* to *out_dir* as one JSON file."""
     out_dir.mkdir(parents=True, exist_ok=True)
     ts = _timestamp_code(datetime.utcnow())
     base = f"{json_path.stem}_{ts}"
-    (out_dir / f"{base}.json").write_text(json_text, encoding="utf-8")
-    (out_dir / f"{base}_prompt.txt").write_text(prompt, encoding="utf-8")
+    data = {"json": json.loads(json_text), "prompt": prompt}
+    (out_dir / f"{base}.json").write_text(
+        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
 
 
 def _build_messages(json_text: str, prompt: str) -> list[dict[str, str]]:
