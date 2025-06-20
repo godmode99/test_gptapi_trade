@@ -45,6 +45,33 @@ def _load_latest_signal(json_dir: Path) -> dict:
     return json.loads(latest.read_text(encoding="utf-8"))
 
 
+def _format_summary_message(detail: str, status: str, signal: dict | None) -> str:
+    """Return a decorated summary string for notifications."""
+    ts = datetime.now().isoformat(timespec="seconds")
+    status_icon = "✅" if status == "success" else "⚠️"
+    parts = [f"📅 {ts}", f"{status_icon} {detail} ({status})"]
+    if signal:
+        type_map = {
+            "buy_limit": "🟢⬇️",
+            "sell_limit": "🔴⬆️",
+            "buy_stop": "🟢⬆️",
+            "sell_stop": "🔴⬇️",
+        }
+        order_type = signal.get("pending_order_type")
+        emoji = type_map.get(str(order_type).lower(), "")
+        parts.extend(
+            [
+                f"📌 signal_id:{signal.get('signal_id')}",
+                f"💰 entry:{signal.get('entry')}",
+                f"🛑 sl:{signal.get('sl')}",
+                f"🎯 tp:{signal.get('tp')}",
+                f"{emoji} pending_order_type:{order_type}",
+                f"⭐ confidence:{signal.get('confidence')}",
+            ]
+        )
+    return "\n".join(parts)
+
+
 def _notify_summary(notify_cfg: dict, entry: str) -> None:
     """Send *entry* via LINE and Telegram if configured."""
     if not notify_cfg:
@@ -94,9 +121,7 @@ def _run_workflow() -> None:
     detail = " ".join(
         f"{k}:{results.get(k, 'n/a')}" for k in ("fetch", "send", "parse")
     ) if results else ""
-    message = (
-        f"{datetime.now().isoformat(timespec='seconds')} - {detail} ({status})"
-    )
+    message = ""
     signal = None
     try:
         cfg = _load_config(DEFAULT_CFG)
@@ -111,16 +136,7 @@ def _run_workflow() -> None:
     except Exception as exc:  # noqa: BLE001
         LOGGER.warning("Failed to load config or signal data: %s", exc)
         notify_cfg = {}
-    if signal:
-        sig_parts = [
-            f"signal_id:{signal.get('signal_id')}",
-            f"entry:{signal.get('entry')}",
-            f"sl:{signal.get('sl')}",
-            f"tp:{signal.get('tp')}",
-            f"pending_order_type:{signal.get('pending_order_type')}",
-            f"confidence:{signal.get('confidence')}",
-        ]
-        message = f"{message} {' '.join(sig_parts)}"
+    message = _format_summary_message(detail, status, signal)
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     try:
         with LOG_FILE.open("a", encoding="utf-8") as f:
