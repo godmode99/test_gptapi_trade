@@ -16,6 +16,7 @@ data/live_trade/save_prompt_api/*
 !data/live_trade/save_prompt_api/.gitkeep
 # Ignore parsed signal files and latest response
 data/live_trade/signals/latest_response.txt
+data/live_trade/signals/latest_response.json
 
 # Ignore backtest data
 data/back_test/*
