@@ -70,8 +70,8 @@ def _tf_label(tf: str) -> str:
 
 
 def _timestamp_code(ts: pd.Timestamp) -> str:
-    """Return a string like '250616_16H_30m' for a timestamp."""
-    return ts.strftime("%d%m%y_%HH_%M") + "m"
+    """Return the UNIX timestamp for *ts* as a string."""
+    return str(int(pd.Timestamp(ts).timestamp()))
 
 
 def _fetch_rates(
@@ -202,6 +202,7 @@ def main() -> None:
     args = parser.parse_args(remaining)
 
     symbol = args.symbol or config.get("symbol", "EURUSD")
+    signal_prefix = str(config.get("symbol_signal", symbol)).lower()
 
     if args.time_fetch:
         config["time_fetch"] = args.time_fetch
@@ -226,7 +227,7 @@ def main() -> None:
             if pd.isna(last_ts):
                 raise RuntimeError("No timestamp found in fetched data")
             name = _timestamp_code(last_ts)
-            output = Path(default_save_path) / f"{symbol.lower()}_{name}.csv"
+            output = Path(default_save_path) / f"{signal_prefix}{name}.csv"
         output.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(output, index=False)
         json_out = output.with_suffix(".json")
