@@ -311,6 +311,7 @@ pytest
 - [คู่มือใช้งาน Live Trade และ Backtest](docs/usage_overall_th.md)
 - [สรุปรายการไฟล์ในโครงการ](docs/files_overview_th.md)
 - [ภาพรวม flow การทำงาน](docs/flow_overview_th.md)
+- [การติดตั้งบน Linux/Wine และใช้งาน scheduler](docs/usage_linux_th.md)
 
 
 ## License
