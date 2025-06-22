@@ -191,12 +191,16 @@ def main() -> None:
     parser.add_argument(
         "--interval",
         type=int,
+
+        #### ปรับเวลา loop ทุก n minutes
         default=30,
         help="Minutes between each run",
     )
     parser.add_argument(
         "--start-in",
         type=int,
+
+        ####  ปรับเวลาเริ่มstart ในอีก n minutes
         default=0,
         help="Delay first run by this many minutes",
     )
