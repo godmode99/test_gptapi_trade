@@ -113,6 +113,8 @@ def _next_window_run(
     """Return the first run time >= *next_run* within the active window."""
 
     start_of_window = datetime.combine(next_run.date(), start_time)
+    if next_run.tzinfo is not None and start_of_window.tzinfo is None:
+        start_of_window = start_of_window.replace(tzinfo=next_run.tzinfo)
     start_of_window += timedelta(days=(start_day - start_of_window.weekday()) % 7)
 
     if start_of_window < next_run:
