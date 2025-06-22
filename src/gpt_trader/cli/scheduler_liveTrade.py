@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import math
 from datetime import datetime, timedelta, time as dt_time
 import logging
 import threading
@@ -110,6 +111,16 @@ def _next_window_run(
     stop_time: dt_time,
 ) -> datetime:
     """Return the first run time >= *next_run* within the active window."""
+
+    start_of_window = datetime.combine(next_run.date(), start_time)
+    start_of_window += timedelta(days=(start_day - start_of_window.weekday()) % 7)
+
+    if start_of_window < next_run:
+        diff = (next_run - start_of_window).total_seconds() / 60
+        steps = math.ceil(diff / max(1, interval))
+        next_run = start_of_window + timedelta(minutes=steps * interval)
+    else:
+        next_run = start_of_window
 
     for _ in range(int(7 * 24 * 60 / max(1, interval)) + 1):
         if _within_window(next_run, start_day, start_time, stop_day, stop_time):
