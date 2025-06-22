@@ -101,6 +101,23 @@ def _within_window(
     return current_idx >= start_idx or current_idx < stop_idx
 
 
+def _next_window_run(
+    next_run: datetime,
+    interval: int,
+    start_day: int,
+    start_time: dt_time,
+    stop_day: int,
+    stop_time: dt_time,
+) -> datetime:
+    """Return the first run time >= *next_run* within the active window."""
+
+    for _ in range(int(7 * 24 * 60 / max(1, interval)) + 1):
+        if _within_window(next_run, start_day, start_time, stop_day, stop_time):
+            return next_run
+        next_run += timedelta(minutes=interval)
+    return next_run
+
+
 def _format_summary_message(detail: str, status: str, signal: dict | None) -> str:
     """Return a decorated summary string for notifications."""
     ts = datetime.now().isoformat(timespec="seconds")
@@ -231,15 +248,26 @@ def _make_workflow_runner(
     return _runner
  
 
-def _start_countdown(job) -> None:
-    """Display a simple countdown until *job* runs."""
+
+def _start_countdown(
+    job,
+    interval: int,
+    start_day: int,
+    start_time: dt_time,
+    stop_day: int,
+    stop_time: dt_time,
+) -> None:
+    """Display a simple countdown until the next active job run."""
 
     def _loop() -> None:
         while True:
-            next_run = getattr(job, "next_run_time", getattr(job, "next_fire_time", None))
-            if next_run is None:
+            base_run = getattr(job, "next_run_time", getattr(job, "next_fire_time", None))
+            if base_run is None:
                 time.sleep(1)
                 continue
+            next_run = _next_window_run(
+                base_run, interval, start_day, start_time, stop_day, stop_time
+            )
             while True:
                 remaining = next_run - datetime.now(next_run.tzinfo)
                 if remaining.total_seconds() <= 0:
@@ -319,10 +347,12 @@ def main() -> None:
         next_run_time=first_run,
     )
 
-    _start_countdown(job)
+    next_exec = _next_window_run(first_run, args.interval, start_day, start_time, stop_day, stop_time)
+    _start_countdown(job, args.interval, start_day, start_time, stop_day, stop_time)
     LOGGER.info(
-        "Scheduler started (first run at %s, interval %s minutes, window %s %s to %s %s); press Ctrl+C to exit",
+        "Scheduler started (first run at %s, next execution at %s, interval %s minutes, window %s %s to %s %s); press Ctrl+C to exit",
         first_run.isoformat(timespec="seconds"),
+        next_exec.isoformat(timespec="seconds"),
         args.interval,
         args.start_day,
         args.start_time,

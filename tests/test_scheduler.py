@@ -1,6 +1,6 @@
 from datetime import datetime, time
 
-from gpt_trader.cli.scheduler_liveTrade import _within_window
+from gpt_trader.cli.scheduler_liveTrade import _within_window, _next_window_run
 
 
 def test_within_window_basic() -> None:
@@ -37,3 +37,16 @@ def test_within_window_cross_week() -> None:
         stop_day,
         time(5, 0),
     )
+
+
+def test_next_run_waits_until_monday() -> None:
+    sunday = datetime(2024, 6, 9, 12, 0)
+    next_run = _next_window_run(
+        sunday,
+        30,
+        0,
+        time(8, 30),
+        4,
+        time(23, 35),
+    )
+    assert next_run == datetime(2024, 6, 10, 8, 30)
