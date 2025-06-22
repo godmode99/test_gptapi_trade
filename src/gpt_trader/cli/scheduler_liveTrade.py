@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time as dt_time
 import logging
 import threading
 import time
@@ -44,6 +44,61 @@ def _load_latest_signal(json_dir: Path) -> dict:
         raise FileNotFoundError(f"No JSON files found in {json_dir}")
     latest = max(json_files, key=lambda p: p.stat().st_mtime)
     return json.loads(latest.read_text(encoding="utf-8"))
+
+
+DAY_MAP = {
+    "mon": 0,
+    "monday": 0,
+    "tue": 1,
+    "tuesday": 1,
+    "wed": 2,
+    "wednesday": 2,
+    "thu": 3,
+    "thursday": 3,
+    "fri": 4,
+    "friday": 4,
+    "sat": 5,
+    "saturday": 5,
+    "sun": 6,
+    "sunday": 6,
+}
+
+
+def _parse_day(value: str) -> int:
+    """Return weekday index for *value* or raise ``ArgumentTypeError``."""
+    try:
+        return DAY_MAP[value.strip().lower()]
+    except KeyError as exc:  # noqa: BLE001
+        raise argparse.ArgumentTypeError(f"Invalid day: {value}") from exc
+
+
+def _parse_time(value: str) -> dt_time:
+    """Return ``datetime.time`` parsed from HH:MM string."""
+    try:
+        return datetime.strptime(value, "%H:%M").time()
+    except ValueError as exc:  # noqa: BLE001
+        raise argparse.ArgumentTypeError(f"Invalid time: {value}") from exc
+
+
+def _minutes_from_day(day: int, t: dt_time) -> int:
+    """Convert day/time to minutes since Monday."""
+    return day * 24 * 60 + t.hour * 60 + t.minute
+
+
+def _within_window(
+    now: datetime,
+    start_day: int,
+    start_time: dt_time,
+    stop_day: int,
+    stop_time: dt_time,
+) -> bool:
+    """Return ``True`` if *now* falls within the active schedule."""
+    start_idx = _minutes_from_day(start_day, start_time)
+    stop_idx = _minutes_from_day(stop_day, stop_time)
+    current_idx = _minutes_from_day(now.weekday(), now.time())
+    if start_idx <= stop_idx:
+        return start_idx <= current_idx < stop_idx
+    return current_idx >= start_idx or current_idx < stop_idx
 
 
 def _format_summary_message(detail: str, status: str, signal: dict | None) -> str:
@@ -157,6 +212,23 @@ def _run_workflow() -> None:
             TradeSignalSender(str(latest_json))
         except Exception as exc:  # noqa: BLE001
             LOGGER.warning("Failed to send MT5 signal: %s", exc)
+
+
+def _make_workflow_runner(
+    start_day: int,
+    start_time: dt_time,
+    stop_day: int,
+    stop_time: dt_time,
+) -> callable:
+    """Return function that runs workflow only within the configured window."""
+
+    def _runner() -> None:
+        if _within_window(datetime.now(), start_day, start_time, stop_day, stop_time):
+            _run_workflow()
+        else:
+            LOGGER.info("Outside configured window - skipping run")
+
+    return _runner
  
 
 def _start_countdown(job) -> None:
@@ -204,7 +276,32 @@ def main() -> None:
         default=0,
         help="Delay first run by this many minutes",
     )
+    parser.add_argument(
+        "--start-day",
+        default="mon",
+        help="Day of week to start running (mon,tue,...)",
+    )
+    parser.add_argument(
+        "--start-time",
+        default="08:30",
+        help="Time of day to start (HH:MM)",
+    )
+    parser.add_argument(
+        "--stop-day",
+        default="fri",
+        help="Day of week to stop running",
+    )
+    parser.add_argument(
+        "--stop-time",
+        default="23:35",
+        help="Time of day to stop (HH:MM)",
+    )
     args = parser.parse_args()
+
+    start_day = _parse_day(args.start_day)
+    start_time = _parse_time(args.start_time)
+    stop_day = _parse_day(args.stop_day)
+    stop_time = _parse_time(args.stop_time)
 
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     logging.basicConfig(
@@ -216,7 +313,7 @@ def main() -> None:
     scheduler = BlockingScheduler()
     first_run = datetime.now() + timedelta(minutes=args.start_in)
     job = scheduler.add_job(
-        _run_workflow,
+        _make_workflow_runner(start_day, start_time, stop_day, stop_time),
         "interval",
         minutes=args.interval,
         next_run_time=first_run,
@@ -224,9 +321,13 @@ def main() -> None:
 
     _start_countdown(job)
     LOGGER.info(
-        "Scheduler started (first run at %s, interval %s minutes); press Ctrl+C to exit",
+        "Scheduler started (first run at %s, interval %s minutes, window %s %s to %s %s); press Ctrl+C to exit",
         first_run.isoformat(timespec="seconds"),
         args.interval,
+        args.start_day,
+        args.start_time,
+        args.stop_day,
+        args.stop_time,
     )
     try:
         scheduler.start()
