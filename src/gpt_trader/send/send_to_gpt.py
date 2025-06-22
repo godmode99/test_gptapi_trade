@@ -18,7 +18,9 @@ LOGGER = logging.getLogger(__name__)
 # Template for the default prompt. The JSON filename will be inserted
 # in place of ``%s`` to become the ``signal_id`` value.
 DEFAULT_PROMPT = (
-    "Generate a trading signal and reply only with a JSON object like "
+    "Predict the price for the next 30 minutes using the historical data and "
+    "select an entry and exit with minimal risk. Reply only with a JSON object "
+    "like "
     '{"signal_id": "%s", "entry": , "sl": , "tp": , '
     '"pending_order_type": "", "confidence":  }. '
     "pending_order_type must be one of [buy_limit, sell_limit, buy_stop, "
