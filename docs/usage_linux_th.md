@@ -27,10 +27,13 @@
 
 เรียก `src/gpt_trader/cli/scheduler_liveTrade.py` เพื่อตั้งเวลารัน `main_liveTrade.py` ซ้ำ ๆ
 
-ตัวอย่างเริ่มต้นใน 15 นาที แล้วทำงานทุก 60 นาที:
+ตัวอย่างกำหนดวันและเวลาเริ่ม/หยุด พร้อมระยะเวลาห่างกัน 30 นาที:
 
 ```bash
-python src/gpt_trader/cli/scheduler_liveTrade.py --start-in 15 --interval 60
+python src/gpt_trader/cli/scheduler_liveTrade.py \
+  --start-day mon --start-time 08:30 \
+  --stop-day fri --stop-time 23:35 \
+  --interval 30 --start-in 15
 ```
 
 กด **Ctrl+C** เพื่อหยุดการทำงานของ scheduler

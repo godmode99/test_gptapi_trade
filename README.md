@@ -212,10 +212,13 @@ version 3.x is expected but the code attempts to handle version 4.x as well.
 Since
 `main_liveTrade.py` now prepends the repository root to `sys.path`, the
 scheduler can be executed directly from the project root. By default it runs every
-30 minutes, but you can override the interval and the initial delay:
+30 minutes, but you can override the interval, start and stop times:
 
 ```bash
-python src/gpt_trader/cli/scheduler_liveTrade.py --start-in 15 --interval 30
+python src/gpt_trader/cli/scheduler_liveTrade.py \
+  --start-day mon --start-time 08:30 \
+  --stop-day fri --stop-time 23:35 \
+  --interval 30 --start-in 15
 ```
 
 The command above waits 15 minutes before the first run and then repeats every
