@@ -19,7 +19,6 @@ LOGGER = logging.getLogger(__name__)
 # in place of ``%s`` to become the ``signal_id`` value.
 DEFAULT_PROMPT = (
     "Analyze the market regime and structure from the historical OHLCV and indicator data provided. "
-    "Classify the current regime as one of: 'uptrend', 'downtrend', 'sideway', or 'high_volatility'. "
     "If the market is not clear or signals are mixed, set pending_order_type as 'skip' and do not enter a trade. "
     "Only select entry points that align with the dominant trend and are near support/resistance with minimal risk. "
     "Respond with ONLY a valid JSON object, like: "
