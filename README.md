@@ -215,13 +215,14 @@ python main_liveTrade.py --fetch-type mt5 --skip-fetch --skip-send
 
 ### Automated execution
 
-Run `src/gpt_trader/cli/scheduler_liveTrade.py` to execute the workflow on a schedule.
-The script uses APScheduler to call `main_liveTrade.py` repeatedly. APScheduler
-version 3.x is expected but the code attempts to handle version 4.x as well.
-Since
-`main_liveTrade.py` now prepends the repository root to `sys.path`, the
-scheduler can be executed directly from the project root. By default it runs every
-30 minutes, but you can override the interval, start and stop times:
+Run `src/gpt_trader/cli/scheduler_liveTrade.py` to execute the workflow on a
+schedule. The script uses APScheduler to call `main_liveTrade.py` repeatedly
+(version 3.x is expected but the code attempts to handle version 4.x as well).
+`main_liveTrade.py` prepends the repository root to `sys.path` so the scheduler
+can be executed directly from the project root. The workflow is executed once
+immediately and then the next run is scheduled for the configured start window
+(by default Monday at 08:30). After that it repeats every 30 minutes. You can
+override the interval, start and stop times:
 
 ```bash
 python src/gpt_trader/cli/scheduler_liveTrade.py \
