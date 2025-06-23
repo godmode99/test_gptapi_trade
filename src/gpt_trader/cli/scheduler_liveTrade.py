@@ -155,6 +155,8 @@ def _format_summary_message(detail: str, status: str, signal: dict | None) -> st
                 f"⭐ confidence:{signal.get('confidence')}",
             ]
         )
+        if signal.get("regime_type") is not None:
+            parts.append(f"📊 regime_type:{signal['regime_type']}")
         if signal.get("lot") is not None:
             parts.append(f"💵 lot:{signal['lot']}")
         if signal.get("rr") is not None:
