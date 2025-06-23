@@ -22,7 +22,7 @@ if str(ROOT) not in sys.path:
 
 from main_liveTrade import main as run_main
 from gpt_trader.notify import send_line, send_telegram
-from gpt_trader.cli.lastest_signal_to_mt5 import TradeSignalSender
+from gpt_trader.cli.latest_signal_to_mt5 import TradeSignalSender
 
 LOGGER = logging.getLogger(__name__)
 

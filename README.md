@@ -232,8 +232,10 @@ scheduled execution. Press **Ctrl+C** to stop the scheduler.
 After each run the file `latest_response.json` is generated and passed to
 `TradeSignalSender` which submits the pending order to MT5 automatically.
 If your broker uses different symbol names, adjust the `SYMBOL_MAP` dictionary
-inside `src/gpt_trader/cli/lastest_signal_to_mt5.py` to map between the signal
+inside `src/gpt_trader/cli/latest_signal_to_mt5.py` to map between the signal
 prefix and the actual MT5 symbol.
+The file was previously named `lastest_signal_to_mt5.py`; a stub remains for
+backward compatibility.
 The sender uses the `risk_per_trade` value from the config when provided.
 
 ## Backtesting

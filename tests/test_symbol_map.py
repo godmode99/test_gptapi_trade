@@ -12,7 +12,7 @@ def test_find_matching_symbol_uses_map(tmp_path):
     mt5.symbols_get = lambda: [type("Sym", (), {"name": "OTHER"})()]
 
     with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
-        mod = importlib.import_module("gpt_trader.cli.lastest_signal_to_mt5")
+        mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
         importlib.reload(mod)
 
         sender = object.__new__(mod.TradeSignalSender)
