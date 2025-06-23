@@ -14,7 +14,7 @@ import csv
 import json
 import logging
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 
@@ -133,7 +133,7 @@ def main() -> None:
 
     csv_path = Path(args.csv_log)
     csv_path.parent.mkdir(parents=True, exist_ok=True)
-    ts = datetime.utcnow() + timedelta(hours=args.tz_shift)
+    ts = datetime.now(timezone.utc) + timedelta(hours=args.tz_shift)
     row = {
         "timestamp": ts.isoformat(),
         "signal_id": data.get("signal_id"),
