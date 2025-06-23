@@ -175,6 +175,10 @@ cp config/setting_backtest.example.json config/setting_backtest.json
 See [`live_trade/docs/config_main_th.md`](live_trade/docs/config_main_th.md) for
 an explanation of each key.
 
+The live trade config also accepts a top-level `risk_per_trade` value
+(percentage of account balance). When set it overrides any
+`risk_per_trade` found in the signal JSON.
+
 For Thai users: สำหรับภาษาไทย ดูเอกสารที่ `live_trade/docs/usage_th.md`.
 
 ## Running the complete workflow
@@ -230,6 +234,7 @@ After each run the file `latest_response.json` is generated and passed to
 If your broker uses different symbol names, adjust the `SYMBOL_MAP` dictionary
 inside `src/gpt_trader/cli/lastest_signal_to_mt5.py` to map between the signal
 prefix and the actual MT5 symbol.
+The sender uses the `risk_per_trade` value from the config when provided.
 
 ## Backtesting
 
