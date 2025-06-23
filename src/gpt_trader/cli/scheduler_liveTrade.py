@@ -213,6 +213,7 @@ def _run_workflow() -> None:
         cfg = _load_config(DEFAULT_CFG)
         parse_cfg = cfg.get("parse", {})
         notify_cfg = cfg.get("notify", {})
+        risk_pct = cfg.get("risk_per_trade")
         if results and results.get("parse") == "success":
             json_dir = parse_cfg.get(
                 "path_signals_json",
@@ -239,7 +240,7 @@ def _run_workflow() -> None:
         )
         latest_json = Path(latest_txt).with_suffix(".json")
         try:
-            TradeSignalSender(str(latest_json))
+            TradeSignalSender(str(latest_json), risk_per_trade=risk_pct)
         except Exception as exc:  # noqa: BLE001
             LOGGER.warning("Failed to send MT5 signal: %s", exc)
 

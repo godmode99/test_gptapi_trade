@@ -13,7 +13,12 @@ SYMBOL_MAP = {
 }
 
 class TradeSignalSender:
-    def __init__(self, signal_path: str, symbol_map: dict | None = None):
+    def __init__(
+        self,
+        signal_path: str,
+        symbol_map: dict | None = None,
+        risk_per_trade: float | None = None,
+    ):
         self.signal_path = signal_path
         self.signal = self.load_signal()
         self.symbol_base = self.extract_symbol_base()
@@ -26,7 +31,7 @@ class TradeSignalSender:
         self.rr = None
         self.confidence = None
         self.max_drawdown = None
-        self.risk_per_trade = None
+        self.risk_per_trade = risk_per_trade
         self.pending_order_type = None
         self.order_type = None
         self.balance = None
@@ -128,9 +133,10 @@ class TradeSignalSender:
         self.sl = float(self.signal["sl"])
         self.confidence = int(self.signal.get("confidence", 70))
         self.max_drawdown = float(self.signal.get("max_drawdown", 15))
-        self.risk_per_trade = float(
-            self.signal.get("risk_per_trade", self.max_drawdown / 10)
-        )
+        if self.risk_per_trade is None:
+            self.risk_per_trade = float(
+                self.signal.get("risk_per_trade", self.max_drawdown / 10)
+            )
         self.pending_order_type = self.signal["pending_order_type"].lower().replace(" ", "_")
 
         self.calculate_risk_reward()
