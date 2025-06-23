@@ -165,6 +165,8 @@ def _format_summary_message(detail: str, status: str, signal: dict | None) -> st
             except Exception:
                 rr_fmt = str(signal['rr'])
             parts.append(f"📈 rr:{rr_fmt}")
+        if signal.get("short_reason") is not None:
+            parts.append(f"📝 short_reason:{signal['short_reason']}")
     return "\n".join(parts)
 
 
