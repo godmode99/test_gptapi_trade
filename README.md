@@ -275,7 +275,7 @@ with **MetaEditor**. The indicator calculates RSI‑14, SMA‑20 and ATR‑14 fo
 current chart timeframe. If the `DisplaySignals` parameter is enabled it reads
 the latest JSON file from the `data/live_trade/signals/signals_json/` directory and shows the parsed values
 on the chart. Each JSON signal must include the fields `signal_id`, `entry`, `sl`,
-`tp`, `pending_order_type` and `confidence`.
+`tp`, `pending_order_type`, `confidence` and `regime_type`.
 
 ### Compile & Attach
 
