@@ -21,7 +21,15 @@ class TradeSignalSender:
     ):
         self.signal_path = signal_path
         self.signal = self.load_signal()
-        self.symbol_base = self.extract_symbol_base()
+        self.pending_order_type = (
+            str(self.signal.get("pending_order_type", ""))
+            .lower()
+            .replace(" ", "_")
+        )
+        if self.pending_order_type != "skip":
+            self.symbol_base = self.extract_symbol_base()
+        else:
+            self.symbol_base = None
         self.symbol_map = {k.upper(): v for k, v in (symbol_map or SYMBOL_MAP).items()}
         self.symbol = None
         self.entry = None
@@ -32,7 +40,6 @@ class TradeSignalSender:
         self.confidence = None
         self.max_drawdown = None
         self.risk_per_trade = risk_per_trade
-        self.pending_order_type = None
         self.order_type = None
         self.balance = None
 
@@ -109,7 +116,6 @@ class TradeSignalSender:
                 self.entry = market_price + min_diff if "buy" in self.pending_order_type else market_price - min_diff
 
     def process(self):
-        self.pending_order_type = str(self.signal.get("pending_order_type", "")).lower().replace(" ", "_")
         if self.pending_order_type == "skip":
             reason = self.signal.get("short_reason", "")
             print(f"⏭️ Skipping signal {self.signal['signal_id']} {reason}")
