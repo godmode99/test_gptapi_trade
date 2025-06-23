@@ -10,7 +10,7 @@ import pytest
 
 
 def _get_sender():
-    mod = importlib.import_module("gpt_trader.cli.lastest_signal_to_mt5")
+    mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
     importlib.reload(mod)
     sender = object.__new__(mod.TradeSignalSender)
     sender.risk_per_trade = 1
@@ -85,7 +85,7 @@ def test_calculate_lot_zero_sl_raises() -> None:
 def test_config_risk_overrides_json(tmp_path) -> None:
     mt5 = _make_mt5_stub()
     with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
-        mod = importlib.import_module("gpt_trader.cli.lastest_signal_to_mt5")
+        mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
         importlib.reload(mod)
         data = {
             "signal_id": "xauusd-test",
@@ -103,7 +103,7 @@ def test_config_risk_overrides_json(tmp_path) -> None:
 def test_config_risk_defaults_to_json(tmp_path) -> None:
     mt5 = _make_mt5_stub()
     with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
-        mod = importlib.import_module("gpt_trader.cli.lastest_signal_to_mt5")
+        mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
         importlib.reload(mod)
         data = {
             "signal_id": "xauusd-test",
