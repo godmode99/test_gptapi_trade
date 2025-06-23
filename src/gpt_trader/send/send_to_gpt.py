@@ -18,13 +18,15 @@ LOGGER = logging.getLogger(__name__)
 # Template for the default prompt. The JSON filename will be inserted
 # in place of ``%s`` to become the ``signal_id`` value.
 DEFAULT_PROMPT = (
-    "Predict the price for the next 30 minutes using the historical data and "
-    "select an entry and exit with minimal risk. Reply only with a JSON object "
-    "like "
+    "Analyze the market regime and structure from the historical OHLCV and indicator data provided. "
+    "Classify the current regime as one of: 'uptrend', 'downtrend', 'sideway', or 'high_volatility'. "
+    "If the market is not clear or signals are mixed, set pending_order_type as 'skip' and do not enter a trade. "
+    "Only select entry points that align with the dominant trend and are near support/resistance with minimal risk. "
+    "Respond with ONLY a valid JSON object, like: "
     '{"signal_id": "%s", "entry": , "sl": , "tp": , '
-    '"pending_order_type": "", "confidence":  }. '
-    "pending_order_type must be one of [buy_limit, sell_limit, buy_stop, "
-    "sell_stop] and confidence is an integer percentage between 1 and 100."
+    '"pending_order_type": "", "confidence": , "regime_type": ""}. '
+    "pending_order_type must be one of [buy_limit, sell_limit, buy_stop, sell_stop, skip]. "
+    "Confidence is an integer (1-100). If conditions are not optimal, use 'skip' as pending_order_type. "
 )
 
 
