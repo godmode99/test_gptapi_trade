@@ -80,9 +80,9 @@ def get_session(ts: pd.Timestamp) -> str:
 
     if 5 <= hour < 14:
         return "asia"        # Sydney + Tokyo
-    elif 14 <= hour < 20:
+    elif 14 <= hour < 18:
         return "london"      # London only
-    elif 20 <= hour or hour < 5:
+    elif 19 <= hour or hour < 5:
         return "newyork"     # New York
     return "closed"
 
