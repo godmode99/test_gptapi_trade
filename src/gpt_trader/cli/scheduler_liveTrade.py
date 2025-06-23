@@ -302,8 +302,9 @@ def _start_countdown(
                     break
                 hours, rem = divmod(int(remaining.total_seconds()), 3600)
                 minutes, seconds = divmod(rem, 60)
+                ts = next_run.strftime("%H:%M:%S")
                 print(
-                    f"Next run in {hours:02d}:{minutes:02d}:{seconds:02d}",
+                    f"Next run at {ts} ({hours:02d}:{minutes:02d}:{seconds:02d})",
                     end="\r",
                     flush=True,
                 )
