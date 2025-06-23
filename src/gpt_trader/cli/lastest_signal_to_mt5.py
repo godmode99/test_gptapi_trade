@@ -115,7 +115,7 @@ class TradeSignalSender:
         self.entry = float(self.signal["entry"])
         self.sl = float(self.signal["sl"])
         self.confidence = int(self.signal.get("confidence", 70))
-        self.max_drawdown = float(self.signal.get("max_drawdown", 20))
+        self.max_drawdown = float(self.signal.get("max_drawdown", 15))
         self.pending_order_type = self.signal["pending_order_type"].lower().replace(" ", "_")
 
         self.calculate_risk_reward()
