@@ -28,13 +28,13 @@
 เรียก `src/gpt_trader/cli/scheduler_liveTrade.py` เพื่อตั้งเวลารัน
 `main_liveTrade.py` ซ้ำ ๆ โดยสคริปต์จะรัน workflow หนึ่งครั้งทันทีที่
 เริ่มต้น แล้วจึงนัดรอบถัดไปตามช่วงเวลาที่กำหนด (ค่าเริ่มต้นคือทุกวันจันทร์
-เวลา 08:30 แล้ววนทุก 30 นาทีจนถึงเวลาหยุดที่ตั้งไว้)
+เวลา 08:20 แล้ววนทุก 30 นาทีจนถึงเวลาหยุดที่ตั้งไว้)
 
 ตัวอย่างกำหนดวันและเวลาเริ่ม/หยุด พร้อมระยะเวลาห่างกัน 30 นาที:
 
 ```bash
 python src/gpt_trader/cli/scheduler_liveTrade.py \
-  --start-day mon --start-time 08:30 \
+  --start-day mon --start-time 08:20 \
   --stop-day fri --stop-time 23:35 \
   --interval 30 --start-in 15
 ```
