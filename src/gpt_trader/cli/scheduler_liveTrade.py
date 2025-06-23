@@ -155,6 +155,14 @@ def _format_summary_message(detail: str, status: str, signal: dict | None) -> st
                 f"⭐ confidence:{signal.get('confidence')}",
             ]
         )
+        if signal.get("lot") is not None:
+            parts.append(f"💵 lot:{signal['lot']}")
+        if signal.get("rr") is not None:
+            try:
+                rr_fmt = f"{float(signal['rr']):.2f}"
+            except Exception:
+                rr_fmt = str(signal['rr'])
+            parts.append(f"📈 rr:{rr_fmt}")
     return "\n".join(parts)
 
 
@@ -220,6 +228,19 @@ def _run_workflow() -> None:
                 "data/live_trade/signals/signals_json",
             )
             signal = _load_latest_signal(Path(json_dir))
+            latest_txt = parse_cfg.get(
+                "path_latest_response",
+                "data/live_trade/signals/latest_response.txt",
+            )
+            latest_json = Path(latest_txt).with_suffix(".json")
+            try:
+                sender = TradeSignalSender(
+                    str(latest_json), risk_per_trade=risk_pct
+                )
+                signal["lot"] = sender.lot
+                signal["rr"] = sender.rr
+            except Exception as exc:  # noqa: BLE001
+                LOGGER.warning("Failed to send MT5 signal: %s", exc)
     except Exception as exc:  # noqa: BLE001
         LOGGER.warning("Failed to load config or signal data: %s", exc)
         notify_cfg = {}
@@ -232,17 +253,6 @@ def _run_workflow() -> None:
         LOGGER.warning("Failed to update run log: %s", exc)
 
     _notify_summary(notify_cfg, message)
-
-    if results and results.get("parse") == "success":
-        latest_txt = parse_cfg.get(
-            "path_latest_response",
-            "data/live_trade/signals/latest_response.txt",
-        )
-        latest_json = Path(latest_txt).with_suffix(".json")
-        try:
-            TradeSignalSender(str(latest_json), risk_per_trade=risk_pct)
-        except Exception as exc:  # noqa: BLE001
-            LOGGER.warning("Failed to send MT5 signal: %s", exc)
 
 
 def _make_workflow_runner(

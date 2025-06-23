@@ -1,7 +1,7 @@
 import sys
 import json
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import asyncio
 
@@ -136,3 +136,46 @@ def test_notify_telegram_only(tmp_path):
         sched._run_workflow()
     line_fn.assert_not_called()
     tg_fn.assert_called()
+
+
+def test_order_before_notification(tmp_path):
+    cfg = {
+        "notify": {"line": {"enabled": True, "token": "t"}, "telegram": {"enabled": False}}
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+    log_path = tmp_path / "run.log"
+
+    import gpt_trader.cli.scheduler_liveTrade as sched
+
+    calls: list[str] = []
+
+    def record_notify(*_args, **_kw):
+        calls.append("notify")
+
+    def record_order(*_args, **_kw):
+        calls.append("order")
+        mock = MagicMock()
+        mock.lot = 0.1
+        mock.rr = 1.5
+        return mock
+
+    with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
+        sched, "LOG_FILE", log_path
+    ), patch.object(
+        sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}
+    ), patch.object(
+        sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55}
+    ), patch.object(
+        sched, "send_line", side_effect=record_notify
+    ) as line_fn, patch.object(
+        sched, "send_telegram"
+    ), patch.object(
+        sched, "TradeSignalSender", side_effect=record_order
+    ):
+        sched._run_workflow()
+
+    assert calls == ["order", "notify"]
+    msg = line_fn.call_args[0][0]
+    assert "lot:" in msg
+    assert "rr:" in msg
