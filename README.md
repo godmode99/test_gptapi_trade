@@ -97,6 +97,10 @@ timestamp for uniqueness. It has the form
 `symbol_signal` value can be set in the configuration and defaults to the
 fetch `symbol` in lower case.
 
+Each row in the output also includes a `session` field that labels the
+bar as belonging to the **asia**, **london** or **newyork** trading
+session based on the shifted timestamp.
+
 Example `src/gpt_trader/fetch/config/fetch_mt5.json`:
 
 ```json

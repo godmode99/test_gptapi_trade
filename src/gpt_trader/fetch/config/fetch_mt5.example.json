@@ -8,5 +8,6 @@
     {"tf": "M5", "keep": 10},
     {"tf": "M15", "keep": 6},
     {"tf": "H1", "keep": 4}
-  ]
+  ],
+  "note": "Fetched CSV/JSON includes a 'session' column (asia/london/newyork)"
 }
