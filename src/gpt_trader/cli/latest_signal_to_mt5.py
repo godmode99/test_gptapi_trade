@@ -109,6 +109,16 @@ class TradeSignalSender:
                 self.entry = market_price + min_diff if "buy" in self.pending_order_type else market_price - min_diff
 
     def process(self):
+        self.pending_order_type = str(self.signal.get("pending_order_type", "")).lower().replace(" ", "_")
+        if self.pending_order_type == "skip":
+            reason = self.signal.get("short_reason", "")
+            print(f"⏭️ Skipping signal {self.signal['signal_id']} {reason}")
+            self.confidence = self.signal.get("confidence")
+            self.max_drawdown = self.signal.get("max_drawdown")
+            if self.risk_per_trade is None:
+                self.risk_per_trade = self.signal.get("risk_per_trade")
+            return
+
         if not mt5.initialize():
             raise RuntimeError("❌ MT5 initialize failed")
 
@@ -137,7 +147,6 @@ class TradeSignalSender:
             self.risk_per_trade = float(
                 self.signal.get("risk_per_trade", self.max_drawdown / 10)
             )
-        self.pending_order_type = self.signal["pending_order_type"].lower().replace(" ", "_")
 
         self.calculate_risk_reward()
         self.lot = self.calculate_lot(

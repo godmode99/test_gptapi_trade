@@ -238,6 +238,8 @@ After each run the file `latest_response.json` is generated and passed to
 If your broker uses different symbol names, adjust the `SYMBOL_MAP` dictionary
 inside `src/gpt_trader/cli/latest_signal_to_mt5.py` to map between the signal
 prefix and the actual MT5 symbol.
+If a signal sets `pending_order_type` to `skip`, the script prints the reason and
+does not send any order to MT5.
 The file was previously named `lastest_signal_to_mt5.py`; a stub remains for
 backward compatibility.
 The sender uses the `risk_per_trade` value from the config when provided.
