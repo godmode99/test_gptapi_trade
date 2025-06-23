@@ -2,8 +2,8 @@
   "tz_shift": 4,
   "symbol": "XAUUSD",
   "symbol_signal": "xauusd",
-  "fetch_bars": 30,
-  "indicators": {"atr14": true, "rsi14": true, "sma20": true},
+  "fetch_bars": 50,
+  "indicators": {"atr14": true, "rsi14": true, "sma20": true, "ema50": true, "sma200": true},
   "time_fetch": "",
   "timeframes": [
     {"tf": "M5", "keep": 10},

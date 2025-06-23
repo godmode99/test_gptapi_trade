@@ -75,7 +75,8 @@ using `--config`. The configuration defines:
 
 - `symbol` – trading pair (e.g., `XAUUSD`).
 - `fetch_bars` – number of historical bars requested for indicator calculation.
-- `indicators` – enable or disable calculation of `atr14`, `rsi14` and `sma20`.
+- `indicators` – enable or disable calculation of `atr14`, `rsi14`, `sma20`,
+  `ema50` and `sma200`.
 - `time_fetch` – optional timestamp in the form `YYYY-MM-DD HH:MM:SS` to
   retrieve bars ending at that time. Leave empty to fetch the most recent data.
 - `timeframes` – list of timeframes, each with `tf` (timeframe code) and `keep`
