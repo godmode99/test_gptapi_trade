@@ -6,7 +6,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover - only for type hints
@@ -57,7 +57,7 @@ def _save_prompt_copy(
 ) -> None:
     """Save *json_text* and *prompt* to *out_dir* as one JSON file."""
     out_dir.mkdir(parents=True, exist_ok=True)
-    ts = _timestamp_code(datetime.utcnow())
+    ts = _timestamp_code(datetime.now(timezone.utc))
     base = f"{json_path.stem}_{ts}"
     data = {"json": json.loads(json_text), "prompt": prompt}
     (out_dir / f"{base}.json").write_text(
