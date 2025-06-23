@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import datetime, time, timezone
 
 from gpt_trader.cli.scheduler_liveTrade import _within_window, _next_window_run
 
@@ -50,3 +50,29 @@ def test_next_run_waits_until_monday() -> None:
         time(23, 35),
     )
     assert next_run == datetime(2024, 6, 10, 8, 30)
+
+
+def test_next_run_aligns_to_start_time() -> None:
+    start = datetime(2024, 6, 9, 17, 21)
+    next_run = _next_window_run(
+        start,
+        30,
+        0,
+        time(8, 30),
+        4,
+        time(23, 35),
+    )
+    assert next_run == datetime(2024, 6, 10, 8, 30)
+
+
+def test_next_run_timezone_aware() -> None:
+    start = datetime(2024, 6, 9, 17, 21, tzinfo=timezone.utc)
+    next_run = _next_window_run(
+        start,
+        30,
+        0,
+        time(8, 30),
+        4,
+        time(23, 35),
+    )
+    assert next_run == datetime(2024, 6, 10, 8, 30, tzinfo=timezone.utc)
