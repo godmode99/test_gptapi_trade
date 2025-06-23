@@ -7,7 +7,7 @@ import importlib
 import pandas as pd
 import pytest
 
-from gpt_trader.fetch.fetch_yf_data import fetch_multi_tf
+from gpt_trader.fetch.fetch_yf_data import fetch_multi_tf, get_session
 
 
 def _fake_download(
@@ -33,6 +33,10 @@ def test_fetch_multi_tf_returns_dataframe() -> None:
         df = fetch_multi_tf("TEST", config, tz_shift=0)
     assert isinstance(df, pd.DataFrame)
     assert not df.empty
+    expected_sessions = [
+        get_session(ts) for ts in pd.date_range("2024-01-01", periods=5, freq="min")
+    ]
+    assert list(df["session"]) == expected_sessions
 
 
 def test_tz_shift_applied() -> None:
@@ -45,6 +49,8 @@ def test_tz_shift_applied() -> None:
         hours=3
     )
     assert list(df["timestamp"]) == list(expected)
+    expected_sessions = [get_session(ts) for ts in expected]
+    assert list(df["session"]) == expected_sessions
 
 
 def test_main_error_on_empty_df(tmp_path, caplog) -> None:

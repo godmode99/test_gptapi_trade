@@ -49,6 +49,8 @@ def test_fetch_multi_tf_tz_shift_and_latest_bar() -> None:
     expected_times = pd.date_range("2024-01-01", periods=5, freq="min") + pd.Timedelta(hours=2)
     assert list(df["timestamp"]) == list(expected_times)
     assert df["timestamp"].iloc[-1] == expected_times[-1]
+    expected_sessions = [fetch_mt5_data.get_session(ts) for ts in expected_times]
+    assert list(df["session"]) == expected_sessions
 
 
 def test_fetch_multi_tf_with_time_fetch() -> None:
@@ -99,6 +101,8 @@ def test_fetch_multi_tf_with_time_fetch() -> None:
     assert list(df["timestamp"]) == list(sample_times)
     assert called["start"].strftime("%Y-%m-%d %H:%M:%S") == "2024-01-01 00:00:00"
     assert called["end"].strftime("%Y-%m-%d %H:%M:%S") == "2024-01-01 00:04:00"
+    expected_sessions = [fetch_mt5_data.get_session(ts) for ts in sample_times]
+    assert list(df["session"]) == expected_sessions
 
 
 def test_fetch_multi_tf_invalid_time_fetch() -> None:
@@ -186,6 +190,7 @@ def test_main_writes_to_save_as_path(tmp_path) -> None:
             "rsi14": [0],
             "sma20": [0],
             "timeframe": ["1m"],
+            "session": ["asia"],
         }
     )
 

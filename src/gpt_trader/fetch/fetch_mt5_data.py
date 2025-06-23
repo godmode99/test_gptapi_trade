@@ -74,6 +74,16 @@ def _timestamp_code(ts: pd.Timestamp) -> str:
     return str(int(pd.Timestamp(ts).timestamp()))
 
 
+def get_session(ts: pd.Timestamp) -> str:
+    """Return the trading session name for *ts*."""
+    hour = pd.Timestamp(ts).hour
+    if 0 <= hour < 8:
+        return "asia"
+    if 8 <= hour < 16:
+        return "london"
+    return "newyork"
+
+
 def _fetch_rates(
     symbol: str,
     timeframe: int,
@@ -146,7 +156,9 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
         raise ValueError(
             "Timestamp format must be YYYY-MM-DD HH:MM:SS and the chosen date may not be available"
         )
-    # Reorder columns
+
+    combined["session"] = combined["timestamp"].apply(get_session)
+
     cols = [
         "timestamp",
         "open",
@@ -158,6 +170,7 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
         "rsi14",
         "sma20",
         "timeframe",
+        "session",
     ]
     combined = combined[cols]
     return combined

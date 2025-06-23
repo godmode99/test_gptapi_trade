@@ -44,6 +44,16 @@ def _timestamp_code(ts: pd.Timestamp) -> str:
     return str(int(pd.Timestamp(ts).timestamp()))
 
 
+def get_session(ts: pd.Timestamp) -> str:
+    """Return the trading session name for *ts*."""
+    hour = pd.Timestamp(ts).hour
+    if 0 <= hour < 8:
+        return "asia"
+    if 8 <= hour < 16:
+        return "london"
+    return "newyork"
+
+
 def _fetch_rates(symbol: str, interval: str, bars: int, tz_shift: int = 0) -> pd.DataFrame:
     """Fetch OHLC data from yfinance."""
     LOGGER.info("Fetching %s bars for %s interval", bars, interval)
@@ -93,6 +103,8 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
         frames.append(df)
 
     combined = pd.concat(frames, ignore_index=True)
+    combined["session"] = combined["timestamp"].apply(get_session)
+
     cols = [
         "timestamp",
         "open",
@@ -104,6 +116,7 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
         "rsi14",
         "sma20",
         "timeframe",
+        "session",
     ]
     return combined[cols]
 
