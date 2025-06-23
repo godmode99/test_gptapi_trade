@@ -75,13 +75,17 @@ def _timestamp_code(ts: pd.Timestamp) -> str:
 
 
 def get_session(ts: pd.Timestamp) -> str:
-    """Return the trading session name for *ts*."""
+    """Return the trading session name for *ts* (เวลาประเทศไทย ตามภาพ)."""
     hour = pd.Timestamp(ts).hour
-    if 0 <= hour < 8:
-        return "asia"
-    if 8 <= hour < 16:
-        return "london"
-    return "newyork"
+
+    if 5 <= hour < 14:
+        return "asia"        # Sydney + Tokyo
+    elif 14 <= hour < 20:
+        return "london"      # London only
+    elif 20 <= hour or hour < 5:
+        return "newyork"     # New York
+    return "closed"
+
 
 
 def _fetch_rates(

@@ -18,14 +18,15 @@ LOGGER = logging.getLogger(__name__)
 # Template for the default prompt. The JSON filename will be inserted
 # in place of ``%s`` to become the ``signal_id`` value.
 DEFAULT_PROMPT = (
-    "Analyze the current market regime and structure using the provided OHLCV and indicator data. "
+    "Analyze the current market regime and structure using the provided OHLCV and indicator data. and trading session .  "
+    "Session can affect volatility and trend—consider session context in your analysis. "
     "Classify regime_type as one of: 'uptrend', 'downtrend', 'sideway', 'high_volatility'. "
-    "If the trend is not clear, signals are mixed, or risk is high, set pending_order_type as 'skip' and do not enter a trade. "
-    "Entry/SL/TP should only be selected when they align with the dominant trend and are near logical support/resistance levels with minimal risk. "
+    "If the trend is not clear, signals are mixed, risk is high, or current session is unsuitable for trading, set pending_order_type as 'skip' and do not enter a trade. "
+    "Entry/SL/TP should only be selected when they align with the dominant trend, are near logical support/resistance levels, and session supports sufficient liquidity/volatility. "
     "Reply ONLY with a JSON object, for example: "
     '{"signal_id": "%s", "entry": , "sl": , "tp": , '
     '"pending_order_type": "", "confidence": , "regime_type": "", "short_reason": "ส่วนนี้ตอบภาษาไทยสั้นๆ สรุปเหตุผลเทรดหรือ skip เช่น กราฟ sideway รอจังหวะใหม่"}. '
-    "pending_order_type must be one of [buy_limit, sell_limit, buy_stop, sell_stop, skip]. "
+    "pending_order_type must be one of [buy_limit, sell_limit, buy_stop, sell_stop, skip]. ไม่ต้องเปลี่ยนค่า signal_id"
     "confidence is an integer (1-100). If no optimal condition, use 'skip'."
 )
 
