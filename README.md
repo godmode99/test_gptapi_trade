@@ -221,12 +221,12 @@ schedule. The script uses APScheduler to call `main_liveTrade.py` repeatedly
 `main_liveTrade.py` prepends the repository root to `sys.path` so the scheduler
 can be executed directly from the project root. The workflow is executed once
 immediately and then the next run is scheduled for the configured start window
-(by default Monday at 08:20). After that it repeats every 30 minutes. You can
+(by default Monday at 08:10). After that it repeats every 30 minutes. You can
 override the interval, start and stop times:
 
 ```bash
 python src/gpt_trader/cli/scheduler_liveTrade.py \
-  --start-day mon --start-time 08:20 \
+  --start-day mon --start-time 08:10 \
   --stop-day fri --stop-time 23:35 \
   --interval 30 --start-in 15
 ```

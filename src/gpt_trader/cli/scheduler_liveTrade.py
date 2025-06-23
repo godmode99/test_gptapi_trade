@@ -340,7 +340,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--start-time",
-        default="08:20",
+        default="08:10",
         help="Time of day to start (HH:MM)",
     )
     parser.add_argument(
