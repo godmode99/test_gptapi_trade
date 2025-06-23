@@ -368,18 +368,20 @@ def main() -> None:
 
     scheduler = BlockingScheduler()
     first_run = datetime.now() + timedelta(minutes=args.start_in)
+    next_exec = _next_window_run(
+        first_run, args.interval, start_day, start_time, stop_day, stop_time
+    )
     job = scheduler.add_job(
         _make_workflow_runner(start_day, start_time, stop_day, stop_time),
         "interval",
         minutes=args.interval,
-        next_run_time=first_run,
+        next_run_time=next_exec,
     )
 
-    next_exec = _next_window_run(first_run, args.interval, start_day, start_time, stop_day, stop_time)
     _start_countdown(job, args.interval, start_day, start_time, stop_day, stop_time)
     LOGGER.info(
-        "Scheduler started (first run at %s, next execution at %s, interval %s minutes, window %s %s to %s %s); press Ctrl+C to exit",
-        first_run.isoformat(timespec="seconds"),
+        "Scheduler started (initial run at %s, first scheduled run at %s, interval %s minutes, window %s %s to %s %s); press Ctrl+C to exit",
+        datetime.now().isoformat(timespec="seconds"),
         next_exec.isoformat(timespec="seconds"),
         args.interval,
         args.start_day,
@@ -387,6 +389,9 @@ def main() -> None:
         args.stop_day,
         args.stop_time,
     )
+
+    _run_workflow()
+
     try:
         scheduler.start()
 
