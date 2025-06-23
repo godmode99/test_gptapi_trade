@@ -115,10 +115,12 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
         "atr14",
         "rsi14",
         "sma20",
+        "ema50",
+        "sma200",
         "timeframe",
         "session",
     ]
-    return combined[cols]
+    return combined.reindex(columns=cols)
 
 
 def main() -> None:

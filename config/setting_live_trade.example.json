@@ -17,14 +17,20 @@
     "tz_shift": 4,
     "symbol": "XAUUSDm",
     "symbol_signal": "xauusd",
-    "fetch_bars": 30,
-    "indicators": {"atr14": true, "rsi14": true, "sma20": true},
+    "fetch_bars": 50,
+    "indicators": {
+      "atr14": true,
+      "rsi14": true,
+      "sma20": true,
+      "ema50": true,
+      "sma200": true
+    },
     "time_fetch": "",
     "save_as_path": "data/live_trade/fetch",
     "timeframes": [
-      {"tf": "M5", "keep": 10},
-      {"tf": "M15", "keep": 6},
-      {"tf": "H1", "keep": 4}
+      {"tf": "M5", "keep": 20},
+      {"tf": "M15", "keep": 8},
+      {"tf": "H1", "keep": 6}
     ],
     "note": "Fetched CSV/JSON includes a 'session' column (asia/london/newyork)"
   },

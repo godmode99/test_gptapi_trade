@@ -16,8 +16,8 @@ def compute_indicators(
         Input OHLCV DataFrame.
     indicators:
         Optional mapping controlling which indicators to compute. Supported keys
-        are ``"atr14"``, ``"rsi14"`` and ``"sma20"``. Missing keys default to
-        ``True``.
+        are ``"atr14"``, ``"rsi14"``, ``"sma20"``, ``"ema50"`` and ``"sma200"``.
+        Missing keys default to ``True``.
     """
 
     if indicators is None:
@@ -55,4 +55,15 @@ def compute_indicators(
     else:
         df["sma20"] = pd.NA
 
+    if indicators.get("ema50", False):
+        df["ema50"] = df["close"].ewm(span=50, adjust=False).mean()
+    elif "ema50" in indicators:
+        df["ema50"] = pd.NA
+
+    if indicators.get("sma200", False):
+        df["sma200"] = df["close"].rolling(window=200).mean()
+    elif "sma200" in indicators:
+        df["sma200"] = pd.NA
+
     return df
+
