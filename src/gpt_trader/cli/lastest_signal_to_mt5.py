@@ -26,6 +26,7 @@ class TradeSignalSender:
         self.rr = None
         self.confidence = None
         self.max_drawdown = None
+        self.risk_per_trade = None
         self.pending_order_type = None
         self.order_type = None
         self.balance = None
@@ -59,12 +60,23 @@ class TradeSignalSender:
         else:
             self.tp = self.entry - (self.sl - self.entry) * self.rr
 
-    def calculate_lot(self, balance):
-        risk_pct = self.max_drawdown / 10
-        risk_amount = balance * (risk_pct / 100)
+    def calculate_lot(self, balance, tick_value, tick_size, volume_min,
+                      volume_max, volume_step):
+        if self.risk_per_trade <= 0:
+            raise ValueError("risk_per_trade must be positive")
+
         sl_distance = abs(self.entry - self.sl)
-        pip_value = 10
+        if sl_distance == 0:
+            raise ValueError("SL must not equal entry")
+
+        pip_value = tick_value / tick_size if tick_size else 10
+        risk_amount = balance * (self.risk_per_trade / 100)
         lot = risk_amount / (sl_distance * pip_value)
+
+        # align to broker limits
+        lot = max(volume_min, min(volume_max, lot))
+        steps = round(lot / volume_step)
+        lot = steps * volume_step
         return round(lot, 2)
 
     def prepare_order_type(self):
@@ -116,10 +128,20 @@ class TradeSignalSender:
         self.sl = float(self.signal["sl"])
         self.confidence = int(self.signal.get("confidence", 70))
         self.max_drawdown = float(self.signal.get("max_drawdown", 15))
+        self.risk_per_trade = float(
+            self.signal.get("risk_per_trade", self.max_drawdown / 10)
+        )
         self.pending_order_type = self.signal["pending_order_type"].lower().replace(" ", "_")
 
         self.calculate_risk_reward()
-        self.lot = self.calculate_lot(self.balance)
+        self.lot = self.calculate_lot(
+            self.balance,
+            info.trade_tick_value,
+            info.trade_tick_size,
+            getattr(info, "volume_min", 0.01),
+            getattr(info, "volume_max", 100.0),
+            getattr(info, "volume_step", 0.01),
+        )
         self.prepare_order_type()
 
         market_price = tick.ask if "buy" in self.pending_order_type else tick.bid
