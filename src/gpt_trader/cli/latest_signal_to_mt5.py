@@ -18,6 +18,7 @@ class TradeSignalSender:
         signal_path: str,
         symbol_map: dict | None = None,
         risk_per_trade: float | None = None,
+        max_risk_per_trade: float | None = None,
     ):
         self.signal_path = signal_path
         self.signal = self.load_signal()
@@ -40,6 +41,7 @@ class TradeSignalSender:
         self.confidence = None
         self.max_drawdown = None
         self.risk_per_trade = risk_per_trade
+        self.max_risk_per_trade = max_risk_per_trade
         self.order_type = None
         self.balance = None
 
@@ -121,7 +123,13 @@ class TradeSignalSender:
             print(f"⏭️ Skipping signal {self.signal['signal_id']} {reason}")
             self.confidence = self.signal.get("confidence")
             self.max_drawdown = self.signal.get("max_drawdown")
-            if self.risk_per_trade is None:
+            if self.max_risk_per_trade is not None:
+                conf = self.confidence or 0
+                self.risk_per_trade = min(
+                    self.max_risk_per_trade,
+                    (float(conf) / 100) * float(self.max_risk_per_trade),
+                )
+            elif self.risk_per_trade is None:
                 self.risk_per_trade = self.signal.get("risk_per_trade")
             return
 
@@ -149,7 +157,12 @@ class TradeSignalSender:
         self.sl = float(self.signal["sl"])
         self.confidence = int(self.signal.get("confidence", 70))
         self.max_drawdown = float(self.signal.get("max_drawdown", 15))
-        if self.risk_per_trade is None:
+        if self.max_risk_per_trade is not None:
+            self.risk_per_trade = min(
+                float(self.max_risk_per_trade),
+                (self.confidence / 100) * float(self.max_risk_per_trade),
+            )
+        elif self.risk_per_trade is None:
             self.risk_per_trade = float(
                 self.signal.get("risk_per_trade", self.max_drawdown / 10)
             )

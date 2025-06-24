@@ -117,3 +117,39 @@ def test_config_risk_defaults_to_json(tmp_path) -> None:
         sender = mod.TradeSignalSender(str(path))
         assert sender.risk_per_trade == 5
 
+
+def test_max_risk_scales_with_confidence(tmp_path) -> None:
+    mt5 = _make_mt5_stub()
+    with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
+        mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
+        importlib.reload(mod)
+        data = {
+            "signal_id": "xauusd-test",
+            "entry": 2000,
+            "sl": 1990,
+            "pending_order_type": "buy_limit",
+            "confidence": 80,
+        }
+        path = tmp_path / "sig.json"
+        path.write_text(importlib.import_module("json").dumps(data))
+        sender = mod.TradeSignalSender(str(path), max_risk_per_trade=2)
+        assert sender.risk_per_trade == pytest.approx(1.6)
+
+
+def test_max_risk_caps_value(tmp_path) -> None:
+    mt5 = _make_mt5_stub()
+    with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
+        mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
+        importlib.reload(mod)
+        data = {
+            "signal_id": "xauusd-test",
+            "entry": 2000,
+            "sl": 1990,
+            "pending_order_type": "buy_limit",
+            "confidence": 150,
+        }
+        path = tmp_path / "sig.json"
+        path.write_text(importlib.import_module("json").dumps(data))
+        sender = mod.TradeSignalSender(str(path), max_risk_per_trade=2)
+        assert sender.risk_per_trade == 2
+
