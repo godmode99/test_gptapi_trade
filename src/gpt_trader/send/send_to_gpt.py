@@ -32,18 +32,24 @@ DEFAULT_PROMPT = (
     "For sideway: If price ranges within a horizontal channel and EMA/SMA are flat, classify as 'sideway'. "
     "In sideway, only select buy_limit near lower support or sell_limit near upper resistance. Do NOT enter at the center of the range. "
     ""
-    "Session context matters: During asia session, if volatility is low or trend is weak, prioritize 'sideway' or skip. In london or newyork session, strong trends or high volatility are more common—allow trend entries when confirmed. "
-    "If session is unclear, or current session is outside normal trading hours, set pending_order_type as 'skip'. "
+    "Session context matters: During asia session, if volatility is low or trend is weak, prioritize 'sideway'. In london or newyork session, strong trends or high volatility are more common—allow trend entries when confirmed. "
+    "If session is unclear, or current session is outside normal trading hours, consider the signal less reliable. "
     ""
-    "If high volatility, trend unclear, or signals mixed, set pending_order_type as 'skip'. "
+    "If high volatility, trend unclear, or signals mixed, consider the signal less reliable. "
     ""
     "Entry/SL/TP must always align with the dominant regime and only at logical price levels (support, resistance, pullback), and session must support sufficient liquidity and volatility for trading. "
+    ""
+    "Do not use 'skip'. Always return a trade signal, but adjust the 'confidence' value (1-100) based on signal quality: "
+    "- High confidence if regime and session are ideal, and signal is clear. "
+    "- Low confidence if trend is unclear, signals are mixed, volatility is high, or session is unsuitable. "
+    ""
     "Reply ONLY with a JSON object like: "
     '{"signal_id": "%s", "entry": , "sl": , "tp": , '
-    '"pending_order_type": "", "confidence": , "regime_type": "", "short_reason": "สรุปเหตุผลสั้นๆ เช่น ขาขึ้นรอซื้อดึงกลับ, ขาลงรอขาย, กรอบออกข้าง, หรือ skip เพราะ session ไม่เหมาะ/สัญญาณปน"}.' 
-    "pending_order_type must be one of [buy_limit, sell_limit, buy_stop, sell_stop, skip]. ไม่ต้องเปลี่ยนค่า signal_id."
-    "confidence is an integer (1-100). If no optimal condition or unsuitable session, use 'skip'."
+    '"pending_order_type": "", "confidence": , "regime_type": "", "short_reason": "สรุปเหตุผลสั้นๆ เช่น ขาขึ้นรอซื้อดึงกลับ, ขาลงรอขาย, กรอบออกข้าง, confidence ต่ำเพราะ session ไม่เหมาะ/สัญญาณปน"}.' 
+    "pending_order_type must be one of [buy_limit, sell_limit, buy_stop, sell_stop]. ไม่ต้องเปลี่ยนค่า signal_id."
+    "confidence is an integer (1-100). If the signal is less reliable, return lower confidence."
 )
+
 
 
 
