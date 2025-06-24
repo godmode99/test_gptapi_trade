@@ -12,9 +12,9 @@ def test_disable_single_indicator():
         }
     )
     out = compute_indicators(df, {"rsi14": False})
-    assert out["rsi14"].isna().all()
-    assert out["atr14"].notna().any()
-    assert not out["sma20"].isna().all()
+    assert "rsi14" not in out.columns
+    assert "atr14" in out.columns
+    assert "sma20" in out.columns
 
 
 def test_disable_all_indicators():
@@ -36,7 +36,8 @@ def test_disable_all_indicators():
             "sma200": False,
         },
     )
-    assert out[["atr14", "rsi14", "sma20", "ema50", "sma200"]].isna().all().all()
+    for col in ["atr14", "rsi14", "sma20", "ema50", "sma200"]:
+        assert col not in out.columns
 
 
 def test_ema50_and_sma200_present():

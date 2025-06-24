@@ -146,6 +146,49 @@ def test_fetch_multi_tf_time_fetch_no_data() -> None:
             fetch_mt5_data.fetch_multi_tf("TEST", config, tz_shift=0)
 
 
+def test_fetch_multi_tf_excludes_disabled_indicators() -> None:
+    """Disabled indicators should be absent from the output DataFrame."""
+    sample_times = pd.date_range("2024-01-01", periods=3, freq="min")
+    sample_rates = [
+        {
+            "time": int(ts.timestamp()),
+            "open": 1,
+            "high": 1,
+            "low": 1,
+            "close": 1,
+            "tick_volume": 1,
+            "spread": 0,
+            "real_volume": 0,
+        }
+        for ts in sample_times
+    ]
+
+    mt5 = ModuleType("MetaTrader5")
+    mt5.TIMEFRAME_M1 = 1
+    mt5.TIMEFRAME_M5 = 2
+    mt5.TIMEFRAME_M15 = 3
+    mt5.TIMEFRAME_M30 = 4
+    mt5.TIMEFRAME_H1 = 5
+    mt5.TIMEFRAME_H4 = 6
+    mt5.TIMEFRAME_D1 = 7
+    mt5.copy_rates_from_pos = lambda *args, **kwargs: sample_rates
+
+    with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
+        fetch_mt5_data = importlib.import_module("gpt_trader.fetch.fetch_mt5_data")
+        importlib.reload(fetch_mt5_data)
+
+        config = {
+            "fetch_bars": 3,
+            "timeframes": [{"tf": "M1", "keep": 3}],
+            "indicators": {"atr14": False, "rsi14": False, "sma20": False},
+        }
+        df = fetch_mt5_data.fetch_multi_tf("TEST", config, tz_shift=0)
+
+    assert "atr14" not in df.columns
+    assert "rsi14" not in df.columns
+    assert "sma20" not in df.columns
+
+
 def test_main_error_on_empty_df(tmp_path, caplog) -> None:
     """main() should exit with SystemExit when no data is fetched."""
     cfg = {
@@ -186,9 +229,6 @@ def test_main_writes_to_save_as_path(tmp_path) -> None:
             "low": [1],
             "close": [1],
             "tick_volume": [1],
-            "atr14": [0],
-            "rsi14": [0],
-            "sma20": [0],
             "timeframe": ["1m"],
             "session": ["asia"],
         }
@@ -208,4 +248,9 @@ def test_main_writes_to_save_as_path(tmp_path) -> None:
     assert len(json_files) == 1
     assert csv_files[0].is_file()
     assert json_files[0].is_file()
+    df_csv = pd.read_csv(csv_files[0])
+    data_json = json.loads(json_files[0].read_text())
+    for col in ["atr14", "rsi14", "sma20", "ema50", "sma200"]:
+        assert col not in df_csv.columns
+        assert col not in data_json[0]
 
