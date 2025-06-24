@@ -166,6 +166,8 @@ def _format_summary_message(detail: str, status: str, signal: dict | None) -> st
             parts.append(f"📈 rr:{rr_fmt}")
         if signal.get("short_reason") is not None:
             parts.append(f"📝 short_reason:{signal['short_reason']}")
+        if signal.get("order_status") is not None:
+            parts.append(f"🚩 order:{signal['order_status']}")
     return "\n".join(parts)
 
 
@@ -204,6 +206,7 @@ def _run_workflow() -> None:
     LOGGER.info("Starting scheduled workflow run")
     status = "success"
     results: dict[str, str] | None = None
+    order_status: str | None = None
     try:
         results = asyncio.run(run_main())
         if any(v == "error" for v in results.values()):
@@ -215,9 +218,7 @@ def _run_workflow() -> None:
         LOGGER.error("main_liveTrade.py failed: %s", exc)
         status = "error"
 
-    detail = " ".join(
-        f"{k}:{results.get(k, 'n/a')}" for k in ("fetch", "send", "parse")
-    ) if results else ""
+    detail_items: list[str] = []
     message = ""
     signal = None
     try:
@@ -245,11 +246,23 @@ def _run_workflow() -> None:
                 )
                 signal["lot"] = sender.lot
                 signal["rr"] = sender.rr
+                order_status = sender.order_result
+                signal["order_status"] = order_status
             except Exception as exc:  # noqa: BLE001
                 LOGGER.warning("Failed to send MT5 signal: %s", exc)
+                order_status = "error"
     except Exception as exc:  # noqa: BLE001
         LOGGER.warning("Failed to load config or signal data: %s", exc)
         notify_cfg = {}
+
+    if results:
+        detail_items.extend(
+            f"{k}:{results.get(k, 'n/a')}" for k in ("fetch", "send", "parse")
+        )
+    if order_status is not None:
+        detail_items.append(f"order:{order_status}")
+    detail = " ".join(detail_items)
+
     message = _format_summary_message(detail, status, signal)
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     try:
