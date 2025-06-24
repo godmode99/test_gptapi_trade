@@ -254,3 +254,40 @@ def test_main_writes_to_save_as_path(tmp_path) -> None:
         assert col not in df_csv.columns
         assert col not in data_json[0]
 
+
+def test_main_omits_nulls(tmp_path) -> None:
+    cfg = {
+        "symbol": "TEST",
+        "fetch_bars": 2,
+        "timeframes": [{"tf": "M1", "keep": 2}],
+        "save_as_path": str(tmp_path),
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+
+    df = pd.DataFrame(
+        {
+            "timestamp": [pd.Timestamp("2024-01-01"), pd.Timestamp("2024-01-01 00:01")],
+            "open": [1, 2],
+            "high": [1, 2],
+            "low": [1, 2],
+            "close": [1, 2],
+            "tick_volume": [1, 2],
+            "sma200": [pd.NA, 2],
+            "timeframe": ["1m", "1m"],
+            "session": ["asia", "asia"],
+        }
+    )
+
+    with patch.object(sys, "argv", ["fetch_mt5_data.py", "--config", str(cfg_path)]), patch(
+        "gpt_trader.fetch.fetch_mt5_data.fetch_multi_tf",
+        return_value=df,
+    ), patch("gpt_trader.fetch.fetch_mt5_data._init_mt5"), patch(
+        "gpt_trader.fetch.fetch_mt5_data._shutdown_mt5"
+    ):
+        importlib.import_module("gpt_trader.fetch.fetch_mt5_data").main()
+
+    json_file = next(tmp_path.glob("*.json"))
+    data_json = json.loads(json_file.read_text())
+    assert "sma200" not in data_json[0]
+    assert data_json[1]["sma200"] == 2

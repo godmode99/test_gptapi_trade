@@ -104,6 +104,8 @@ Each row in the output also includes a `session` field that labels the
 bar as belonging to the **asia**, **london** or **newyork** trading
 session based on the shifted timestamp.
 
+Keys with `null` values are omitted from the JSON output to keep files small.
+
 Example `src/gpt_trader/fetch/config/fetch_mt5.json`:
 
 ```json

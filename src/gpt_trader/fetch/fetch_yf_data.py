@@ -10,6 +10,7 @@ from typing import Any, Dict, List
 import pandas as pd
 import yfinance as yf
 from gpt_trader.utils.indicators import compute_indicators
+from gpt_trader.utils import write_json_no_nulls
 
 LOGGER = logging.getLogger(__name__)
 
@@ -168,7 +169,7 @@ def main() -> None:
         output.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(output, index=False)
         json_out = output.with_suffix(".json")
-        df.to_json(json_out, orient="records", date_format="iso")
+        write_json_no_nulls(df, json_out)
         LOGGER.info("Saved data to %s and %s", output, json_out)
     except Exception as exc:  # noqa: BLE001
         LOGGER.error("Error fetching data: %s", exc)
