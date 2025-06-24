@@ -167,6 +167,11 @@ class TradeSignalSender:
                 self.signal.get("risk_per_trade", self.max_drawdown / 10)
             )
 
+        self.prepare_order_type()
+
+        market_price = tick.ask if "buy" in self.pending_order_type else tick.bid
+        self.adjust_entry_if_needed(market_price, info.point)
+
         self.calculate_risk_reward()
         self.lot = self.calculate_lot(
             self.balance,
@@ -176,10 +181,6 @@ class TradeSignalSender:
             getattr(info, "volume_max", 100.0),
             getattr(info, "volume_step", 0.01),
         )
-        self.prepare_order_type()
-
-        market_price = tick.ask if "buy" in self.pending_order_type else tick.bid
-        self.adjust_entry_if_needed(market_price, info.point)
 
         order = {
             "action": mt5.TRADE_ACTION_PENDING,
