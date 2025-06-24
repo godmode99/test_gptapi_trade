@@ -153,3 +153,22 @@ def test_max_risk_caps_value(tmp_path) -> None:
         sender = mod.TradeSignalSender(str(path), max_risk_per_trade=2)
         assert sender.risk_per_trade == 2
 
+
+def test_tp_value_preserved(tmp_path) -> None:
+    """TP from the JSON signal should not be modified."""
+    mt5 = _make_mt5_stub()
+    with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
+        mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
+        importlib.reload(mod)
+        data = {
+            "signal_id": "xauusd-test",
+            "entry": 2000,
+            "sl": 1995,
+            "tp": 1990,
+            "pending_order_type": "sell_limit",
+        }
+        path = tmp_path / "sig.json"
+        path.write_text(importlib.import_module("json").dumps(data))
+        sender = mod.TradeSignalSender(str(path))
+        assert sender.tp == 1990
+

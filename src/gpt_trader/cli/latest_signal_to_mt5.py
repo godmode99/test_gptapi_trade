@@ -69,11 +69,8 @@ class TradeSignalSender:
         return None
 
     def calculate_risk_reward(self):
+        """Calculate the risk/reward ratio without altering ``tp``."""
         self.rr = 1 + (100 - self.confidence) / 50
-        if "buy" in self.pending_order_type:
-            self.tp = self.entry + (self.entry - self.sl) * self.rr
-        else:
-            self.tp = self.entry - (self.sl - self.entry) * self.rr
 
     def calculate_lot(self, balance, tick_value, tick_size, volume_min,
                       volume_max, volume_step):
@@ -145,6 +142,10 @@ class TradeSignalSender:
         self.balance = account.balance
         self.entry = float(self.signal["entry"])
         self.sl = float(self.signal["sl"])
+        if "tp" not in self.signal:
+            mt5.shutdown()
+            raise ValueError("❌ 'tp' missing from signal")
+        self.tp = float(self.signal["tp"])
         self.confidence = int(self.signal.get("confidence", 70))
         self.max_drawdown = float(self.signal.get("max_drawdown", 15))
         if self.max_risk_per_trade is not None:
@@ -159,7 +160,7 @@ class TradeSignalSender:
 
         self.prepare_order_type()
 
-        # Use the entry price from the GPT response without modification
+        # Use entry and TP values from the GPT response without modification
 
         self.calculate_risk_reward()
         self.lot = self.calculate_lot(
