@@ -180,9 +180,12 @@ cp config/setting_backtest.example.json config/setting_backtest.json
 See [`live_trade/docs/config_main_th.md`](live_trade/docs/config_main_th.md) for
 an explanation of each key.
 
-The live trade config also accepts a top-level `risk_per_trade` value
-(percentage of account balance). When set it overrides any
-`risk_per_trade` found in the signal JSON.
+The live trade config also accepts the keys `risk_per_trade` and
+`max_risk_per_trade` (percentages of account balance).  When
+`risk_per_trade` is set it overrides any value found in the signal JSON.
+If `max_risk_per_trade` is provided the actual risk is calculated as
+`(confidence / 100) * max_risk_per_trade` and will never exceed this
+limit.
 
 For Thai users: สำหรับภาษาไทย ดูเอกสารที่ `live_trade/docs/usage_th.md`.
 
