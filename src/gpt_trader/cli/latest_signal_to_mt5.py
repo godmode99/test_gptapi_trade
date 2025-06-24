@@ -104,18 +104,6 @@ class TradeSignalSender:
         if self.order_type is None:
             raise ValueError(f"❌ Invalid pending_order_type: {self.pending_order_type}")
 
-    def adjust_entry_if_needed(self, market_price, point):
-        min_diff = point * 50
-        if self.order_type in [mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_SELL_LIMIT]:
-            if (self.order_type == mt5.ORDER_TYPE_BUY_LIMIT and self.entry >= market_price) or \
-               (self.order_type == mt5.ORDER_TYPE_SELL_LIMIT and self.entry <= market_price):
-                print(f"⚠️ Adjusting invalid entry {self.entry}")
-                self.entry = market_price - min_diff if "buy" in self.pending_order_type else market_price + min_diff
-        elif self.order_type in [mt5.ORDER_TYPE_BUY_STOP, mt5.ORDER_TYPE_SELL_STOP]:
-            if (self.order_type == mt5.ORDER_TYPE_BUY_STOP and self.entry <= market_price) or \
-               (self.order_type == mt5.ORDER_TYPE_SELL_STOP and self.entry >= market_price):
-                print(f"⚠️ Adjusting invalid entry {self.entry}")
-                self.entry = market_price + min_diff if "buy" in self.pending_order_type else market_price - min_diff
 
     def process(self):
         if self.pending_order_type == "skip":
@@ -169,8 +157,7 @@ class TradeSignalSender:
 
         self.prepare_order_type()
 
-        market_price = tick.ask if "buy" in self.pending_order_type else tick.bid
-        self.adjust_entry_if_needed(market_price, info.point)
+        # Use the entry price from the GPT response without modification
 
         self.calculate_risk_reward()
         self.lot = self.calculate_lot(
