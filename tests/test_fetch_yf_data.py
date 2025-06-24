@@ -53,6 +53,19 @@ def test_tz_shift_applied() -> None:
     assert list(df["session"]) == expected_sessions
 
 
+def test_fetch_multi_tf_excludes_disabled_indicators() -> None:
+    config = {
+        "fetch_bars": 3,
+        "timeframes": [{"tf": "M1", "keep": 3}],
+        "indicators": {"rsi14": False, "atr14": False},
+    }
+    with patch("gpt_trader.fetch.fetch_yf_data.yf.download", side_effect=_fake_download):
+        df = fetch_multi_tf("TEST", config, tz_shift=0)
+
+    assert "rsi14" not in df.columns
+    assert "atr14" not in df.columns
+
+
 def test_main_error_on_empty_df(tmp_path, caplog) -> None:
     """main() should exit when fetch_multi_tf returns no rows."""
     cfg = {

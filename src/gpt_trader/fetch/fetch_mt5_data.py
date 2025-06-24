@@ -170,15 +170,14 @@ def fetch_multi_tf(symbol: str, config: Dict[str, Any], tz_shift: int = 0) -> pd
         "low",
         "close",
         "tick_volume",
-        "atr14",
-        "rsi14",
-        "sma20",
-        "ema50",
-        "sma200",
-        "timeframe",
-        "session",
     ]
-    combined = combined.reindex(columns=cols)
+
+    for ind in ["atr14", "rsi14", "sma20", "ema50", "sma200"]:
+        if ind in combined.columns:
+            cols.append(ind)
+
+    cols += ["timeframe", "session"]
+    combined = combined[cols]
     return combined
 
 

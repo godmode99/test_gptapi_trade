@@ -36,8 +36,6 @@ def compute_indicators(
             axis=1,
         ).max(axis=1)
         df["atr14"] = tr.rolling(window=14).mean()
-    else:
-        df["atr14"] = pd.NA
 
     if indicators.get("rsi14", True):
         delta = df["close"].diff()
@@ -47,23 +45,15 @@ def compute_indicators(
         avg_loss = loss.rolling(window=14).mean()
         rs = avg_gain / avg_loss
         df["rsi14"] = 100 - 100 / (1 + rs)
-    else:
-        df["rsi14"] = pd.NA
 
     if indicators.get("sma20", True):
         df["sma20"] = df["close"].rolling(window=20).mean()
-    else:
-        df["sma20"] = pd.NA
 
     if indicators.get("ema50", False):
         df["ema50"] = df["close"].ewm(span=50, adjust=False).mean()
-    elif "ema50" in indicators:
-        df["ema50"] = pd.NA
 
     if indicators.get("sma200", False):
         df["sma200"] = df["close"].rolling(window=200).mean()
-    elif "sma200" in indicators:
-        df["sma200"] = pd.NA
 
     return df
 
