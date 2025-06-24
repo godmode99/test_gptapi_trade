@@ -157,7 +157,11 @@ def _format_summary_message(detail: str, status: str, signal: dict | None) -> st
 
         extra: list[str] = []
         if signal.get("risk_per_trade") is not None:
-            extra.append(f"⚖ risk_per_trade:{signal['risk_per_trade']}%")
+            try:
+                rp_fmt = f"{float(signal['risk_per_trade']):.3f}"
+            except Exception:  # noqa: BLE001
+                rp_fmt = str(signal['risk_per_trade'])
+            extra.append(f"⚖ risk_per_trade:{rp_fmt}%")
         if signal.get("lot") is not None:
             extra.append(f"💵 lot:{signal['lot']}")
         if signal.get("rr") is not None:
