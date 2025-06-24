@@ -89,13 +89,38 @@ def test_notify_called(tmp_path):
 
     with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
         sched, "LOG_FILE", log_path
-    ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55, "regime_type": "trend", "short_reason": "r"}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn, patch.object(sched, "TradeSignalSender") as sender_cls:
+    ), patch.object(
+        sched,
+        "run_main",
+        return_value={"fetch": "success", "send": "success", "parse": "success"},
+    ), patch.object(
+        sched,
+        "_load_latest_signal",
+        return_value={
+            "signal_id": "id",
+            "entry": 1,
+            "sl": 2,
+            "tp": 3,
+            "pending_order_type": "buy_limit",
+            "confidence": 55,
+            "regime_type": "trend",
+            "short_reason": "r",
+        },
+    ), patch.object(sched, "send_line") as line_fn, patch.object(
+        sched, "send_telegram"
+    ) as tg_fn, patch.object(sched, "TradeSignalSender") as sender_cls:
+        mock_sender = MagicMock()
+        mock_sender.lot = 0.1
+        mock_sender.rr = 1.5
+        mock_sender.order_result = "success"
+        sender_cls.return_value = mock_sender
         sched._run_workflow()
     line_fn.assert_called()
     tg_fn.assert_called()
     assert "signal_id:id" in line_fn.call_args[0][0]
     assert "regime_type:trend" in line_fn.call_args[0][0]
     assert "short_reason:" in line_fn.call_args[0][0]
+    assert "order:success" in line_fn.call_args[0][0]
 
 
 def test_notify_line_only(tmp_path):
@@ -114,9 +139,15 @@ def test_notify_line_only(tmp_path):
     with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
         sched, "LOG_FILE", log_path
     ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55, "regime_type": "trend", "short_reason": "r"}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn, patch.object(sched, "TradeSignalSender") as sender_cls:
+        mock_sender = MagicMock()
+        mock_sender.lot = 0.1
+        mock_sender.rr = 1.5
+        mock_sender.order_result = "success"
+        sender_cls.return_value = mock_sender
         sched._run_workflow()
     line_fn.assert_called()
     tg_fn.assert_not_called()
+    assert "order:success" in line_fn.call_args[0][0]
 
 
 def test_notify_telegram_only(tmp_path):
@@ -135,9 +166,15 @@ def test_notify_telegram_only(tmp_path):
     with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
         sched, "LOG_FILE", log_path
     ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55, "regime_type": "trend", "short_reason": "r"}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn, patch.object(sched, "TradeSignalSender") as sender_cls:
+        mock_sender = MagicMock()
+        mock_sender.lot = 0.1
+        mock_sender.rr = 1.5
+        mock_sender.order_result = "success"
+        sender_cls.return_value = mock_sender
         sched._run_workflow()
     line_fn.assert_not_called()
     tg_fn.assert_called()
+    assert "order:success" in tg_fn.call_args[0][0]
 
 
 def test_order_before_notification(tmp_path):
@@ -160,6 +197,7 @@ def test_order_before_notification(tmp_path):
         mock = MagicMock()
         mock.lot = 0.1
         mock.rr = 1.5
+        mock.order_result = "success"
         return mock
 
     with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
@@ -183,3 +221,4 @@ def test_order_before_notification(tmp_path):
     assert "rr:" in msg
     assert "regime_type:trend" in msg
     assert "short_reason:" in msg
+    assert "order:success" in msg

@@ -44,6 +44,7 @@ class TradeSignalSender:
         self.max_risk_per_trade = max_risk_per_trade
         self.order_type = None
         self.balance = None
+        self.order_result = None
 
         self.process()
 
@@ -119,6 +120,7 @@ class TradeSignalSender:
                 )
             elif self.risk_per_trade is None:
                 self.risk_per_trade = self.signal.get("risk_per_trade")
+            self.order_result = "skipped"
             return
 
         if not mt5.initialize():
@@ -193,9 +195,12 @@ class TradeSignalSender:
         if result is None:
             print("❌ order_send returned None")
             print("MT5 last error:", mt5.last_error())
+            self.order_result = "error"
         elif result.retcode != mt5.TRADE_RETCODE_DONE:
             print(f"❌ Order failed [{result.retcode}]:", result.comment)
+            self.order_result = "error"
         else:
             print(f"✅ Order sent successfully for {self.symbol}")
+            self.order_result = "success"
 
         mt5.shutdown()
