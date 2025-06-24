@@ -18,20 +18,33 @@ LOGGER = logging.getLogger(__name__)
 # Template for the default prompt. The JSON filename will be inserted
 # in place of ``%s`` to become the ``signal_id`` value.
 DEFAULT_PROMPT = (
-    "Analyze the current market regime and structure using the provided OHLCV and indicator data. and trading session. "
-    "Session can affect volatility and trend—consider session context in your analysis. "
+    "Analyze the current market regime and structure using the provided OHLCV and indicator data, including multi-timeframe trends and current trading session (e.g., asia, london, newyork). "
     "Classify regime_type as one of: 'uptrend', 'downtrend', 'sideway', 'high_volatility'. "
-    "If the trend is not clear, signals are mixed, risk is high, or current session is unsuitable for trading, set pending_order_type as 'skip' and do not enter a trade. "
-    "For entry selection, prioritize the following logic: "
-    " - If in a trend (uptrend/downtrend), select entry at likely pullback points in the direction of the trend, close to support (uptrend) or resistance (downtrend), not at random or in the middle. "
-    " - If in a sideway/sideways market, select entry near the upper resistance (for sell) or lower support (for buy) of the range, not in the center. "
-    "Entry/SL/TP should only be selected when they align with the dominant trend, are near logical support/resistance levels, and session supports sufficient liquidity/volatility. "
-    "Reply ONLY with a JSON object, for example: "
+    ""
+    "For uptrend: If price consistently makes higher highs and higher lows, stays above EMA/SMA, and RSI > 55, classify as 'uptrend'. "
+    "In uptrend, only select buy_limit or buy_stop entries at likely pullback or support areas, NOT at random or in the middle of the trend. "
+    "Do NOT enter sell in uptrend unless very strong reversal signals (e.g., RSI > 80 and bearish engulfing with high volume). "
+    ""
+    "For downtrend: If price consistently makes lower lows and lower highs, stays below EMA/SMA, and RSI < 45, classify as 'downtrend'. "
+    "In downtrend, only select sell_limit or sell_stop entries at likely pullback or resistance, NOT at random or in the middle. "
+    "Do NOT enter buy in downtrend unless very strong reversal signals (e.g., RSI < 20 and bullish engulfing with high volume). "
+    ""
+    "For sideway: If price ranges within a horizontal channel and EMA/SMA are flat, classify as 'sideway'. "
+    "In sideway, only select buy_limit near lower support or sell_limit near upper resistance. Do NOT enter at the center of the range. "
+    ""
+    "Session context matters: During asia session, if volatility is low or trend is weak, prioritize 'sideway' or skip. In london or newyork session, strong trends or high volatility are more common—allow trend entries when confirmed. "
+    "If session is unclear, or current session is outside normal trading hours, set pending_order_type as 'skip'. "
+    ""
+    "If high volatility, trend unclear, or signals mixed, set pending_order_type as 'skip'. "
+    ""
+    "Entry/SL/TP must always align with the dominant regime and only at logical price levels (support, resistance, pullback), and session must support sufficient liquidity and volatility for trading. "
+    "Reply ONLY with a JSON object like: "
     '{"signal_id": "%s", "entry": , "sl": , "tp": , '
-    '"pending_order_type": "", "confidence": , "regime_type": "", "short_reason": "ส่วนนี้ตอบภาษาไทยสั้นๆ สรุปเหตุผลเทรดหรือ skip เช่น กราฟ sideway รอจังหวะใหม่"}. '
-    "pending_order_type must be one of [buy_limit, sell_limit, buy_stop, sell_stop, skip]. ไม่ต้องเปลี่ยนค่า signal_id "
-    "confidence is an integer (1-100). If no optimal condition, use 'skip'."
+    '"pending_order_type": "", "confidence": , "regime_type": "", "short_reason": "สรุปเหตุผลสั้นๆ เช่น ขาขึ้นรอซื้อดึงกลับ, ขาลงรอขาย, กรอบออกข้าง, หรือ skip เพราะ session ไม่เหมาะ/สัญญาณปน"}.' 
+    "pending_order_type must be one of [buy_limit, sell_limit, buy_stop, sell_stop, skip]. ไม่ต้องเปลี่ยนค่า signal_id."
+    "confidence is an integer (1-100). If no optimal condition or unsuitable session, use 'skip'."
 )
+
 
 
 
