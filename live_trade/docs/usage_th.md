@@ -57,3 +57,5 @@ python src/gpt_trader/cli/liveTrade_scheduler.py
 หากกำหนด `notify` และเปิด `line.enabled` หรือ `telegram.enabled` ระบบจะส่งสรุปผลการรัน
 ผ่าน LINE หรือ Telegram ตามค่า token และ chat_id ในแต่ละส่วน
 นอกจากนี้ไฟล์ `logs/run.log` จะบันทึกข้อความแจ้งเตือนทุกครั้งที่มีการส่ง LINE หรือ Telegram
+ข้อความที่ส่งจะแสดงรายละเอียดสัญญาณ รวมถึงค่า `risk_per_trade` ที่ใช้เปิดออเดอร์
+เพื่อให้ผู้อ่านเห็นเปอร์เซ็นต์ความเสี่ยงของคำสั่งแต่ละครั้งอย่างชัดเจน

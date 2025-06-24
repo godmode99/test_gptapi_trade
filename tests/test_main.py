@@ -112,6 +112,7 @@ def test_notify_called(tmp_path):
         mock_sender = MagicMock()
         mock_sender.lot = 0.1
         mock_sender.rr = 1.5
+        mock_sender.risk_per_trade = 1.0
         mock_sender.order_result = "success"
         sender_cls.return_value = mock_sender
         sched._run_workflow()
@@ -119,6 +120,7 @@ def test_notify_called(tmp_path):
     tg_fn.assert_called()
     assert "signal_id:id" in line_fn.call_args[0][0]
     assert "regime_type:trend" in line_fn.call_args[0][0]
+    assert "risk_per_trade:" in line_fn.call_args[0][0]
     assert "short_reason:" in line_fn.call_args[0][0]
     assert "order:success" in line_fn.call_args[0][0]
 
@@ -142,11 +144,13 @@ def test_notify_line_only(tmp_path):
         mock_sender = MagicMock()
         mock_sender.lot = 0.1
         mock_sender.rr = 1.5
+        mock_sender.risk_per_trade = 1.0
         mock_sender.order_result = "success"
         sender_cls.return_value = mock_sender
         sched._run_workflow()
     line_fn.assert_called()
     tg_fn.assert_not_called()
+    assert "risk_per_trade:" in line_fn.call_args[0][0]
     assert "order:success" in line_fn.call_args[0][0]
 
 
@@ -169,11 +173,13 @@ def test_notify_telegram_only(tmp_path):
         mock_sender = MagicMock()
         mock_sender.lot = 0.1
         mock_sender.rr = 1.5
+        mock_sender.risk_per_trade = 1.0
         mock_sender.order_result = "success"
         sender_cls.return_value = mock_sender
         sched._run_workflow()
     line_fn.assert_not_called()
     tg_fn.assert_called()
+    assert "risk_per_trade:" in tg_fn.call_args[0][0]
     assert "order:success" in tg_fn.call_args[0][0]
 
 
@@ -197,6 +203,7 @@ def test_order_before_notification(tmp_path):
         mock = MagicMock()
         mock.lot = 0.1
         mock.rr = 1.5
+        mock.risk_per_trade = 1.0
         mock.order_result = "success"
         return mock
 
@@ -219,6 +226,7 @@ def test_order_before_notification(tmp_path):
     msg = line_fn.call_args[0][0]
     assert "lot:" in msg
     assert "rr:" in msg
+    assert "risk_per_trade:" in msg
     assert "regime_type:trend" in msg
     assert "short_reason:" in msg
     assert "order:success" in msg
