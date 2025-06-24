@@ -76,3 +76,29 @@ def test_next_run_timezone_aware() -> None:
         time(23, 35),
     )
     assert next_run == datetime(2024, 6, 10, 8, 30, tzinfo=timezone.utc)
+
+
+def test_next_run_midweek_same_day() -> None:
+    start = datetime(2024, 6, 12, 8, 15)
+    next_run = _next_window_run(
+        start,
+        30,
+        0,
+        time(8, 10),
+        4,
+        time(23, 35),
+    )
+    assert next_run == datetime(2024, 6, 12, 8, 40)
+
+
+def test_next_run_midweek_late_hour() -> None:
+    start = datetime(2024, 6, 12, 9, 22)
+    next_run = _next_window_run(
+        start,
+        30,
+        0,
+        time(8, 10),
+        4,
+        time(23, 35),
+    )
+    assert next_run == datetime(2024, 6, 12, 9, 40)
