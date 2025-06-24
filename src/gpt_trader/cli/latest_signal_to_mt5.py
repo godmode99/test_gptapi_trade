@@ -68,6 +68,19 @@ class TradeSignalSender:
         return None
 
     def calculate_risk_reward(self):
+        """Derive risk/reward ratio and TP from the current signal.
+
+        If ``self.tp`` was provided in the JSON signal, it is left
+        unchanged and ``rr`` is computed from the values.  Otherwise the
+        historical behaviour is preserved where ``tp`` is calculated from
+        ``confidence``.
+        """
+
+        if self.tp is not None:
+            sl_dist = abs(self.entry - self.sl)
+            self.rr = abs(self.tp - self.entry) / sl_dist if sl_dist else 0
+            return
+
         self.rr = 1 + (100 - self.confidence) / 50
         if "buy" in self.pending_order_type:
             self.tp = self.entry + (self.entry - self.sl) * self.rr
@@ -104,18 +117,23 @@ class TradeSignalSender:
         if self.order_type is None:
             raise ValueError(f"❌ Invalid pending_order_type: {self.pending_order_type}")
 
-    def adjust_entry_if_needed(self, market_price, point):
-        min_diff = point * 50
-        if self.order_type in [mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_SELL_LIMIT]:
-            if (self.order_type == mt5.ORDER_TYPE_BUY_LIMIT and self.entry >= market_price) or \
-               (self.order_type == mt5.ORDER_TYPE_SELL_LIMIT and self.entry <= market_price):
-                print(f"⚠️ Adjusting invalid entry {self.entry}")
-                self.entry = market_price - min_diff if "buy" in self.pending_order_type else market_price + min_diff
-        elif self.order_type in [mt5.ORDER_TYPE_BUY_STOP, mt5.ORDER_TYPE_SELL_STOP]:
-            if (self.order_type == mt5.ORDER_TYPE_BUY_STOP and self.entry <= market_price) or \
-               (self.order_type == mt5.ORDER_TYPE_SELL_STOP and self.entry >= market_price):
-                print(f"⚠️ Adjusting invalid entry {self.entry}")
-                self.entry = market_price + min_diff if "buy" in self.pending_order_type else market_price - min_diff
+    def warn_invalid_entry(self, market_price) -> None:
+        """Print a warning if the entry price is not valid for the order type."""
+
+        if self.order_type in {mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_SELL_LIMIT}:
+            if (self.order_type == mt5.ORDER_TYPE_BUY_LIMIT and self.entry >= market_price) or (
+                self.order_type == mt5.ORDER_TYPE_SELL_LIMIT and self.entry <= market_price
+            ):
+                print(
+                    f"⚠️ Entry {self.entry} may be invalid for {self.pending_order_type} at market {market_price}"
+                )
+        elif self.order_type in {mt5.ORDER_TYPE_BUY_STOP, mt5.ORDER_TYPE_SELL_STOP}:
+            if (self.order_type == mt5.ORDER_TYPE_BUY_STOP and self.entry <= market_price) or (
+                self.order_type == mt5.ORDER_TYPE_SELL_STOP and self.entry >= market_price
+            ):
+                print(
+                    f"⚠️ Entry {self.entry} may be invalid for {self.pending_order_type} at market {market_price}"
+                )
 
     def process(self):
         if self.pending_order_type == "skip":
@@ -155,6 +173,7 @@ class TradeSignalSender:
         self.balance = account.balance
         self.entry = float(self.signal["entry"])
         self.sl = float(self.signal["sl"])
+        self.tp = float(self.signal.get("tp", 0.0))
         self.confidence = int(self.signal.get("confidence", 70))
         self.max_drawdown = float(self.signal.get("max_drawdown", 15))
         if self.max_risk_per_trade is not None:
@@ -170,7 +189,7 @@ class TradeSignalSender:
         self.prepare_order_type()
 
         market_price = tick.ask if "buy" in self.pending_order_type else tick.bid
-        self.adjust_entry_if_needed(market_price, info.point)
+        self.warn_invalid_entry(market_price)
 
         self.calculate_risk_reward()
         self.lot = self.calculate_lot(
