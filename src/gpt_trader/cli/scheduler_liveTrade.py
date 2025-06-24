@@ -144,29 +144,39 @@ def _format_summary_message(detail: str, status: str, signal: dict | None) -> st
         }
         order_type = signal.get("pending_order_type")
         emoji = type_map.get(str(order_type).lower(), "")
-        parts.extend(
-            [
-                f"📌 signal_id:{signal.get('signal_id')}",
-                f"💰 entry:{signal.get('entry')}",
-                f"🛑 sl:{signal.get('sl')}",
-                f"🎯 tp:{signal.get('tp')}",
-                f"{emoji} pending_order_type:{order_type}",
-                f"⭐ confidence:{signal.get('confidence')}",
-            ]
-        )
-        if signal.get("regime_type") is not None:
-            parts.append(f"📊 regime_type:{signal['regime_type']}")
+
+        basic = [
+            f"📌 signal_id:{signal.get('signal_id')}",
+            f"💰 entry:{signal.get('entry')}",
+            f"🛑 sl:{signal.get('sl')}",
+            f"🎯 tp:{signal.get('tp')}",
+            f"{emoji} pending_order_type:{order_type}",
+            f"⭐ confidence:{signal.get('confidence')}",
+        ]
+        parts.append("\n".join(basic))
+
+        extra: list[str] = []
+        if signal.get("risk_per_trade") is not None:
+            extra.append(f"⚖ risk_per_trade:{signal['risk_per_trade']}%")
         if signal.get("lot") is not None:
-            parts.append(f"💵 lot:{signal['lot']}")
+            extra.append(f"💵 lot:{signal['lot']}")
         if signal.get("rr") is not None:
             try:
                 rr_fmt = f"{float(signal['rr']):.2f}"
             except Exception:
                 rr_fmt = str(signal['rr'])
-            parts.append(f"📈 rr:{rr_fmt}")
+            extra.append(f"📈 rr:{rr_fmt}")
+        if signal.get("regime_type") is not None:
+            extra.append(f"📊 regime_type:{signal['regime_type']}")
+        if extra:
+            parts.append("")
+            parts.append("\n".join(extra))
+
         if signal.get("short_reason") is not None:
+            parts.append("")
             parts.append(f"📝 short_reason:{signal['short_reason']}")
         if signal.get("order_status") is not None:
+            parts.append("")
             parts.append(f"🚩 order:{signal['order_status']}")
     return "\n".join(parts)
 
@@ -246,6 +256,7 @@ def _run_workflow() -> None:
                 )
                 signal["lot"] = sender.lot
                 signal["rr"] = sender.rr
+                signal["risk_per_trade"] = sender.risk_per_trade
                 order_status = sender.order_result
                 signal["order_status"] = order_status
             except Exception as exc:  # noqa: BLE001
