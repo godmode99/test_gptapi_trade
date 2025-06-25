@@ -321,6 +321,20 @@ Run the tests with:
 pytest
 ```
 
+## Supabase schema
+
+The SQL schema for storing signals, orders and trades lives in
+`supabase/schema.sql`. Create a new Supabase project and apply the file using
+the Supabase CLI:
+
+```bash
+supabase db remote set <database-url>
+supabase db push supabase/schema.sql
+```
+
+You can also run the commands in the Supabase web dashboard. After the tables
+are created, set `SUPABASE_URL` and `SUPABASE_KEY` so the API can connect.
+
 ## Troubleshooting
 
 - **`MetaTrader5.initialize()` fails** – ensure the desktop terminal is installed
@@ -337,6 +351,7 @@ pytest
 - [สรุปรายการไฟล์ในโครงการ](docs/files_overview_th.md)
 - [ภาพรวม flow การทำงาน](docs/flow_overview_th.md)
 - [การติดตั้งบน Linux/Wine และใช้งาน scheduler](docs/usage_linux_th.md)
+- [Supabase setup](docs/supabase_setup.md)
 
 
 ## License
