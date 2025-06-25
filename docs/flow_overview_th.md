@@ -1,8 +1,8 @@
 # ภาพรวมการทำงานของระบบ
 
 ไฟล์นี้สรุปขั้นตอนสำคัญของ workflow ตามแผนภาพใน `Work_flow_chart.png`
-รายละเอียดเชิงลึกสามารถอ่านได้จาก [Work_flow.md](../Work_flow.md)
-รวมถึงไฟล์ `live_trade/live_trade_flow.md` และ `back_test/backtest_flow.md`
+รายละเอียดเชิงลึกสามารถอ่านได้จาก [Work_flow.md](Work_flow.md)
+รวมถึงไฟล์ `live_trade_flow.md` และ `back_test/backtest_flow.md`
 
 1. **Fetch Data** – ดึงข้อมูล OHLC และคำนวณตัวชี้วัด (RSI, SMA, ATR) จาก MT5 หรือ
    yfinance แล้วบันทึกเป็น CSV และ JSON โดยสามารถเปิด/ปิดการคำนวณแต่ละค่าได้จากไฟล์คอนฟิก
