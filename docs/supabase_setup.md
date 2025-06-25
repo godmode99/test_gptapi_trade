@@ -1,6 +1,6 @@
 # Setting up Supabase
 
-This project stores trading records in a Supabase PostgreSQL database. The SQL schema can be found in `supabase/schema.sql`.
+This project stores trading records in a Supabase PostgreSQL database. The SQL schema can be found in `backend/supabase/schema.sql`.
 
 ## Applying the schema
 
@@ -10,7 +10,7 @@ This project stores trading records in a Supabase PostgreSQL database. The SQL s
 
    ```bash
    supabase db remote set <database-url>
-   supabase db push supabase/schema.sql
+   supabase db push backend/supabase/schema.sql
    ```
 
    Alternatively, you can paste the contents of `schema.sql` into the SQL editor on the Supabase dashboard and execute it.

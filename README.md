@@ -324,12 +324,12 @@ pytest
 ## Supabase schema
 
 The SQL schema for storing signals, orders and trades lives in
-`supabase/schema.sql`. Create a new Supabase project and apply the file using
+`backend/supabase/schema.sql`. Create a new Supabase project and apply the file using
 the Supabase CLI:
 
 ```bash
 supabase db remote set <database-url>
-supabase db push supabase/schema.sql
+supabase db push backend/supabase/schema.sql
 ```
 
 You can also run the commands in the Supabase web dashboard. After the tables
