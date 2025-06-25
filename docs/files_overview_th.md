@@ -25,11 +25,11 @@
 | `parse/` | แปลงผลลัพธ์ที่ได้จาก GPT เป็นรูปแบบที่ EA ใช้งานได้ |
 | `utils/` | ฟังก์ชันช่วย เช่น การคำนวณ indicator |
 
-### รายละเอียดสคริปต์สำคัญ
+-### รายละเอียดสคริปต์สำคัญ
 
-- `cli/main_liveTrade.py` — รันขั้นตอน fetch → send → parse ตามค่าคอนฟิก
+- `cli/live_trade_workflow.py` — รันขั้นตอน fetch → send → parse ตามค่าคอนฟิก
 - `cli/main_backtest.py` — รันการทดสอบย้อนหลังตามช่วงเวลาในคอนฟิก
-- `cli/liveTrade_scheduler.py` — ตัวอย่างตั้งเวลาเรียก `main_liveTrade.py`
+- `cli/liveTrade_scheduler.py` — ตัวอย่างตั้งเวลาเรียก `live_trade_workflow.py`
 - `fetch/fetch_mt5_data.py` — ดึงข้อมูลราคาและคำนวณ indicator ผ่าน MT5
 - `fetch/fetch_yf_data.py` — ดึงข้อมูลจาก yfinance
 - `send/send_to_gpt.py` — ส่งข้อมูลไป GPT และบันทึกสำเนา prompt

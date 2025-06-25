@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from main_liveTrade import main as run_main
+from gpt_trader.cli.live_trade_workflow import main as run_main
 from gpt_trader.notify import send_line, send_telegram
 from gpt_trader.cli.latest_signal_to_mt5 import TradeSignalSender
 
