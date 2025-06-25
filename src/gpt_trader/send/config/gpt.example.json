@@ -3,6 +3,6 @@
   "model": "gpt-4o",
   "json_file": "",
   "json_path": "data/live_trade/fetch",
-  "save_prompt_dir": "data/save_prompt_api"
+  "save_prompt_dir": "data/live_trade/save_prompt_api"
 
 }

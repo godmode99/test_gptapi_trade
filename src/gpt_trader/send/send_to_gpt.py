@@ -140,7 +140,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--save-dir",
-        default=config.get("save_prompt_dir", "data/save_prompt_api"),
+        default=config.get("save_prompt_dir", "data/live_trade/save_prompt_api"),
         help="Directory to save JSON and prompt copies",
     )
     parser.add_argument("--output", help="Save raw response to file")
