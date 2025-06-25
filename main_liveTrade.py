@@ -15,6 +15,7 @@ repo_root = Path(__file__).resolve().parent
 sys.path.insert(0, str(repo_root / "src"))
 
 from gpt_trader.cli.common import _run_step
+from gpt_trader.utils import post_signal
 
 
 def _load_config(path: Path) -> dict:
@@ -193,6 +194,17 @@ async def main() -> dict[str, str]:
             else:
                 await _run_step("parse", Path(args.parse_script), args.response)
             results["parse"] = "success"
+            try:
+                cfg_lookup = parse_cfg or {}
+                latest = Path(cfg_lookup.get("path_latest_response", args.response)).with_suffix(".json")
+                signal_data = json.loads(latest.read_text(encoding="utf-8"))
+                api_cfg = config.get("signal_api", {})
+                if api_cfg:
+                    post_signal(api_cfg.get("base_url", ""), api_cfg.get("auth_token", ""), signal_data)
+                results["post_signal"] = "success"
+            except Exception as exc:  # noqa: BLE001
+                logging.error("post signal failed: %s", exc)
+                results["post_signal"] = "error"
         except Exception as exc:  # noqa: BLE001
             logging.error("parse step failed: %s", exc)
             results["parse"] = "error"

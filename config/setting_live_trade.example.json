@@ -48,6 +48,10 @@
     "path_latest_response": "data/live_trade/signals/latest_response.txt",
     "tz_shift": 7
   },
+  "signal_api": {
+    "base_url": "http://localhost:8000",
+    "auth_token": "YOUR_TOKEN"
+  },
   "risk_per_trade": 1.0,
   "max_risk_per_trade": 2.0,
   "notify": {
