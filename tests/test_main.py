@@ -74,6 +74,39 @@ def test_time_fetch_passed(tmp_path):
     assert recorded["fetch"]["time_fetch"] == "2024-01-01 00:00:00"
 
 
+def test_post_signal_called(tmp_path):
+    cfg = {
+        "workflow": {
+            "scripts": {
+                "fetch": "f.py",
+                "send": "s.py",
+                "parse": "p.py",
+            },
+            "response": str(tmp_path / "resp.txt"),
+            "skip": {"fetch": True, "send": True, "parse": False},
+        },
+        "parse": {"path_latest_response": str(tmp_path / "resp.txt")},
+        "signal_api": {"base_url": "http://api", "auth_token": "t"},
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+
+    async def fake_run(step, script, *args):
+        if step == "parse":
+            (tmp_path / "resp.json").write_text(json.dumps({"ok": 1}))
+
+    with patch.object(
+        sys,
+        "argv",
+        ["src/gpt_trader/cli/main_liveTrade.py", "--config", str(cfg_path)],
+    ), patch("gpt_trader.cli.common._run_step", fake_run), patch(
+        "gpt_trader.utils.api_client.post_signal"
+    ) as post_fn:
+        asyncio.run(entry_main())
+
+    post_fn.assert_called_once()
+
+
 def test_notify_called(tmp_path):
     cfg = {
         "notify": {
