@@ -352,6 +352,7 @@ are created, set `SUPABASE_URL` and `SUPABASE_KEY` so the API can connect.
 - [ภาพรวม flow การทำงาน](docs/flow_overview_th.md)
 - [การติดตั้งบน Linux/Wine และใช้งาน scheduler](docs/usage_linux_th.md)
 - [Supabase setup](docs/supabase_setup.md)
+- [Grafana/Retool dashboards](docs/dashboard.md)
 
 
 ## License
