@@ -86,7 +86,7 @@ async def main() -> dict[str, str]:
     parser.add_argument(
         "--response",
         default=workflow.get(
-            "response", "live_trade/data/signals/latest_response.txt"
+            "response", "data/live_trade/signals/latest_response.txt"
         ),
         help="Temporary file to store raw GPT response",
     )
