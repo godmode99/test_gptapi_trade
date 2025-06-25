@@ -49,4 +49,4 @@
 - `backtest_flow.md` — คำอธิบายลำดับการทำงานโหมด Backtest
 - `backtest.json` — ตัวอย่างคอนฟิกสำหรับการรัน backtest
 
-เอกสาร flow หลักสามารถดูเพิ่มเติมได้ใน [Work_flow.md](../Work_flow.md)
+เอกสาร flow หลักสามารถดูเพิ่มเติมได้ใน [Work_flow.md](Work_flow.md)

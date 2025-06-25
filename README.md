@@ -1,6 +1,6 @@
 # AI Trading System
 
-This project implements an automated trading workflow that uses data from MT5 and generates trading signals using the GPT API. The main steps are documented in `Work_flow.md`.
+This project implements an automated trading workflow that uses data from MT5 and generates trading signals using the GPT API. The main steps are documented in `docs/Work_flow.md`.
 
 ## Table of Contents
 
@@ -298,7 +298,7 @@ on the chart. Each JSON signal must include the fields `signal_id`, `entry`, `sl
 3. Drag the indicator onto a chart. Set `DisplaySignals` to `false` to plot
    RSI/SMA/ATR or set it to `true` to display parsed signals.
 
-Refer to `Work_flow.md` for the full workflow description.
+Refer to `docs/Work_flow.md` for the full workflow description.
 
 ## Running tests
 

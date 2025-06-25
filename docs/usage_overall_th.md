@@ -55,5 +55,5 @@
 - ไฟล์สัญญาณ JSON อยู่ใน `data/*/signals/signals_json/`
 - สำเนา prompt และ JSON ที่ส่งให้ GPT จะถูกบันทึกเป็นไฟล์เดียวใน `data/*/save_prompt_api/`
 
-ศึกษา flow รายละเอียดเพิ่มเติมได้ใน [Work_flow.md](../Work_flow.md)
+ศึกษา flow รายละเอียดเพิ่มเติมได้ใน [Work_flow.md](Work_flow.md)
 และไฟล์ในโฟลเดอร์ `live_trade/docs/`
