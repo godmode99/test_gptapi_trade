@@ -12,7 +12,7 @@ Logging, monitoring, config เดียวคุมทุกอย่าง
 2. High Level Flow (ตาม flowchart)
    [APScheduler]
    |
-   [python main_liveTrade.py (entry point)]
+   [python live_trade_workflow.py (entry point)]
    |
    [โหลด config]
    |
@@ -32,11 +32,11 @@ Logging, monitoring, config เดียวคุมทุกอย่าง
 4. APScheduler: loop every 1 hr
    ตั้ง scheduler (เช่นรันใน VPS, server, หรือ PC บ้าน)
 
-เรียก python main_liveTrade.py ตาม interval ที่กำหนด (1 ชม. หรือแล้วแต่ config)
+เรียก python live_trade_workflow.py ตาม interval ที่กำหนด (1 ชม. หรือแล้วแต่ config)
 
 ข้อดี: ไม่ต้องเปิด script ค้างไว้, ไม่ต้องใช้ Task Scheduler แบบโบราณ
 
-2. python main_liveTrade.py (Entry Point)
+2. python live_trade_workflow.py (Entry Point)
    โหลด config (config/live.json หรือ path ที่ตั้งไว้)
 
 กำหนด parameter ทั้งหมด: symbol, tf, bar, indicators, gpt model, output path ฯลฯ

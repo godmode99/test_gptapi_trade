@@ -24,10 +24,10 @@ cp config/setting_live_trade.example.json \
 
 ## รันสคริปต์หลัก
 
-สคริปต์ `main_liveTrade.py` จะเรียกขั้นตอน fetch → send → parse ตามค่าที่กำหนดใน `setting_live_trade.json`
+สคริปต์ `live_trade_workflow.py` จะเรียกขั้นตอน fetch → send → parse ตามค่าที่กำหนดใน `setting_live_trade.json`
 
 ```bash
-python main_liveTrade.py
+python src/gpt_trader/cli/live_trade_workflow.py
 ```
 
 สามารถกำหนดอาร์กิวเมนต์เพิ่มเติมได้ เช่น
@@ -39,12 +39,12 @@ python main_liveTrade.py
 ตัวอย่างรันโดยใช้ไฟล์คอนฟิกอื่นและข้ามการดึงข้อมูล
 
 ```bash
-python main_liveTrade.py --config my_config.json --skip-fetch
+python src/gpt_trader/cli/live_trade_workflow.py --config my_config.json --skip-fetch
 ```
 
 ## การรันแบบอัตโนมัติ
 
-ใช้สคริปต์ `src/gpt_trader/cli/liveTrade_scheduler.py` เพื่อเรียก `main_liveTrade.py` ทุก ๆ ชั่วโมง
+ใช้สคริปต์ `src/gpt_trader/cli/liveTrade_scheduler.py` เพื่อเรียก `live_trade_workflow.py` ทุก ๆ ชั่วโมง
 
 ```bash
 python src/gpt_trader/cli/liveTrade_scheduler.py

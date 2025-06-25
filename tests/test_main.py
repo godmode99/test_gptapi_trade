@@ -33,7 +33,7 @@ def test_default_fetcher_loaded(tmp_path):
     with patch.object(
         sys,
         "argv",
-        ["src/gpt_trader/cli/main_liveTrade.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
+        ["src/gpt_trader/cli/live_trade_workflow.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
     ), patch("gpt_trader.cli.common._run_step", fake_run):
         asyncio.run(entry_main())
 
@@ -67,7 +67,7 @@ def test_time_fetch_passed(tmp_path):
     with patch.object(
         sys,
         "argv",
-        ["src/gpt_trader/cli/main_liveTrade.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
+        ["src/gpt_trader/cli/live_trade_workflow.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
     ), patch("gpt_trader.cli.common._run_step", fake_run):
         asyncio.run(entry_main())
 
@@ -98,7 +98,7 @@ def test_post_signal_called(tmp_path):
     with patch.object(
         sys,
         "argv",
-        ["src/gpt_trader/cli/main_liveTrade.py", "--config", str(cfg_path)],
+        ["src/gpt_trader/cli/live_trade_workflow.py", "--config", str(cfg_path)],
     ), patch("gpt_trader.cli.common._run_step", fake_run), patch(
         "gpt_trader.utils.api_client.post_signal"
     ) as post_fn:

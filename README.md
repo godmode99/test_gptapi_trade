@@ -125,7 +125,7 @@ Example `src/gpt_trader/fetch/config/fetch_mt5.json`:
 
 The `fetch` section inside `config/setting_live_trade.json` accepts the same keys as the
 individual fetcher configuration files, so you can provide `time_fetch` there as
-well when running the combined workflow with `main_liveTrade.py`.
+well when running the combined workflow with `live_trade_workflow.py`.
 
 The script `src/gpt_trader/fetch/fetch_yf_data.py` provides similar functionality using yfinance.
 It loads `src/gpt_trader/fetch/config/fetch_yf.json` and accepts the same command-line options.
@@ -199,16 +199,16 @@ Once the individual scripts are configured you can execute the whole process in
 a single command:
 
 ```bash
-python main_liveTrade.py
+python src/gpt_trader/cli/live_trade_workflow.py
 ```
 
-`main_liveTrade.py` reads default settings from `config/setting_live_trade.json` (the
+`live_trade_workflow.py` reads default settings from `config/setting_live_trade.json` (the
 file you created in the previous step). Pass `--config` with a different path to
 use custom values. Command-line options override the config entries. The
 configuration is divided into `workflow`, `fetch`, `send` and `parse` sections so
 all parameters can be managed in one place.
 
-The `main_liveTrade.py` helper runs the fetch step, sends the result to the GPT API and
+The `live_trade_workflow.py` helper runs the fetch step, sends the result to the GPT API and
 parses the raw response into a JSON signal. Use `--fetch-script`, `--send-script`
 and `--parse-script` to override the default script locations. You can also
 select a built-in fetcher with `--fetch-type mt5|yf` (default is `mt5`) or skip
@@ -217,15 +217,15 @@ individual stages with `--skip-fetch`, `--skip-send` and `--skip-parse`.
 Example fetching from MT5 and only parsing a previous response:
 
 ```bash
-python main_liveTrade.py --fetch-type mt5 --skip-fetch --skip-send
+python src/gpt_trader/cli/live_trade_workflow.py --fetch-type mt5 --skip-fetch --skip-send
 ```
 
 ### Automated execution
 
 Run `src/gpt_trader/cli/scheduler_liveTrade.py` to execute the workflow on a
-schedule. The script uses APScheduler to call `main_liveTrade.py` repeatedly
+schedule. The script uses APScheduler to call `live_trade_workflow.py` repeatedly
 (version 3.x is expected but the code attempts to handle version 4.x as well).
-`main_liveTrade.py` prepends the repository root to `sys.path` so the scheduler
+`live_trade_workflow.py` prepends the repository root to `sys.path` so the scheduler
 can be executed directly from the project root. The workflow is executed once
 immediately and then the next run is aligned to the next ``:10`` or ``:40`` slot
 based on the configured start time (08:10 by default). Subsequent runs follow
