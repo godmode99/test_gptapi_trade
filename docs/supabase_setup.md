@@ -20,9 +20,9 @@
 
 1. คัดลอกค่า **Connection string** จากหน้า **Settings → Database** ของโปรเจกต์ เช่น
    `postgresql://postgres:<password>@db.<project-ref>.supabase.co:5432/postgres`
-2. ตั้งค่าการเชื่อมต่อให้ CLI
+2. ตั้งค่าการเชื่อมต่อให้ CLI (เวอร์ชัน CLI 2.x ต้องระบุ `--db-url`)
    ```bash
-   npx supabase db remote set 'postgresql://...'
+   npx supabase db remote set --db-url 'postgresql://...'
    ```
 3. จาก root ของโปรเจกต์ รันคำสั่ง
    ```bash
