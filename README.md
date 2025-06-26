@@ -328,7 +328,7 @@ The SQL schema for storing signals, orders and trades lives in
 the Supabase CLI:
 
 ```bash
-supabase db remote set <database-url>
+supabase db remote set --db-url <database-url>
 supabase db push backend/supabase/schema.sql
 ```
 
