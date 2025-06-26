@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
@@ -7,7 +7,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function insertSignal(data) {
   const { data: result, error } = await supabase
-    .from('signals')
+    .from("signals")
     .insert(data)
     .select()
     .single();
@@ -17,7 +17,7 @@ export async function insertSignal(data) {
 
 export async function insertOrder(data) {
   const { data: result, error } = await supabase
-    .from('pending_orders')
+    .from("pending_orders")
     .insert(data)
     .select()
     .single();
@@ -27,7 +27,7 @@ export async function insertOrder(data) {
 
 export async function insertTrade(data) {
   const { data: result, error } = await supabase
-    .from('trades')
+    .from("trades")
     .insert(data)
     .select()
     .single();
@@ -37,7 +37,7 @@ export async function insertTrade(data) {
 
 export async function insertEvent(data) {
   const { data: result, error } = await supabase
-    .from('trade_events')
+    .from("trade_events")
     .insert(data)
     .select()
     .single();
