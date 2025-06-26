@@ -9,13 +9,10 @@
 
 ## 2. ติดตั้งและตั้งค่า Supabase CLI
 
-1. ติดตั้ง Node.js หากยังไม่มี จากนั้นรัน
-   ```bash
-   npm install -g supabase
-   ```
+1. ติดตั้ง Node.js หากยังไม่มี แล้วเรียกใช้ Supabase CLI ผ่าน `npx` ได้ทันที ไม่จำเป็นต้องติดตั้งแบบ global
 2. เข้าสู่ระบบผ่าน CLI
    ```bash
-   supabase login
+   npx supabase login
    ```
    นำ access token จากหน้าเว็บมาวางตามที่ระบบถาม
 
@@ -25,11 +22,11 @@
    `postgresql://postgres:<password>@db.<project-ref>.supabase.co:5432/postgres`
 2. ตั้งค่าการเชื่อมต่อให้ CLI
    ```bash
-   supabase db remote set 'postgresql://...'
+   npx supabase db remote set 'postgresql://...'
    ```
 3. จาก root ของโปรเจกต์ รันคำสั่ง
    ```bash
-   supabase db push backend/supabase/schema.sql
+   npx supabase db push backend/supabase/schema.sql
    ```
    CLI จะสร้างตารางตามไฟล์ `schema.sql` ให้อัตโนมัติ หากไม่ใช้ CLI สามารถเปิด SQL editor บนเว็บแล้ววางไฟล์ไปรันได้เช่นกัน
 
