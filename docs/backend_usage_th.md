@@ -1,30 +1,38 @@
 # คู่มือใช้งาน Backend API
 
-เอกสารนี้อธิบายขั้นตอนการติดตั้งและใช้งานเซิร์ฟเวอร์ API ในโฟลเดอร์ `backend/api` ซึ่งพัฒนาโดยใช้ Node.js และ Express.js โดยข้อมูลทั้งหมดจะถูกบันทึกลงฐานข้อมูล Supabase ตาม schema ใน `backend/supabase/schema.sql`.
+เอกสารนี้อธิบายการตั้งค่าและใช้งานเซิร์ฟเวอร์ที่อยู่ในโฟลเดอร์ `backend/api` ซึ่งเขียนด้วย Node.js และ Express.js ผู้ที่ไม่เคยใช้ Node.js มาก่อนก็สามารถทำตามขั้นตอนต่อไปนี้ได้
 
-## 1. ติดตั้งแพ็กเกจ Node.js
+## 1. เตรียมเครื่องมือพื้นฐาน
 
-```bash
-cd backend/api
-npm install
-```
-
-คำสั่งนี้จะติดตั้ง `express` และ `@supabase/supabase-js` ตามที่ระบุไว้ใน `package.json`.
+1. ติดตั้ง Node.js เวอร์ชัน LTS จาก <https://nodejs.org>
+   เมื่อติดตั้งเสร็จให้ตรวจสอบด้วย
+   ```bash
+   node -v
+   npm -v
+   ```
+   หากแสดงหมายเลขเวอร์ชันแสดงว่าใช้งานได้แล้ว
+2. ติดตั้งไลบรารีที่ใช้ในโปรเจกต์
+   ```bash
+   cd backend/api
+   npm install
+   ```
+   คำสั่งนี้จะดาวน์โหลดแพ็กเกจใน `package.json` เช่น `express` และ `@supabase/supabase-js`
 
 ## 2. กำหนดตัวแปรสภาพแวดล้อม
 
-เซิร์ฟเวอร์จำเป็นต้องรู้ URL และคีย์ของโปรเจกต์ Supabase ก่อนเริ่มทำงาน กำหนดค่าดังนี้
+เซิร์ฟเวอร์ต้องรู้ข้อมูลเชื่อมต่อกับ Supabase และพอร์ตที่เปิดบริการ ตัวอย่างแบบง่ายใช้คำสั่ง
 
 ```bash
-export SUPABASE_URL="https://<project-ref>.supabase.co"
-export SUPABASE_KEY="<service-role-key>"
-# เลือกพอร์ตได้ (ค่าเริ่มต้น 3000)
-export PORT=3000
+export SUPABASE_URL='https://<project-ref>.supabase.co'
+export SUPABASE_KEY='<service-role-key>'
+export PORT=3000   # เปลี่ยนได้ตามต้องการ
 ```
+
+ค่าตัวแปรดูได้จากหน้า **Settings → API** ในโปรเจกต์ Supabase หากไม่กำหนด `PORT` จะใช้ค่าเริ่มต้น 3000
 
 ## 3. รันเซิร์ฟเวอร์
 
-เมื่อกำหนดตัวแปรครบแล้ว สามารถเริ่มเซิร์ฟเวอร์ได้ด้วย
+เมื่อกำหนดค่าครบแล้วให้เริ่มเซิร์ฟเวอร์ด้วย
 
 ```bash
 npm start
@@ -32,28 +40,27 @@ npm start
 node app.js
 ```
 
-หากไม่มีการระบุค่า `PORT` เซิร์ฟเวอร์จะเปิดที่พอร์ต `3000` โดยจะแสดงข้อความ `API server listening on port 3000` ในคอนโซล
+หากทุกอย่างถูกต้อง คอนโซลจะแสดงข้อความ `API server listening on port 3000`
 
-## 4. การใช้งาน API
+## 4. Endpoint ที่ให้บริการ
 
-เซิร์ฟเวอร์มี endpoint สำหรับบันทึกข้อมูล 4 ชนิด ซึ่งจะเขียนลงตารางที่สอดคล้องกันใน Supabase
+เซิร์ฟเวอร์มี 4 เส้นทางสำหรับรับข้อมูลและบันทึกลงฐานข้อมูล
 
-- `POST /signal` – เพิ่มข้อมูลสัญญาณเข้า table `signals`
-- `POST /order` – เพิ่มคำสั่งที่รอเข้าไม้ใน table `pending_orders`
-- `POST /trade` – บันทึกผลการเทรดใน table `trades`
-- `POST /event` – บันทึกเหตุการณ์ต่าง ๆ ใน table `trade_events`
+- `POST /signal` – บันทึกสัญญาณเทรดลงตาราง `signals`
+- `POST /order` – บันทึกรายการคำสั่งรอเข้าตลาดใน `pending_orders`
+- `POST /trade` – บันทึกผลการเทรดจริงใน `trades`
+- `POST /event` – บันทึกเหตุการณ์ต่าง ๆ ใน `trade_events`
 
-ตัวอย่างเรียกใช้งานด้วย `curl`
+ควรส่งข้อมูลเป็น JSON ให้ครบตาม schema ไม่เช่นนั้นจะได้รับข้อความ error กลับมา
+
+ตัวอย่างเรียก `POST /signal` ด้วย `curl`
 
 ```bash
 curl -X POST http://localhost:3000/signal \
-     -H "Content-Type: application/json" \
+     -H 'Content-Type: application/json' \
      -d '{"signal_id":"demo_01","symbol":"XAUUSD","entry":2320.5,"sl":2315,"tp":2335,"type":"buy_limit","confidence":80}'
 ```
 
-ควรตรวจสอบว่าแต่ละคีย์ตรงกับชนิดข้อมูลใน `backend/supabase/schema.sql` ก่อนส่งเข้าระบบ
+## 5. การเตรียมฐานข้อมูล
 
-## 5. เตรียมฐานข้อมูล
-
-หากยังไม่ได้สร้างตาราง สามารถดูวิธีตั้งค่า Supabase ได้ที่ [docs/supabase_setup.md](supabase_setup.md) จากนั้นจึงกำหนดค่า `SUPABASE_URL` และ `SUPABASE_KEY` ตามโปรเจกต์ของคุณ
-
+หากยังไม่ได้สร้างตารางใน Supabase ให้ดูวิธีใน [supabase_setup.md](supabase_setup.md) ก่อน เมื่อตารางพร้อมแล้วเซิร์ฟเวอร์ก็จะบันทึกข้อมูลได้ทันที
