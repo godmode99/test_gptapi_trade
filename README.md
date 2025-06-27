@@ -8,6 +8,7 @@ This project implements an automated trading workflow that uses data from MT5 an
 - [Configuration](#configuration)
 - [Running the workflow](#running-the-complete-workflow)
 - [Backtesting](#backtesting)
+- [Backend API](#backend-api)
 - [Troubleshooting](#troubleshooting)
 
 ## Installation
@@ -278,6 +279,32 @@ python src/gpt_trader/cli/main_backtest.py --config back_test/backtest.json
 The resulting CSV defined by `signal_table` (default
 `data/back_test/signals/backtest_signals.csv`) can be imported into MT5 for evaluation
 inside the strategy tester.
+
+## Backend API
+
+The repository includes a small API server written in TypeScript under
+`backend/neon-ts`.
+
+### Install dependencies
+
+```bash
+cd backend/neon-ts
+npm install
+```
+
+### Build the server
+
+```bash
+npm run build
+```
+
+### Start the server
+
+```bash
+npm start
+```
+
+See [docs/backend_usage_th.md](docs/backend_usage_th.md) for a detailed guide.
 
 ## CustomIndicator
 
