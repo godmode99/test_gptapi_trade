@@ -19,9 +19,20 @@
 EA / Execution	MetaTrader5 (MQL5)
 Scheduler	Python + APScheduler
 API Gateway	Node.js + Express.js
-Database	Supabase (PostgreSQL)
+Database	Neon (PostgreSQL)
 Dashboard/Query	Grafana, Retool, Jupyter
 Deployment	VPS (4GB RAM), Cloud DB
+
+มีเวอร์ชัน TypeScript เพิ่มใน `backend/neon-ts` ใช้ไลบรารี `@neondatabase/serverless`
+
+ก่อนรันเซิร์ฟเวอร์ (ทั้ง JavaScript และ TypeScript) ต้องตั้งค่า environment variables ดังนี้
+
+```bash
+export DATABASE_URL="postgres://<user>:<pass>@<host>/<db>"
+export PORT=3000  # optional
+```
+ดูรายละเอียดเพิ่มเติมที่ `docs/backend_usage_th.md`
+
 
 3. 🧩 โครงสร้างระบบภาพรวม
 plaintext
@@ -33,10 +44,10 @@ plaintext
   ↓
 [Node.js API (Express)]
   ↓
-[Supabase PostgreSQL]
+[Neon PostgreSQL]
   ↓
 [Dashboard: Grafana / Retool / Jupyter]
-4. 💾 โครงสร้างฐานข้อมูล (Supabase)
+4. 💾 โครงสร้างฐานข้อมูล (Neon Postgres)
 4.1 signals – เก็บ signal ที่ได้รับจาก GPT
 Field	Type	Description
 signal_id	TEXT PK	รหัสสัญญาณ เช่น xauusd_250625_1310
@@ -96,8 +107,9 @@ pending order ถูกส่ง	→ insert ลง pending_orders
 
 เชื่อม EA/Python → ส่ง POST → /signal, /order, /trade, /event
 
-สร้าง dashboard ดึงข้อมูลย้อนหลังผ่าน Supabase REST หรือ direct SQL
+สร้าง dashboard ดึงข้อมูลจาก Neon โดยตรง (Grafana/Retool)
 
 📌 สรุป
 โครงสร้างนี้ทำให้มึง trace ได้ทั้งไม้เดียว หรือทุกไม้ย้อนหลัง
 พร้อมรองรับการ scale, สร้าง report, หรือระบบวิเคราะห์ signal result ต่อได้ในอนาคต
+
