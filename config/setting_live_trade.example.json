@@ -1,61 +1,55 @@
 {
-  "workflow": {
-    "fetch_type": "mt5",
-    "scripts": {
-      "fetch": null,
-      "send": "src/gpt_trader/send/send_to_gpt.py",
-      "parse": "src/gpt_trader/parse/parse_gpt_response.py"
+    "workflow": {
+        "fetch_type": "mt5",
+        "scripts": {
+            "fetch": null,
+            "send": "src/gpt_trader/send/send_to_gpt.py",
+            "parse": "src/gpt_trader/parse/parse_gpt_response.py",
+        },
+        "response": "data/live_trade/signals/latest_response.txt",
+        "skip": {"fetch": false, "send": false, "parse": false},
     },
-    "response": "data/live_trade/signals/latest_response.txt",
-    "skip": {
-      "fetch": false,
-      "send": false,
-      "parse": false
-    }
-  },
-  "fetch": {
-    "tz_shift": 4,
-    "symbol": "XAUUSDm",
-    "symbol_signal": "xauusd",
-    "fetch_bars": 50,
-    "indicators": {
-      "atr14": true,
-      "rsi14": true,
-      "sma20": true,
-      "ema50": true,
-      "sma200": true
+    "fetch": {
+        "tz_shift": 4,
+        "symbol": "XAUUSDm",
+        "symbol_signal": "xauusd",
+        "fetch_bars": 50,
+        "indicators": {
+            "atr14": true,
+            "rsi14": true,
+            "sma20": true,
+            "ema50": true,
+            "sma200": true,
+        },
+        "time_fetch": "",
+        "save_as_path": "data/live_trade/fetch",
+        "timeframes": [
+            {"tf": "M5", "keep": 20},
+            {"tf": "M15", "keep": 8},
+            {"tf": "H1", "keep": 6},
+        ],
+        "note": "Fetched CSV/JSON includes a 'session' column (asia/london/newyork)",
     },
-    "time_fetch": "",
-    "save_as_path": "data/live_trade/fetch",
-    "timeframes": [
-      {"tf": "M5", "keep": 20},
-      {"tf": "M15", "keep": 8},
-      {"tf": "H1", "keep": 6}
-    ],
-    "note": "Fetched CSV/JSON includes a 'session' column (asia/london/newyork)"
-  },
-  "send": {
-    "openai_api_key": "YOUR_API_KEY",
-    "model": "gpt-4o",
-    "json_file": "",
-    "json_path": "data/live_trade/fetch",
-    "save_prompt_dir": "data/live_trade/save_prompt_api"
-  },
-  "parse": {
-    "path_signals_csv": "data/live_trade/signals/signals_csv",
-    "file_signal_report": "csv_signal_report.csv",
-    "path_signals_json": "data/live_trade/signals/signals_json",
-    "path_latest_response": "data/live_trade/signals/latest_response.txt",
-    "tz_shift": 7
-  },
-  "signal_api": {
-    "base_url": "http://localhost:8000",
-    "auth_token": "YOUR_TOKEN"
-  },
-  "risk_per_trade": 1.0,
-  "max_risk_per_trade": 2.0,
-  "notify": {
-    "line": {"enabled": true, "token": "YOUR_LINE_TOKEN"},
-    "telegram": {"enabled": false, "token": "", "chat_id": ""}
-  }
+    "send": {
+        "openai_api_key": "YOUR_API_KEY",
+        "model": "gpt-4o",
+        "json_file": "",
+        "json_path": "data/live_trade/fetch",
+        "save_prompt_dir": "data/live_trade/save_prompt_api",
+    },
+    "parse": {
+        "path_signals_csv": "data/live_trade/signals/signals_csv",
+        "file_signal_report": "csv_signal_report.csv",
+        "path_signals_json": "data/live_trade/signals/signals_json",
+        "path_latest_response": "data/live_trade/signals/latest_response.txt",
+        "tz_shift": 7,
+    },
+    "signal_api": {"base_url": "http://localhost:8000", "auth_token": "YOUR_TOKEN"},
+    "neon": {"api_url": "http://localhost:3000", "database_url": ""},
+    "risk_per_trade": 1.0,
+    "max_risk_per_trade": 2.0,
+    "notify": {
+        "line": {"enabled": true, "token": "YOUR_LINE_TOKEN"},
+        "telegram": {"enabled": false, "token": "", "chat_id": ""},
+    },
 }

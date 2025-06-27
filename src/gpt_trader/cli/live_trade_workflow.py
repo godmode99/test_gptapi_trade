@@ -85,9 +85,7 @@ async def main() -> dict[str, str]:
     )
     parser.add_argument(
         "--response",
-        default=workflow.get(
-            "response", "data/live_trade/signals/latest_response.txt"
-        ),
+        default=workflow.get("response", "data/live_trade/signals/latest_response.txt"),
         help="Temporary file to store raw GPT response",
     )
     parser.add_argument(
@@ -144,10 +142,14 @@ async def main() -> dict[str, str]:
     if not args.skip_fetch:
         try:
             if fetch_cfg:
-                with tempfile.NamedTemporaryFile("w", delete=False, suffix=".json") as tmp:
+                with tempfile.NamedTemporaryFile(
+                    "w", delete=False, suffix=".json"
+                ) as tmp:
                     json.dump(fetch_cfg, tmp)
                 try:
-                    await _run_step("fetch", Path(args.fetch_script), "--config", tmp.name)
+                    await _run_step(
+                        "fetch", Path(args.fetch_script), "--config", tmp.name
+                    )
                 finally:
                     Path(tmp.name).unlink(missing_ok=True)
             else:
@@ -162,7 +164,9 @@ async def main() -> dict[str, str]:
         send_args = ["--output", args.response]
         try:
             if send_cfg:
-                with tempfile.NamedTemporaryFile("w", delete=False, suffix=".json") as tmp:
+                with tempfile.NamedTemporaryFile(
+                    "w", delete=False, suffix=".json"
+                ) as tmp:
                     json.dump(send_cfg, tmp)
                 send_args.extend(["--config", tmp.name])
                 try:
@@ -181,7 +185,9 @@ async def main() -> dict[str, str]:
         parse_args = []
         try:
             if parse_cfg:
-                with tempfile.NamedTemporaryFile("w", delete=False, suffix=".json") as tmp:
+                with tempfile.NamedTemporaryFile(
+                    "w", delete=False, suffix=".json"
+                ) as tmp:
                     json.dump(parse_cfg, tmp)
                 parse_args.extend(["--config", tmp.name])
                 parse_args.append(args.response)
@@ -194,11 +200,24 @@ async def main() -> dict[str, str]:
             results["parse"] = "success"
             try:
                 cfg_lookup = parse_cfg or {}
-                latest = Path(cfg_lookup.get("path_latest_response", args.response)).with_suffix(".json")
+                latest = Path(
+                    cfg_lookup.get("path_latest_response", args.response)
+                ).with_suffix(".json")
                 signal_data = json.loads(latest.read_text(encoding="utf-8"))
                 api_cfg = config.get("signal_api", {})
+                neon_cfg = config.get("neon", {})
                 if api_cfg:
-                    post_signal(api_cfg.get("base_url", ""), api_cfg.get("auth_token", ""), signal_data)
+                    post_signal(
+                        api_cfg.get("base_url", ""),
+                        api_cfg.get("auth_token", ""),
+                        signal_data,
+                    )
+                if neon_cfg.get("api_url"):
+                    post_signal(
+                        neon_cfg.get("api_url", ""),
+                        neon_cfg.get("auth_token", ""),
+                        signal_data,
+                    )
                 results["post_signal"] = "success"
             except Exception as exc:  # noqa: BLE001
                 logging.error("post signal failed: %s", exc)
@@ -214,4 +233,3 @@ async def main() -> dict[str, str]:
 
 if __name__ == "__main__":
     asyncio.run(main())
-   
