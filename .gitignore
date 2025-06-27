@@ -27,4 +27,4 @@ gpt.json
 config/setting_live_trade.json
 config/setting_backtest.json
 backend/api/node_modules
-
+backend/neon-ts/node_modules
