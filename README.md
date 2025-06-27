@@ -302,12 +302,12 @@ Refer to `docs/Work_flow.md` for the full workflow description.
 
 ## Running tests
 
-Install the pinned dependencies *before* executing the test suite. The tests
-import optional packages that will be missing in a fresh clone unless you run
-the helper script:
+Before executing `pytest` make sure all development dependencies are installed.
+Run the helper script first and then launch the test suite:
 
 ```bash
 ./scripts/install_deps.sh
+pytest
 ```
 
 You can also install the packages listed in `requirements.txt` manually. The
@@ -315,12 +315,9 @@ tests rely on optional modules such as `MetaTrader5`, `openai` and `yfinance`.
 If these modules are missing the test discovery step will raise a clear error
 from `tests/__init__.py`.
 
-Run the tests with:
-
-```bash
-pytest
-```
-
+This repository includes a minimal GitHub Actions workflow that installs the
+dependencies using `scripts/install_deps.sh` and runs `pytest` automatically on
+each push and pull request.
 ## Backend directories
 
 The `backend` folder now contains multiple implementations:
