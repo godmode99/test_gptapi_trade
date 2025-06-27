@@ -14,7 +14,7 @@
 | `data/` | ที่เก็บผลลัพธ์ต่าง ๆ เช่น CSV/JSON |
 | `scripts/` | สคริปต์ช่วยเหลือ เช่น ติดตั้งไลบรารี |
 | `tests/` | ชุดทดสอบอัตโนมัติ |
-| `backend/` | โฟลเดอร์รวม API server และไฟล์ schema ของ Supabase |
+| `backend/` | โฟลเดอร์รวม API server และไฟล์ schema ของ Supabase รวมถึงเวอร์ชัน TypeScript (`neon-ts`) |
 
 ## โมดูล `src/gpt_trader`
 
