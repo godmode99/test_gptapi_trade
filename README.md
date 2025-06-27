@@ -367,6 +367,7 @@ pytest
 - [การติดตั้งบน Linux/Wine และใช้งาน scheduler](docs/usage_linux_th.md)
 - [การใช้งาน Backend API](docs/backend_usage_th.md)
 - [Grafana/Retool dashboards](docs/dashboard.md)
+- [ส่งข้อมูลจาก EA ไปยังฐานข้อมูล](docs/ea_database_th.md)
 
 
 ## License
