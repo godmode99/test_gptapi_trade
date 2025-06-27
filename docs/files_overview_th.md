@@ -14,7 +14,7 @@
 | `data/` | ที่เก็บผลลัพธ์ต่าง ๆ เช่น CSV/JSON |
 | `scripts/` | สคริปต์ช่วยเหลือ เช่น ติดตั้งไลบรารี |
 | `tests/` | ชุดทดสอบอัตโนมัติ |
-| `backend/` | รวมซอร์สโค้ด API หลายเวอร์ชัน<br>├─ `api/` JavaScript Server<br>└─ `neon-ts/` TypeScript ใช้ฐานข้อมูล Neon |
+| `backend/` | รวมซอร์สโค้ด API หลายเวอร์ชัน<br>├─ `api/` TypeScript Server ใช้ `pg`<br>└─ `neon-ts/` TypeScript ใช้ฐานข้อมูล Neon |
 
 ## โมดูล `src/gpt_trader`
 

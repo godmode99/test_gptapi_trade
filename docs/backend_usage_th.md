@@ -2,8 +2,8 @@
 
 เอกสารนี้อธิบายการตั้งค่าและใช้งานเซิร์ฟเวอร์ Backend ซึ่งแบ่งโครงสร้างดังนี้
 
-1. **`backend/api`** – เวอร์ชันดั้งเดิมเขียนด้วย JavaScript ใช้โมดูล `pg` เชื่อมฐานข้อมูลผ่านตัวแปร `DATABASE_URL`
-   โค้ดหลักอยู่ที่ `app.js` และ `services/db.js`
+1. **`backend/api`** – เวอร์ชันปัจจุบันเขียนด้วย TypeScript ใช้โมดูล `pg` เชื่อมฐานข้อมูลผ่านตัวแปร `DATABASE_URL`
+   โค้ดหลักอยู่ที่ `app.ts` และ `services/db.ts`
 2. **`backend/neon-ts`** – เวอร์ชัน TypeScript เชื่อมฐานข้อมูล Neon ด้วยไลบรารี `@neondatabase/serverless` ผ่านตัวแปร `DATABASE_URL`
 
 ผู้ที่ไม่เคยใช้ Node.js มาก่อนก็สามารถทำตามขั้นตอนต่อไปนี้ได้
@@ -21,6 +21,7 @@
   ```bash
   cd backend/api
   npm install
+  npm run build
   ```
   คำสั่งนี้จะดาวน์โหลดแพ็กเกจใน `package.json` เช่น `express` และ `@neondatabase/serverless`
 
@@ -49,8 +50,6 @@ export PORT=3000  # เปลี่ยนได้ตามต้องการ
 
 ```bash
 npm start
-# หรือ
-node app.js
 ```
 
 หากทุกอย่างถูกต้อง คอนโซลจะแสดงข้อความ `API server listening on port 3000`
