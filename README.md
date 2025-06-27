@@ -321,38 +321,6 @@ Run the tests with:
 pytest
 ```
 
-## Backend directories
-
-The `backend` folder now contains multiple implementations:
-
-- `api/` – JavaScript server that connects to Supabase
-- `neon-ts/` – TypeScript server deployed with Neon using `DATABASE_URL`
-- `supabase/` – `schema.sql` for creating tables
-
-### Supabase schema
-
-The SQL schema for storing signals, orders and trades lives in
-`backend/supabase/schema.sql`. Create a new Supabase project and apply the file using
-the Supabase CLI:
-
-```bash
-supabase db remote set --db-url <database-url>
-supabase db push backend/supabase/schema.sql
-```
-
-You can also run the commands in the Supabase web dashboard. After the tables
-are created, set `SUPABASE_URL` and `SUPABASE_KEY` so the API can connect.
-
-The repository also provides a TypeScript version of the API under
-`backend/neon-ts`. It exposes the same `/signal`, `/order`, `/trade` and
-`/event` endpoints but connects to a Neon database via `DATABASE_URL`.
-
-```bash
-cd backend/neon-ts
-npm install
-npm run build
-npm start
-```
 
 ## Troubleshooting
 
@@ -370,7 +338,6 @@ npm start
 - [สรุปรายการไฟล์ในโครงการ](docs/files_overview_th.md)
 - [ภาพรวม flow การทำงาน](docs/flow_overview_th.md)
 - [การติดตั้งบน Linux/Wine และใช้งาน scheduler](docs/usage_linux_th.md)
-- [Supabase setup](docs/supabase_setup.md)
 - [การใช้งาน Backend API](docs/backend_usage_th.md)
 - [Grafana/Retool dashboards](docs/dashboard.md)
 
