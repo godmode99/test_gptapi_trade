@@ -9,11 +9,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-    - name: Install dependencies
-      run: ./scripts/install_deps.sh
-    - name: Run tests
-      run: pytest
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: ./scripts/install_deps.sh
+      - name: Run tests
+        run: python -m pytest
