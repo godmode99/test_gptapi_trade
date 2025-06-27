@@ -335,6 +335,17 @@ supabase db push backend/supabase/schema.sql
 You can also run the commands in the Supabase web dashboard. After the tables
 are created, set `SUPABASE_URL` and `SUPABASE_KEY` so the API can connect.
 
+The repository also provides a TypeScript version of the API under
+`backend/neon-ts`. It exposes the same `/signal`, `/order`, `/trade` and
+`/event` endpoints but connects to a Neon database via `DATABASE_URL`.
+
+```bash
+cd backend/neon-ts
+npm install
+npm run build
+npm start
+```
+
 ## Troubleshooting
 
 - **`MetaTrader5.initialize()` fails** – ensure the desktop terminal is installed

@@ -1,6 +1,11 @@
 # คู่มือใช้งาน Backend API
 
-เอกสารนี้อธิบายการตั้งค่าและใช้งานเซิร์ฟเวอร์ที่อยู่ในโฟลเดอร์ `backend/api` ซึ่งเขียนด้วย Node.js และ Express.js ผู้ที่ไม่เคยใช้ Node.js มาก่อนก็สามารถทำตามขั้นตอนต่อไปนี้ได้
+เอกสารนี้อธิบายการตั้งค่าและใช้งานเซิร์ฟเวอร์ Backend ซึ่งมีให้เลือกสองแบบ
+
+1. เวอร์ชันดั้งเดิมในโฟลเดอร์ `backend/api` เขียนด้วย JavaScript เชื่อมต่อ Supabase
+2. เวอร์ชัน TypeScript ในโฟลเดอร์ `backend/neon-ts` ใช้ฐานข้อมูล Neon ผ่านตัวแปร `DATABASE_URL`
+
+ผู้ที่ไม่เคยใช้ Node.js มาก่อนก็สามารถทำตามขั้นตอนต่อไปนี้ได้
 
 ## 1. เตรียมเครื่องมือพื้นฐาน
 
@@ -12,24 +17,31 @@
    ```
    หากแสดงหมายเลขเวอร์ชันแสดงว่าใช้งานได้แล้ว
 2. ติดตั้งไลบรารีที่ใช้ในโปรเจกต์
-   ```bash
-   cd backend/api
-   npm install
-   ```
-   คำสั่งนี้จะดาวน์โหลดแพ็กเกจใน `package.json` เช่น `express` และ `@supabase/supabase-js`
+  ```bash
+  cd backend/api
+  npm install
+  ```
+  คำสั่งนี้จะดาวน์โหลดแพ็กเกจใน `package.json` เช่น `express` และ `@supabase/supabase-js`
+
+  หากใช้เวอร์ชัน TypeScript ให้ติดตั้งภายใต้ `backend/neon-ts`
+
+  ```bash
+  cd backend/neon-ts
+  npm install
+  ```
 
 ## 2. กำหนดตัวแปรสภาพแวดล้อม
 
-เซิร์ฟเวอร์ต้องรู้ข้อมูลเชื่อมต่อกับ Supabase และพอร์ตที่เปิดบริการ ตัวอย่างแบบง่ายใช้คำสั่ง
+เซิร์ฟเวอร์ต้องรู้ข้อมูลเชื่อมต่อกับฐานข้อมูลและพอร์ตที่เปิดบริการ ตัวอย่างแบบง่ายใช้คำสั่ง
 
 ```bash
-export SUPABASE_URL='https://<project-ref>.supabase.co'
-export SUPABASE_KEY='<service-role-key>'
-export PORT=3000   # เปลี่ยนได้ตามต้องการ
+export SUPABASE_URL="https://<project-ref>.supabase.co"
+export SUPABASE_KEY="<service-role-key>"
+export DATABASE_URL="postgres://<user>:<pass>@<host>/<db>"
+export PORT=3000  # เปลี่ยนได้ตามต้องการ
 ```
 
-ค่าตัวแปรดูได้จากหน้า **Settings → API** ในโปรเจกต์ Supabase หากไม่กำหนด `PORT` จะใช้ค่าเริ่มต้น 3000
-
+ค่าตัวแปรดูได้จากหน้า **Settings → API** ในโปรเจกต์ของคุณ หากไม่กำหนด `PORT` จะใช้ค่าเริ่มต้น 3000
 ## 3. รันเซิร์ฟเวอร์
 
 เมื่อกำหนดค่าครบแล้วให้เริ่มเซิร์ฟเวอร์ด้วย
