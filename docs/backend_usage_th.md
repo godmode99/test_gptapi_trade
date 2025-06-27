@@ -4,7 +4,7 @@
 
 1. **`backend/api`** – เวอร์ชันดั้งเดิมเขียนด้วย JavaScript ใช้โมดูล `pg` เชื่อมฐานข้อมูลผ่านตัวแปร `DATABASE_URL`
    โค้ดหลักอยู่ที่ `app.js` และ `services/db.js`
-2. **`backend/neon-ts`** – เวอร์ชัน TypeScript เชื่อมฐานข้อมูล Neon ผ่านตัวแปร `DATABASE_URL`
+2. **`backend/neon-ts`** – เวอร์ชัน TypeScript เชื่อมฐานข้อมูล Neon ด้วยไลบรารี `@neondatabase/serverless` ผ่านตัวแปร `DATABASE_URL`
 
 ผู้ที่ไม่เคยใช้ Node.js มาก่อนก็สามารถทำตามขั้นตอนต่อไปนี้ได้
 
@@ -22,9 +22,9 @@
   cd backend/api
   npm install
   ```
-  คำสั่งนี้จะดาวน์โหลดแพ็กเกจใน `package.json` เช่น `express` และ `pg`
+  คำสั่งนี้จะดาวน์โหลดแพ็กเกจใน `package.json` เช่น `express` และ `@neondatabase/serverless`
 
-  หากใช้เวอร์ชัน TypeScript ให้ติดตั้งและคอมไพล์ภายใต้ `backend/neon-ts`
+  หากใช้เวอร์ชัน TypeScript ให้ติดตั้งไลบรารีและคอมไพล์ภายใต้ `backend/neon-ts`
 
   ```bash
   cd backend/neon-ts
