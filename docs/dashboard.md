@@ -1,24 +1,24 @@
-# Visualizing Supabase data in Grafana and Retool
+# Visualizing Neon data in Grafana and Retool
 
-This guide shows how to connect your Supabase PostgreSQL database to either Grafana or Retool in order to build dashboards for your trading records.
+This guide shows how to connect your Neon PostgreSQL database to either Grafana or Retool in order to build dashboards for your trading records.
 
 ## Connecting Grafana
 
 1. Open Grafana and go to **Configuration → Data sources**.
 2. Click **Add data source** and choose **PostgreSQL**.
-3. Fill in the connection details from your Supabase project:
-   - **Host**: `db.<project-ref>.supabase.co`
-   - **Database**: `postgres`
-   - **User**: `postgres`
-   - **Password**: your database password
+3. Fill in the connection details from your Neon project:
+   - **Host**: `<neon-host>.neon.tech`
+   - **Database**: name of your database
+   - **User**: your Neon user
+   - **Password**: your Neon password
    - **SSL mode**: `require`
-4. Save the data source. Grafana can now query your Supabase tables.
+4. Save the data source. Grafana can now query your Neon tables.
 
 ## Connecting Retool
 
 1. In Retool, navigate to **Resources** and create a new **PostgreSQL** resource.
-2. Enter the same connection parameters as above. You can copy the full connection string from the Supabase dashboard under **Settings → Database**.
-3. Test the connection and save. Retool queries will now run against Supabase.
+2. Enter the same connection parameters as above. You can copy the full connection string from the Neon dashboard.
+3. Test the connection and save. Retool queries will now run against Neon.
 
 ## Example queries
 

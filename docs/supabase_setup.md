@@ -1,6 +1,8 @@
 # การตั้งค่า Supabase
 
 ระบบนี้บันทึกข้อมูลการเทรดไว้ในฐานข้อมูล PostgreSQL บน Supabase ไฟล์สำหรับสร้างตารางอยู่ที่ `backend/supabase/schema.sql`
+โฟลเดอร์ `backend` แยกซอร์สออกเป็น
+`api/` (JavaScript ใช้ Supabase) และ `neon-ts/` (TypeScript เชื่อม Neon) เพื่อให้เลือกใช้งานได้ตามต้องการ
 
 ## 1. เตรียมบัญชีและโปรเจกต์
 

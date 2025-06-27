@@ -1,9 +1,10 @@
 # คู่มือใช้งาน Backend API
 
-เอกสารนี้อธิบายการตั้งค่าและใช้งานเซิร์ฟเวอร์ Backend ซึ่งมีให้เลือกสองแบบ
+เอกสารนี้อธิบายการตั้งค่าและใช้งานเซิร์ฟเวอร์ Backend ซึ่งแบ่งโครงสร้างดังนี้
 
-1. เวอร์ชันดั้งเดิมในโฟลเดอร์ `backend/api` เขียนด้วย JavaScript เชื่อมต่อ Supabase
-2. เวอร์ชัน TypeScript ในโฟลเดอร์ `backend/neon-ts` ใช้ฐานข้อมูล Neon ผ่านตัวแปร `DATABASE_URL`
+1. **`backend/api`** – เวอร์ชันดั้งเดิมเขียนด้วย JavaScript เชื่อมต่อ Supabase
+2. **`backend/neon-ts`** – เวอร์ชัน TypeScript เชื่อมฐานข้อมูล Neon ผ่านตัวแปร `DATABASE_URL`
+3. **`backend/supabase`** – ไฟล์ `schema.sql` สำหรับสร้างตาราง PostgreSQL
 
 ผู้ที่ไม่เคยใช้ Node.js มาก่อนก็สามารถทำตามขั้นตอนต่อไปนี้ได้
 
@@ -23,25 +24,30 @@
   ```
   คำสั่งนี้จะดาวน์โหลดแพ็กเกจใน `package.json` เช่น `express` และ `@supabase/supabase-js`
 
-  หากใช้เวอร์ชัน TypeScript ให้ติดตั้งภายใต้ `backend/neon-ts`
+  หากใช้เวอร์ชัน TypeScript ให้ติดตั้งและคอมไพล์ภายใต้ `backend/neon-ts`
 
   ```bash
   cd backend/neon-ts
   npm install
+  npm run build
   ```
 
 ## 2. กำหนดตัวแปรสภาพแวดล้อม
 
-เซิร์ฟเวอร์ต้องรู้ข้อมูลเชื่อมต่อกับฐานข้อมูลและพอร์ตที่เปิดบริการ ตัวอย่างแบบง่ายใช้คำสั่ง
+เซิร์ฟเวอร์ต้องรู้ข้อมูลเชื่อมต่อกับฐานข้อมูลและพอร์ตที่เปิดบริการ ตัวอย่างการตั้งค่ามีดังนี้
 
 ```bash
+# สำหรับเวอร์ชัน JavaScript
 export SUPABASE_URL="https://<project-ref>.supabase.co"
 export SUPABASE_KEY="<service-role-key>"
+
+# สำหรับเวอร์ชัน TypeScript (Neon)
 export DATABASE_URL="postgres://<user>:<pass>@<host>/<db>"
+
 export PORT=3000  # เปลี่ยนได้ตามต้องการ
 ```
 
-ค่าตัวแปรดูได้จากหน้า **Settings → API** ในโปรเจกต์ของคุณ หากไม่กำหนด `PORT` จะใช้ค่าเริ่มต้น 3000
+ค่าตัวแปรดูได้จากหน้า **Settings → API** ในโปรเจกต์ หรือจากแดชบอร์ดของ Neon หากไม่กำหนด `PORT` จะใช้ค่าเริ่มต้น 3000
 ## 3. รันเซิร์ฟเวอร์
 
 เมื่อกำหนดค่าครบแล้วให้เริ่มเซิร์ฟเวอร์ด้วย
@@ -76,3 +82,15 @@ curl -X POST http://localhost:3000/signal \
 ## 5. การเตรียมฐานข้อมูล
 
 หากยังไม่ได้สร้างตารางใน Supabase ให้ดูวิธีใน [supabase_setup.md](supabase_setup.md) ก่อน เมื่อตารางพร้อมแล้วเซิร์ฟเวอร์ก็จะบันทึกข้อมูลได้ทันที
+
+## 6. Deploy โปรเจกต์ขึ้น Vercel และ Neon
+
+สำหรับเวอร์ชัน TypeScript สามารถนำไป deploy บน Vercel ได้ง่าย ๆ ขั้นตอนโดยสรุปคือ
+
+1. สร้างบัญชี Vercel และเชื่อมต่อรีโปนี้
+2. ตั้งค่า Environment Variable ชื่อ `DATABASE_URL` ให้ชี้ไปยังฐานข้อมูล Neon ของคุณ
+3. กด **Deploy** หรือใช้คำสั่ง
+   ```bash
+   vercel --prod
+   ```
+เมื่อ deploy เสร็จ API จะพร้อมใช้งานผ่าน URL ของ Vercel
