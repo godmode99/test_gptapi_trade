@@ -23,6 +23,7 @@ if str(ROOT) not in sys.path:
 from gpt_trader.cli.live_trade_workflow import main as run_main
 from gpt_trader.notify import send_line, send_telegram
 from gpt_trader.cli.latest_signal_to_mt5 import TradeSignalSender
+from gpt_trader.utils import post_event
 
 LOGGER = logging.getLogger(__name__)
 
@@ -287,6 +288,17 @@ def _run_workflow() -> None:
         LOGGER.warning("Failed to update run log: %s", exc)
 
     _notify_summary(notify_cfg, message)
+
+    neon_cfg = cfg.get("neon", {})
+    if neon_cfg.get("api_url"):
+        try:
+            post_event(
+                neon_cfg.get("api_url", ""),
+                neon_cfg.get("auth_token", ""),
+                {"message": message},
+            )
+        except Exception as exc:  # noqa: BLE001
+            LOGGER.warning("Failed to save notification to DB: %s", exc)
 
 
 def _make_workflow_runner(
