@@ -74,6 +74,15 @@ curl -X POST http://localhost:3000/signal \
 ```
 
 ## 5. การเตรียมฐานข้อมูล
+ 
+ในการใช้งานจริงต้องสร้างตารางในฐานข้อมูลก่อน ตัวอย่าง schema จัดเก็บไว้ที่ `backend/schema.sql` ใช้คำสั่งต่อไปนี้เพื่อสร้างตาราง `signals` ใน PostgreSQL
+
+```bash
+psql "$DATABASE_URL" -f backend/schema.sql
+```
+
+ไฟล์นี้จะสร้างตาราง `signals` สำหรับเก็บข้อมูลที่ได้จากการ parse คำตอบของ GPT (ไฟล์ JSON ล่าสุด) ซึ่งส่งผ่าน endpoint `/signal` ของ API
+
 
 
 ## 6. Deploy โปรเจกต์ขึ้น Vercel และ Neon
