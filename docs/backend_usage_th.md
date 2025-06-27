@@ -2,9 +2,8 @@
 
 เอกสารนี้อธิบายการตั้งค่าและใช้งานเซิร์ฟเวอร์ Backend ซึ่งแบ่งโครงสร้างดังนี้
 
-1. **`backend/api`** – เวอร์ชันดั้งเดิมเขียนด้วย JavaScript เชื่อมต่อ Supabase
+1. **`backend/api`** – เวอร์ชันดั้งเดิมเขียนด้วย JavaScript
 2. **`backend/neon-ts`** – เวอร์ชัน TypeScript เชื่อมฐานข้อมูล Neon ผ่านตัวแปร `DATABASE_URL`
-3. **`backend/supabase`** – ไฟล์ `schema.sql` สำหรับสร้างตาราง PostgreSQL
 
 ผู้ที่ไม่เคยใช้ Node.js มาก่อนก็สามารถทำตามขั้นตอนต่อไปนี้ได้
 
@@ -22,7 +21,7 @@
   cd backend/api
   npm install
   ```
-  คำสั่งนี้จะดาวน์โหลดแพ็กเกจใน `package.json` เช่น `express` และ `@supabase/supabase-js`
+  คำสั่งนี้จะดาวน์โหลดแพ็กเกจใน `package.json` เช่น `express`
 
   หากใช้เวอร์ชัน TypeScript ให้ติดตั้งและคอมไพล์ภายใต้ `backend/neon-ts`
 
@@ -38,8 +37,6 @@
 
 ```bash
 # สำหรับเวอร์ชัน JavaScript
-export SUPABASE_URL="https://<project-ref>.supabase.co"
-export SUPABASE_KEY="<service-role-key>"
 
 # สำหรับเวอร์ชัน TypeScript (Neon)
 export DATABASE_URL="postgres://<user>:<pass>@<host>/<db>"
@@ -81,7 +78,6 @@ curl -X POST http://localhost:3000/signal \
 
 ## 5. การเตรียมฐานข้อมูล
 
-หากยังไม่ได้สร้างตารางใน Supabase ให้ดูวิธีใน [supabase_setup.md](supabase_setup.md) ก่อน เมื่อตารางพร้อมแล้วเซิร์ฟเวอร์ก็จะบันทึกข้อมูลได้ทันที
 
 ## 6. Deploy โปรเจกต์ขึ้น Vercel และ Neon
 
