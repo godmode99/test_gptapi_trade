@@ -321,7 +321,15 @@ Run the tests with:
 pytest
 ```
 
-## Supabase schema
+## Backend directories
+
+The `backend` folder now contains multiple implementations:
+
+- `api/` – JavaScript server that connects to Supabase
+- `neon-ts/` – TypeScript server deployed with Neon using `DATABASE_URL`
+- `supabase/` – `schema.sql` for creating tables
+
+### Supabase schema
 
 The SQL schema for storing signals, orders and trades lives in
 `backend/supabase/schema.sql`. Create a new Supabase project and apply the file using
