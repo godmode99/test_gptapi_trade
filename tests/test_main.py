@@ -33,7 +33,13 @@ def test_default_fetcher_loaded(tmp_path):
     with patch.object(
         sys,
         "argv",
-        ["src/gpt_trader/cli/live_trade_workflow.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
+        [
+            "src/gpt_trader/cli/live_trade_workflow.py",
+            "--config",
+            str(cfg_path),
+            "--skip-send",
+            "--skip-parse",
+        ],
     ), patch("gpt_trader.cli.common._run_step", fake_run):
         asyncio.run(entry_main())
 
@@ -46,9 +52,11 @@ def test_time_fetch_passed(tmp_path):
     cfg = {
         "workflow": {
             "fetch_type": "mt5",
-            "scripts": {"fetch": None,
-                        "send": "scripts/send_api/send_to_gpt.py",
-                        "parse": "scripts/parse_response/parse_gpt_response.py"},
+            "scripts": {
+                "fetch": None,
+                "send": "scripts/send_api/send_to_gpt.py",
+                "parse": "scripts/parse_response/parse_gpt_response.py",
+            },
             "response": "resp.txt",
             "skip": {"fetch": False, "send": True, "parse": True},
         },
@@ -67,7 +75,13 @@ def test_time_fetch_passed(tmp_path):
     with patch.object(
         sys,
         "argv",
-        ["src/gpt_trader/cli/live_trade_workflow.py", "--config", str(cfg_path), "--skip-send", "--skip-parse"],
+        [
+            "src/gpt_trader/cli/live_trade_workflow.py",
+            "--config",
+            str(cfg_path),
+            "--skip-send",
+            "--skip-parse",
+        ],
     ), patch("gpt_trader.cli.common._run_step", fake_run):
         asyncio.run(entry_main())
 
@@ -87,6 +101,35 @@ def test_post_signal_called(tmp_path):
         },
         "parse": {"path_latest_response": str(tmp_path / "resp.txt")},
         "signal_api": {"base_url": "http://api", "auth_token": "t"},
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+
+    async def fake_run(step, script, *args):
+        if step == "parse":
+            (tmp_path / "resp.json").write_text(json.dumps({"ok": 1}))
+
+    with patch.object(
+        sys,
+        "argv",
+        ["src/gpt_trader/cli/live_trade_workflow.py", "--config", str(cfg_path)],
+    ), patch("gpt_trader.cli.common._run_step", fake_run), patch(
+        "gpt_trader.utils.api_client.post_signal"
+    ) as post_fn:
+        asyncio.run(entry_main())
+
+    post_fn.assert_called_once()
+
+
+def test_post_signal_neon_called(tmp_path):
+    cfg = {
+        "workflow": {
+            "scripts": {"fetch": "f.py", "send": "s.py", "parse": "p.py"},
+            "response": str(tmp_path / "resp.txt"),
+            "skip": {"fetch": True, "send": True, "parse": False},
+        },
+        "parse": {"path_latest_response": str(tmp_path / "resp.txt")},
+        "neon": {"api_url": "http://neon"},
     }
     cfg_path = tmp_path / "cfg.json"
     cfg_path.write_text(json.dumps(cfg))
@@ -139,9 +182,13 @@ def test_notify_called(tmp_path):
             "regime_type": "trend",
             "short_reason": "r",
         },
-    ), patch.object(sched, "send_line") as line_fn, patch.object(
+    ), patch.object(
+        sched, "send_line"
+    ) as line_fn, patch.object(
         sched, "send_telegram"
-    ) as tg_fn, patch.object(sched, "TradeSignalSender") as sender_cls:
+    ) as tg_fn, patch.object(
+        sched, "TradeSignalSender"
+    ) as sender_cls:
         mock_sender = MagicMock()
         mock_sender.lot = 0.1
         mock_sender.rr = 1.5
@@ -173,7 +220,30 @@ def test_notify_line_only(tmp_path):
 
     with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
         sched, "LOG_FILE", log_path
-    ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55, "regime_type": "trend", "short_reason": "r"}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn, patch.object(sched, "TradeSignalSender") as sender_cls:
+    ), patch.object(
+        sched,
+        "run_main",
+        return_value={"fetch": "success", "send": "success", "parse": "success"},
+    ), patch.object(
+        sched,
+        "_load_latest_signal",
+        return_value={
+            "signal_id": "id",
+            "entry": 1,
+            "sl": 2,
+            "tp": 3,
+            "pending_order_type": "buy_limit",
+            "confidence": 55,
+            "regime_type": "trend",
+            "short_reason": "r",
+        },
+    ), patch.object(
+        sched, "send_line"
+    ) as line_fn, patch.object(
+        sched, "send_telegram"
+    ) as tg_fn, patch.object(
+        sched, "TradeSignalSender"
+    ) as sender_cls:
         mock_sender = MagicMock()
         mock_sender.lot = 0.1
         mock_sender.rr = 1.5
@@ -202,7 +272,30 @@ def test_notify_telegram_only(tmp_path):
 
     with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
         sched, "LOG_FILE", log_path
-    ), patch.object(sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}), patch.object(sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55, "regime_type": "trend", "short_reason": "r"}), patch.object(sched, "send_line") as line_fn, patch.object(sched, "send_telegram") as tg_fn, patch.object(sched, "TradeSignalSender") as sender_cls:
+    ), patch.object(
+        sched,
+        "run_main",
+        return_value={"fetch": "success", "send": "success", "parse": "success"},
+    ), patch.object(
+        sched,
+        "_load_latest_signal",
+        return_value={
+            "signal_id": "id",
+            "entry": 1,
+            "sl": 2,
+            "tp": 3,
+            "pending_order_type": "buy_limit",
+            "confidence": 55,
+            "regime_type": "trend",
+            "short_reason": "r",
+        },
+    ), patch.object(
+        sched, "send_line"
+    ) as line_fn, patch.object(
+        sched, "send_telegram"
+    ) as tg_fn, patch.object(
+        sched, "TradeSignalSender"
+    ) as sender_cls:
         mock_sender = MagicMock()
         mock_sender.lot = 0.1
         mock_sender.rr = 1.5
@@ -218,7 +311,10 @@ def test_notify_telegram_only(tmp_path):
 
 def test_order_before_notification(tmp_path):
     cfg = {
-        "notify": {"line": {"enabled": True, "token": "t"}, "telegram": {"enabled": False}}
+        "notify": {
+            "line": {"enabled": True, "token": "t"},
+            "telegram": {"enabled": False},
+        }
     }
     cfg_path = tmp_path / "cfg.json"
     cfg_path.write_text(json.dumps(cfg))
@@ -243,9 +339,22 @@ def test_order_before_notification(tmp_path):
     with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
         sched, "LOG_FILE", log_path
     ), patch.object(
-        sched, "run_main", return_value={"fetch": "success", "send": "success", "parse": "success"}
+        sched,
+        "run_main",
+        return_value={"fetch": "success", "send": "success", "parse": "success"},
     ), patch.object(
-        sched, "_load_latest_signal", return_value={"signal_id": "id", "entry": 1, "sl": 2, "tp": 3, "pending_order_type": "buy_limit", "confidence": 55, "regime_type": "trend", "short_reason": "r"}
+        sched,
+        "_load_latest_signal",
+        return_value={
+            "signal_id": "id",
+            "entry": 1,
+            "sl": 2,
+            "tp": 3,
+            "pending_order_type": "buy_limit",
+            "confidence": 55,
+            "regime_type": "trend",
+            "short_reason": "r",
+        },
     ), patch.object(
         sched, "send_line", side_effect=record_notify
     ) as line_fn, patch.object(
