@@ -20,9 +20,10 @@ def test_save_prompt_copy(tmp_path: Path) -> None:
     json_text = "{\"a\": 1}"
     json_path.write_text(json_text)
     out_dir = tmp_path / "out"
-    _save_prompt_copy(json_path, json_text, "Prompt", out_dir)
+    _save_prompt_copy(json_path, json_text, "Prompt", out_dir, "foo")
     files = list(out_dir.glob("*.json"))
     assert len(files) == 1
     data = json.loads(files[0].read_text())
     assert data["prompt"] == "Prompt"
     assert data["json"] == {"a": 1}
+    assert data["signal_id"] == "foo"

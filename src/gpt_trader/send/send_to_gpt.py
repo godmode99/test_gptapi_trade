@@ -76,13 +76,21 @@ def _timestamp_code(ts: datetime) -> str:
 
 
 def _save_prompt_copy(
-    json_path: Path, json_text: str, prompt: str, out_dir: Path
+    json_path: Path,
+    json_text: str,
+    prompt: str,
+    out_dir: Path,
+    signal_id: str | None = None,
 ) -> None:
-    """Save *json_text* and *prompt* to *out_dir* as one JSON file."""
+    """Save *json_text*, *prompt*, and *signal_id* to *out_dir* as one JSON file."""
     out_dir.mkdir(parents=True, exist_ok=True)
     ts = _timestamp_code(datetime.now(timezone.utc))
     base = f"{json_path.stem}_{ts}"
-    data = {"json": json.loads(json_text), "prompt": prompt}
+    data = {
+        "signal_id": signal_id or json_path.stem,
+        "json": json.loads(json_text),
+        "prompt": prompt,
+    }
     (out_dir / f"{base}.json").write_text(
         json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
     )
@@ -189,8 +197,9 @@ def main() -> None:
     if prompt is None:
         prompt = DEFAULT_PROMPT % json_path.stem
 
+    signal_id = json_path.stem
     try:
-        _save_prompt_copy(json_path, json_text, prompt, Path(args.save_dir))
+        _save_prompt_copy(json_path, json_text, prompt, Path(args.save_dir), signal_id)
     except Exception as exc:  # noqa: BLE001
         LOGGER.warning("Failed to save prompt copy: %s", exc)
 
