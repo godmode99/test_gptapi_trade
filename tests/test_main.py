@@ -150,6 +150,35 @@ def test_post_signal_neon_called(tmp_path):
     post_fn.assert_called_once()
 
 
+def test_post_signal_neon_disabled(tmp_path):
+    cfg = {
+        "workflow": {
+            "scripts": {"fetch": "f.py", "send": "s.py", "parse": "p.py"},
+            "response": str(tmp_path / "resp.txt"),
+            "skip": {"fetch": True, "send": True, "parse": False},
+        },
+        "parse": {"path_latest_response": str(tmp_path / "resp.txt")},
+        "neon": {"api_url": "http://neon", "enabled": False},
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+
+    async def fake_run(step, script, *args):
+        if step == "parse":
+            (tmp_path / "resp.json").write_text(json.dumps({"ok": 1}))
+
+    with patch.object(
+        sys,
+        "argv",
+        ["src/gpt_trader/cli/live_trade_workflow.py", "--config", str(cfg_path)],
+    ), patch("gpt_trader.cli.common._run_step", fake_run), patch(
+        "gpt_trader.utils.api_client.post_signal"
+    ) as post_fn:
+        asyncio.run(entry_main())
+
+    post_fn.assert_not_called()
+
+
 def test_notify_called(tmp_path):
     cfg = {
         "notify": {
@@ -428,3 +457,51 @@ def test_notify_saved_to_db(tmp_path):
         sched._run_workflow()
 
     event_fn.assert_called_once()
+
+
+def test_notify_not_saved_to_db(tmp_path):
+    cfg = {
+        "notify": {"line": {"enabled": True, "token": "t"}},
+        "neon": {"api_url": "http://db", "enabled": False},
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+    log_path = tmp_path / "run.log"
+
+    import gpt_trader.cli.scheduler_liveTrade as sched
+
+    with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
+        sched, "LOG_FILE", log_path
+    ), patch.object(
+        sched,
+        "run_main",
+        return_value={"fetch": "success", "send": "success", "parse": "success"},
+    ), patch.object(
+        sched,
+        "_load_latest_signal",
+        return_value={
+            "signal_id": "id",
+            "entry": 1,
+            "sl": 2,
+            "tp": 3,
+            "pending_order_type": "buy_limit",
+            "confidence": 55,
+        },
+    ), patch.object(
+        sched, "send_line"
+    ), patch.object(
+        sched, "send_telegram"
+    ), patch.object(
+        sched, "TradeSignalSender"
+    ) as sender_cls, patch(
+        "gpt_trader.utils.api_client.post_event"
+    ) as event_fn:
+        mock_sender = MagicMock()
+        mock_sender.lot = 0.1
+        mock_sender.rr = 1.5
+        mock_sender.risk_per_trade = 1.0
+        mock_sender.order_result = "success"
+        sender_cls.return_value = mock_sender
+        sched._run_workflow()
+
+    event_fn.assert_not_called()

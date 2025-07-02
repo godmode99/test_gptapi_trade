@@ -45,7 +45,7 @@
         "tz_shift": 7
     },
     "signal_api": {"base_url": "http://localhost:8000", "auth_token": "YOUR_TOKEN"},
-    "neon": {"api_url": "http://localhost:3000", "database_url": ""},
+    "neon": {"api_url": "http://localhost:3000", "database_url": "", "enabled": true},
     "risk_per_trade": 1.0,
     "max_risk_per_trade": 2.0,
     "account_name": "DEMO_ACCOUNT",
