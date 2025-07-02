@@ -212,7 +212,7 @@ async def main() -> dict[str, str]:
                         api_cfg.get("auth_token", ""),
                         signal_data,
                     )
-                if neon_cfg.get("api_url"):
+                if neon_cfg.get("enabled", True) and neon_cfg.get("api_url"):
                     post_signal(
                         neon_cfg.get("api_url", ""),
                         neon_cfg.get("auth_token", ""),

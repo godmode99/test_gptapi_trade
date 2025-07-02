@@ -13,7 +13,7 @@ cp config/setting_live_trade.example.json config/setting_live_trade.json
 - **send** – ใส่คีย์ OpenAI และโมเดล GPT ที่ใช้
 - **parse** – ตำแหน่งไฟล์ CSV/JSON ผลลัพธ์ที่แปลงแล้ว
 - **signal_api** – URL และ token สำหรับส่งสัญญาณไป backend
-- **neon** – ตัวอย่าง URL ฐานข้อมูล Neon (ใช้หรือไม่ใช้ก็ได้)
+- **neon** – ตัวอย่าง URL ฐานข้อมูล Neon และคีย์ `enabled` (ค่าเริ่มต้นเปิดใช้งาน)
 - **risk_per_trade** / **max_risk_per_trade** – เปอร์เซ็นต์ความเสี่ยงต่อคำสั่ง
 - **notify** – เปิดการแจ้งเตือนผ่าน LINE หรือ Telegram
 

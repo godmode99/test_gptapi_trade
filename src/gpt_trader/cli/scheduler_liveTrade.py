@@ -296,7 +296,7 @@ def _run_workflow() -> None:
     _notify_summary(notify_cfg, message)
 
     neon_cfg = cfg.get("neon", {})
-    if neon_cfg.get("api_url"):
+    if neon_cfg.get("enabled", True) and neon_cfg.get("api_url"):
         try:
             post_event(
                 neon_cfg.get("api_url", ""),
