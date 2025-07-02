@@ -155,7 +155,8 @@ def test_notify_called(tmp_path):
         "notify": {
             "line": {"enabled": True, "token": "t"},
             "telegram": {"enabled": True, "token": "tg", "chat_id": "id"},
-        }
+        },
+        "account_name": "acc",
     }
     cfg_path = tmp_path / "cfg.json"
     cfg_path.write_text(json.dumps(cfg))
@@ -198,6 +199,7 @@ def test_notify_called(tmp_path):
         sched._run_workflow()
     line_fn.assert_called()
     tg_fn.assert_called()
+    assert "account:acc" in line_fn.call_args[0][0]
     assert "signal_id:id" in line_fn.call_args[0][0]
     assert "regime_type:trend" in line_fn.call_args[0][0]
     assert "risk_per_trade:" in line_fn.call_args[0][0]
@@ -210,7 +212,8 @@ def test_notify_line_only(tmp_path):
         "notify": {
             "line": {"enabled": True, "token": "t"},
             "telegram": {"enabled": False, "token": "", "chat_id": ""},
-        }
+        },
+        "account_name": "acc",
     }
     cfg_path = tmp_path / "cfg.json"
     cfg_path.write_text(json.dumps(cfg))
@@ -253,6 +256,7 @@ def test_notify_line_only(tmp_path):
         sched._run_workflow()
     line_fn.assert_called()
     tg_fn.assert_not_called()
+    assert "account:acc" in line_fn.call_args[0][0]
     assert "risk_per_trade:" in line_fn.call_args[0][0]
     assert "order:success" in line_fn.call_args[0][0]
 
@@ -262,7 +266,8 @@ def test_notify_telegram_only(tmp_path):
         "notify": {
             "line": {"enabled": False, "token": ""},
             "telegram": {"enabled": True, "token": "tg", "chat_id": "id"},
-        }
+        },
+        "account_name": "acc",
     }
     cfg_path = tmp_path / "cfg.json"
     cfg_path.write_text(json.dumps(cfg))
@@ -305,6 +310,7 @@ def test_notify_telegram_only(tmp_path):
         sched._run_workflow()
     line_fn.assert_not_called()
     tg_fn.assert_called()
+    assert "account:acc" in tg_fn.call_args[0][0]
     assert "risk_per_trade:" in tg_fn.call_args[0][0]
     assert "order:success" in tg_fn.call_args[0][0]
 
@@ -314,7 +320,8 @@ def test_order_before_notification(tmp_path):
         "notify": {
             "line": {"enabled": True, "token": "t"},
             "telegram": {"enabled": False},
-        }
+        },
+        "account_name": "acc",
     }
     cfg_path = tmp_path / "cfg.json"
     cfg_path.write_text(json.dumps(cfg))
@@ -366,6 +373,7 @@ def test_order_before_notification(tmp_path):
 
     assert calls == ["order", "notify"]
     msg = line_fn.call_args[0][0]
+    assert "account:acc" in msg
     assert "lot:" in msg
     assert "rr:" in msg
     assert "risk_per_trade:" in msg

@@ -23,8 +23,9 @@
    ความเสี่ยงต่อการเทรด
    - `risk_per_trade` ใช้เป็นเปอร์เซ็นต์คงที่ หากตั้งค่าไว้จะนำไปใช้แทน
      ค่าในไฟล์สัญญาณ
-   - `max_risk_per_trade` จะคำนวณจากค่าความมั่นใจของสัญญาณ โดยใช้สูตร
-     `(confidence / 100) * max_risk_per_trade` และไม่เกินค่านี้
+    - `max_risk_per_trade` จะคำนวณจากค่าความมั่นใจของสัญญาณ โดยใช้สูตร
+      `(confidence / 100) * max_risk_per_trade` และไม่เกินค่านี้
+    - `account_name` ระบุชื่อบัญชีที่จะใช้แสดงในข้อความแจ้งเตือน
 2. รันสคริปต์หลัก
    ```bash
    python src/gpt_trader/cli/live_trade_workflow.py
