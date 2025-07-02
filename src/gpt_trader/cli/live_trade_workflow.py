@@ -206,7 +206,7 @@ async def main() -> dict[str, str]:
                 signal_data = json.loads(latest.read_text(encoding="utf-8"))
                 api_cfg = config.get("signal_api", {})
                 neon_cfg = config.get("neon", {})
-                if api_cfg:
+                if api_cfg.get("enabled", True) and api_cfg.get("base_url"):
                     post_signal(
                         api_cfg.get("base_url", ""),
                         api_cfg.get("auth_token", ""),

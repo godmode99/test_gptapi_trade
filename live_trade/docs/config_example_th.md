@@ -12,7 +12,7 @@ cp config/setting_live_trade.example.json config/setting_live_trade.json
 - **fetch** – กำหนด `symbol`, `timeframes`, จำนวนแท่ง (`fetch_bars`) และการปรับเขตเวลา (`tz_shift`)
 - **send** – ใส่คีย์ OpenAI และโมเดล GPT ที่ใช้
 - **parse** – ตำแหน่งไฟล์ CSV/JSON ผลลัพธ์ที่แปลงแล้ว
-- **signal_api** – URL และ token สำหรับส่งสัญญาณไป backend
+- **signal_api** – URL, token และคีย์ `enabled` สำหรับส่งสัญญาณไป backend (ค่าเริ่มต้นเปิดใช้งาน)
 - **neon** – ตัวอย่าง URL ฐานข้อมูล Neon และคีย์ `enabled` (ค่าเริ่มต้นเปิดใช้งาน)
 - **risk_per_trade** / **max_risk_per_trade** – เปอร์เซ็นต์ความเสี่ยงต่อคำสั่ง
 - **notify** – เปิดการแจ้งเตือนผ่าน LINE หรือ Telegram
