@@ -131,11 +131,16 @@ def _next_window_run(
     return next_run
 
 
-def _format_summary_message(detail: str, status: str, signal: dict | None) -> str:
+def _format_summary_message(
+    detail: str, status: str, signal: dict | None, account: str | None = None
+) -> str:
     """Return a decorated summary string for notifications."""
     ts = datetime.now().isoformat(timespec="seconds")
     status_icon = "✅" if status == "success" else "⚠️"
-    parts = [f"📅 {ts}", f"{status_icon} {detail} ({status})"]
+    parts = [f"📅 {ts}"]
+    if account:
+        parts.append(f"🏦 account:{account}")
+    parts.append(f"{status_icon} {detail} ({status})")
     if signal:
         type_map = {
             "buy_limit": "🟢⬇️",
@@ -279,7 +284,8 @@ def _run_workflow() -> None:
         detail_items.append(f"order:{order_status}")
     detail = " ".join(detail_items)
 
-    message = _format_summary_message(detail, status, signal)
+    account_name = cfg.get("account_name")
+    message = _format_summary_message(detail, status, signal, account_name)
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     try:
         with LOG_FILE.open("a", encoding="utf-8") as f:
