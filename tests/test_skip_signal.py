@@ -71,3 +71,26 @@ def test_zero_confidence_no_mt5_calls(tmp_path: Path) -> None:
     assert calls == []
     assert sender.order_result == "confidence=0"
     assert sender.risk_per_trade == 0
+
+
+def test_zero_confidence_default_params(tmp_path: Path) -> None:
+    data = {
+        "signal_id": "eurusd-test",
+        "pending_order_type": "buy_stop",
+        "confidence": 0,
+    }
+    sig = tmp_path / "sig.json"
+    sig.write_text(json.dumps(data))
+
+    mt5 = ModuleType("MetaTrader5")
+    calls: list[str] = []
+    mt5.initialize = lambda: calls.append("init") or True
+    mt5.shutdown = lambda: calls.append("shutdown")
+
+    with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
+        mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
+        importlib.reload(mod)
+        sender = mod.TradeSignalSender(str(sig))
+
+    assert calls == []
+    assert sender.order_result == "confidence=0"
