@@ -104,10 +104,17 @@ class TradeSignalSender:
 
 
     def process(self):
+        raw_conf = self.signal.get("confidence")
+        try:
+            self.confidence = (
+                float(str(raw_conf).rstrip("%")) if raw_conf is not None else None
+            )
+        except (TypeError, ValueError):
+            self.confidence = None
+
         if self.pending_order_type == "skip":
             reason = self.signal.get("short_reason", "")
             print(f"⏭️ Skipping signal {self.signal['signal_id']} {reason}")
-            self.confidence = self.signal.get("confidence")
             self.max_drawdown = self.signal.get("max_drawdown")
             if self.max_risk_per_trade is not None:
                 conf = self.confidence or 0
@@ -118,6 +125,21 @@ class TradeSignalSender:
             elif self.risk_per_trade is None:
                 self.risk_per_trade = self.signal.get("risk_per_trade")
             self.order_result = "skipped"
+            return
+
+        if self.confidence == 0:
+            reason = self.signal.get("short_reason", "")
+            print(f"⏭️ Skipping signal {self.signal['signal_id']} {reason}")
+            self.max_drawdown = self.signal.get("max_drawdown")
+            if self.max_risk_per_trade is not None:
+                conf = self.confidence or 0
+                self.risk_per_trade = min(
+                    self.max_risk_per_trade,
+                    (float(conf) / 100) * float(self.max_risk_per_trade),
+                )
+            elif self.risk_per_trade is None:
+                self.risk_per_trade = self.signal.get("risk_per_trade")
+            self.order_result = "confidence=0"
             return
 
         if not mt5.initialize():
@@ -146,7 +168,10 @@ class TradeSignalSender:
             mt5.shutdown()
             raise ValueError("❌ 'tp' missing from signal")
         self.tp = float(self.signal["tp"])
-        self.confidence = int(self.signal.get("confidence", 70))
+        if self.confidence is None:
+            self.confidence = int(self.signal.get("confidence", 70))
+        else:
+            self.confidence = int(self.confidence)
         self.max_drawdown = float(self.signal.get("max_drawdown", 15))
         if self.max_risk_per_trade is not None:
             self.risk_per_trade = min(
