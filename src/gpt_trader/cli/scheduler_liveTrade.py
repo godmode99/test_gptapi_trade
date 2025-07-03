@@ -287,21 +287,16 @@ def _run_workflow() -> None:
         detail_items.extend(
             f"{k}:{results.get(k, 'n/a')}" for k in ("fetch", "send", "parse")
         )
+        if "post_signal" in results:
+            detail_items.append(f"post_signal:{results['post_signal']}")
     if order_status is not None:
         detail_items.append(f"order:{order_status}")
     detail = " ".join(detail_items)
 
     account_name = cfg.get("account_name")
     message = _format_summary_message(detail, status, signal, account_name)
-    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        with LOG_FILE.open("a", encoding="utf-8") as f:
-            f.write(message + "\n")
-    except Exception as exc:  # noqa: BLE001
-        LOGGER.warning("Failed to update run log: %s", exc)
 
-    _notify_summary(notify_cfg, message)
-
+    post_event_status: str | None = None
     neon_cfg = cfg.get("neon", {})
     if neon_cfg.get("enabled", True) and neon_cfg.get("api_url"):
         try:
@@ -312,6 +307,23 @@ def _run_workflow() -> None:
             )
         except Exception as exc:  # noqa: BLE001
             LOGGER.warning("Failed to save notification to DB: %s", exc)
+            post_event_status = "error"
+        else:
+            post_event_status = "success"
+
+    if post_event_status is not None:
+        detail_items.append(f"post_event:{post_event_status}")
+        detail = " ".join(detail_items)
+        message = _format_summary_message(detail, status, signal, account_name)
+
+    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with LOG_FILE.open("a", encoding="utf-8") as f:
+            f.write(message + "\n")
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.warning("Failed to update run log: %s", exc)
+
+    _notify_summary(notify_cfg, message)
 
 
 def _make_workflow_runner(
