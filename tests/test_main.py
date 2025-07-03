@@ -571,3 +571,106 @@ def test_notify_not_saved_to_db(tmp_path):
         sched._run_workflow()
 
     event_fn.assert_not_called()
+
+
+def test_post_signal_error_detail(tmp_path):
+    cfg = {"notify": {"line": {"enabled": True, "token": "t"}}}
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+    log_path = tmp_path / "run.log"
+
+    import gpt_trader.cli.scheduler_liveTrade as sched
+
+    with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
+        sched, "LOG_FILE", log_path
+    ), patch.object(
+        sched,
+        "run_main",
+        return_value={
+            "fetch": "success",
+            "send": "success",
+            "parse": "success",
+            "post_signal": "error",
+        },
+    ), patch.object(
+        sched,
+        "_load_latest_signal",
+        return_value={
+            "signal_id": "id",
+            "entry": 1,
+            "sl": 2,
+            "tp": 3,
+            "pending_order_type": "buy_limit",
+            "confidence": 55,
+        },
+    ), patch.object(
+        sched, "send_line"
+    ) as line_fn, patch.object(
+        sched, "send_telegram"
+    ), patch.object(
+        sched, "TradeSignalSender"
+    ) as sender_cls:
+        mock_sender = MagicMock()
+        mock_sender.lot = 0.1
+        mock_sender.rr = 1.5
+        mock_sender.risk_per_trade = 1.0
+        mock_sender.order_result = "success"
+        sender_cls.return_value = mock_sender
+        sched._run_workflow()
+
+    msg = line_fn.call_args[0][0]
+    assert "post_signal:error" in msg
+
+
+def test_post_event_error_detail(tmp_path):
+    cfg = {
+        "notify": {"line": {"enabled": True, "token": "t"}},
+        "neon": {"api_url": "http://db"},
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+    log_path = tmp_path / "run.log"
+
+    import gpt_trader.cli.scheduler_liveTrade as sched
+
+    with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
+        sched, "LOG_FILE", log_path
+    ), patch.object(
+        sched,
+        "run_main",
+        return_value={
+            "fetch": "success",
+            "send": "success",
+            "parse": "success",
+        },
+    ), patch.object(
+        sched,
+        "_load_latest_signal",
+        return_value={
+            "signal_id": "id",
+            "entry": 1,
+            "sl": 2,
+            "tp": 3,
+            "pending_order_type": "buy_limit",
+            "confidence": 55,
+        },
+    ), patch.object(
+        sched, "send_line"
+    ) as line_fn, patch.object(
+        sched, "send_telegram"
+    ), patch.object(
+        sched, "TradeSignalSender"
+    ) as sender_cls, patch(
+        "gpt_trader.utils.api_client.post_event",
+        side_effect=RuntimeError("fail"),
+    ):
+        mock_sender = MagicMock()
+        mock_sender.lot = 0.1
+        mock_sender.rr = 1.5
+        mock_sender.risk_per_trade = 1.0
+        mock_sender.order_result = "success"
+        sender_cls.return_value = mock_sender
+        sched._run_workflow()
+
+    msg = line_fn.call_args[0][0]
+    assert "post_event:error" in msg
