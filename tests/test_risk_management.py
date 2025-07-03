@@ -172,3 +172,42 @@ def test_tp_value_preserved(tmp_path) -> None:
         sender = mod.TradeSignalSender(str(path))
         assert sender.tp == 1990
 
+
+def test_order_send_error_comment(tmp_path) -> None:
+    mt5 = _make_mt5_stub()
+    mt5.order_send = lambda o: type("Res", (), {"retcode": 1, "comment": "fail"})()
+    with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
+        mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
+        importlib.reload(mod)
+        data = {
+            "signal_id": "xauusd-test",
+            "entry": 2000,
+            "sl": 1995,
+            "tp": 1990,
+            "pending_order_type": "sell_limit",
+        }
+        path = tmp_path / "sig.json"
+        path.write_text(importlib.import_module("json").dumps(data))
+        sender = mod.TradeSignalSender(str(path))
+        assert sender.order_result == "error:fail"
+
+
+def test_order_send_none_uses_last_error(tmp_path) -> None:
+    mt5 = _make_mt5_stub()
+    mt5.order_send = lambda o: None
+    mt5.last_error = lambda: (1, "boom")
+    with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
+        mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
+        importlib.reload(mod)
+        data = {
+            "signal_id": "xauusd-test",
+            "entry": 2000,
+            "sl": 1995,
+            "tp": 1990,
+            "pending_order_type": "sell_limit",
+        }
+        path = tmp_path / "sig.json"
+        path.write_text(importlib.import_module("json").dumps(data))
+        sender = mod.TradeSignalSender(str(path))
+        assert sender.order_result == "error:boom"
+

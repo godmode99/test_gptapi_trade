@@ -219,12 +219,13 @@ class TradeSignalSender:
 
         result = mt5.order_send(order)
         if result is None:
-            print("❌ order_send returned None")
-            print("MT5 last error:", mt5.last_error())
-            self.order_result = "error"
+            last_err = mt5.last_error()
+            comment = last_err[1] if isinstance(last_err, tuple) else str(last_err)
+            self.order_result = f"error:{comment}"
+            print(f"❌ order_send returned None: {comment}")
         elif result.retcode != mt5.TRADE_RETCODE_DONE:
-            print(f"❌ Order failed [{result.retcode}]:", result.comment)
-            self.order_result = "error"
+            self.order_result = f"error:{result.comment}"
+            print(f"❌ Order failed [{result.retcode}]: {result.comment}")
         else:
             print(f"✅ Order sent successfully for {self.symbol}")
             self.order_result = "success"
