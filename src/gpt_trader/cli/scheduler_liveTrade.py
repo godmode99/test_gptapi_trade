@@ -9,6 +9,7 @@ from datetime import datetime, timedelta, time as dt_time
 import logging
 import threading
 import time
+import re
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 
@@ -191,7 +192,9 @@ def _format_summary_message(
 
         if signal.get("short_reason") is not None:
             parts.append("")
-            parts.append(f"📝 short_reason:{signal['short_reason']}")
+            reason = str(signal["short_reason"])
+            reason_fmt = re.sub(r"(?<!^)(\d+\))", r"\n\1", reason).strip()
+            parts.append(f"📝 short_reason:{reason_fmt}")
         if signal.get("order_status") is not None:
             parts.append("")
             parts.append(f"🚩 order:{signal['order_status']}")
