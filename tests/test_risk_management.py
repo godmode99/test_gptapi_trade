@@ -211,3 +211,41 @@ def test_order_send_none_uses_last_error(tmp_path) -> None:
         sender = mod.TradeSignalSender(str(path))
         assert sender.order_result == "error:boom"
 
+
+def test_adjust_order_type_sell_stop_to_limit(tmp_path) -> None:
+    mt5 = _make_mt5_stub()
+    with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
+        mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
+        importlib.reload(mod)
+        data = {
+            "signal_id": "xauusd-test",
+            "entry": 2001,
+            "sl": 2003,
+            "tp": 1998,
+            "pending_order_type": "sell_stop",
+        }
+        path = tmp_path / "sig.json"
+        path.write_text(importlib.import_module("json").dumps(data))
+        sender = mod.TradeSignalSender(str(path))
+        assert sender.pending_order_type == "sell_limit"
+        assert sender.order_type == mt5.ORDER_TYPE_SELL_LIMIT
+
+
+def test_adjust_order_type_buy_limit_to_stop(tmp_path) -> None:
+    mt5 = _make_mt5_stub()
+    with importlib.import_module("unittest.mock").patch.dict(sys.modules, {"MetaTrader5": mt5}):
+        mod = importlib.import_module("gpt_trader.cli.latest_signal_to_mt5")
+        importlib.reload(mod)
+        data = {
+            "signal_id": "xauusd-test",
+            "entry": 2001,
+            "sl": 1995,
+            "tp": 2005,
+            "pending_order_type": "buy_limit",
+        }
+        path = tmp_path / "sig.json"
+        path.write_text(importlib.import_module("json").dumps(data))
+        sender = mod.TradeSignalSender(str(path))
+        assert sender.pending_order_type == "buy_stop"
+        assert sender.order_type == mt5.ORDER_TYPE_BUY_STOP
+
