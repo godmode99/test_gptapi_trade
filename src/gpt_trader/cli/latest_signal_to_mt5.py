@@ -102,6 +102,26 @@ class TradeSignalSender:
         if self.order_type is None:
             raise ValueError(f"❌ Invalid pending_order_type: {self.pending_order_type}")
 
+    def _adjust_order_type(self, tick) -> None:
+        """Ensure ``pending_order_type`` matches the current price."""
+        ask = getattr(tick, "ask", None)
+        bid = getattr(tick, "bid", None)
+        if ask is None or bid is None:
+            return
+
+        orig = self.pending_order_type
+        if orig == "buy_stop" and self.entry <= ask:
+            self.pending_order_type = "buy_limit"
+        elif orig == "buy_limit" and self.entry >= ask:
+            self.pending_order_type = "buy_stop"
+        elif orig == "sell_stop" and self.entry >= bid:
+            self.pending_order_type = "sell_limit"
+        elif orig == "sell_limit" and self.entry <= bid:
+            self.pending_order_type = "sell_stop"
+
+        if self.pending_order_type != orig:
+            print(f"↩️ Adjusting order type from {orig} to {self.pending_order_type}")
+
 
     def process(self):
         raw_conf = self.signal.get("confidence")
@@ -183,6 +203,7 @@ class TradeSignalSender:
                 self.signal.get("risk_per_trade", self.max_drawdown / 10)
             )
 
+        self._adjust_order_type(tick)
         self.prepare_order_type()
 
         # Use entry and TP values from the GPT response without modification
