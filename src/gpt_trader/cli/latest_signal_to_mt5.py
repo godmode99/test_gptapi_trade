@@ -45,6 +45,7 @@ class TradeSignalSender:
         self.order_type = None
         self.balance = None
         self.order_result = None
+        self.adjust_note = None
 
         self.process()
 
@@ -121,6 +122,7 @@ class TradeSignalSender:
 
         if self.pending_order_type != orig:
             print(f"↩️ Adjusting order type from {orig} to {self.pending_order_type}")
+            self.adjust_note = f"adjust:{orig}->{self.pending_order_type}"
 
 
     def process(self):

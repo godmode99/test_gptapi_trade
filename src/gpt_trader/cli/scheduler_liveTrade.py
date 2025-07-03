@@ -275,6 +275,8 @@ def _run_workflow() -> None:
                 signal["rr"] = sender.rr
                 signal["risk_per_trade"] = sender.risk_per_trade
                 order_status = sender.order_result
+                if getattr(sender, "adjust_note", None):
+                    order_status = f"{order_status} {sender.adjust_note}"
                 signal["order_status"] = order_status
             except Exception as exc:  # noqa: BLE001
                 LOGGER.warning("Failed to send MT5 signal: %s", exc)

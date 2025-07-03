@@ -302,6 +302,55 @@ def test_notify_called(tmp_path):
     assert "order:success" in line_fn.call_args[0][0]
 
 
+def test_order_status_includes_adjust(tmp_path):
+    cfg = {
+        "notify": {"line": {"enabled": True, "token": "t"}, "telegram": {"enabled": False}},
+        "account_name": "acc",
+    }
+    cfg_path = tmp_path / "cfg.json"
+    cfg_path.write_text(json.dumps(cfg))
+    log_path = tmp_path / "run.log"
+
+    import gpt_trader.cli.scheduler_liveTrade as sched
+
+    with patch.object(sched, "DEFAULT_CFG", cfg_path), patch.object(
+        sched, "LOG_FILE", log_path
+    ), patch.object(
+        sched,
+        "run_main",
+        return_value={"fetch": "success", "send": "success", "parse": "success"},
+    ), patch.object(
+        sched,
+        "_load_latest_signal",
+        return_value={
+            "signal_id": "id",
+            "entry": 1,
+            "sl": 2,
+            "tp": 3,
+            "pending_order_type": "buy_limit",
+            "confidence": 55,
+        },
+    ), patch.object(
+        sched, "send_line"
+    ) as line_fn, patch.object(
+        sched, "send_telegram"
+    ), patch.object(
+        sched, "TradeSignalSender"
+    ) as sender_cls:
+        mock_sender = MagicMock()
+        mock_sender.lot = 0.1
+        mock_sender.rr = 1.5
+        mock_sender.risk_per_trade = 1.0
+        mock_sender.order_result = "success"
+        mock_sender.adjust_note = "adjust:buy_limit->buy_stop"
+        sender_cls.return_value = mock_sender
+        sched._run_workflow()
+
+    msg = line_fn.call_args[0][0]
+    assert "order:success" in msg
+    assert "adjust:buy_limit->buy_stop" in msg
+
+
 def test_notify_line_only(tmp_path):
     cfg = {
         "notify": {
