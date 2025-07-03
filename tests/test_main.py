@@ -296,7 +296,7 @@ def test_notify_called(tmp_path):
     tg_fn.assert_called()
     assert "account:acc" in line_fn.call_args[0][0]
     assert "signal_id:id" in line_fn.call_args[0][0]
-    assert "regime_type:trend" in line_fn.call_args[0][0]
+    assert "regime_type: trend" in line_fn.call_args[0][0]
     assert "risk_per_trade:" in line_fn.call_args[0][0]
     assert "short_reason:" in line_fn.call_args[0][0]
     assert "order:success" in line_fn.call_args[0][0]
@@ -472,7 +472,7 @@ def test_order_before_notification(tmp_path):
     assert "lot:" in msg
     assert "rr:" in msg
     assert "risk_per_trade:" in msg
-    assert "regime_type:trend" in msg
+    assert "regime_type: trend" in msg
     assert "short_reason:" in msg
     assert "order:success" in msg
 
