@@ -20,6 +20,12 @@ from gpt_trader.cli.common import _run_step
 from gpt_trader.utils import post_signal
 
 
+def _flag_true(value: object | None) -> bool:
+    """Return ``True`` if *value* represents an enabled flag."""
+    val = str(value).lower()
+    return (value is True) or bool(val == "true")
+
+
 def _load_config(path: Path) -> dict:
     """Load JSON configuration from *path*."""
     try:
@@ -206,13 +212,13 @@ async def main() -> dict[str, str]:
                 signal_data = json.loads(latest.read_text(encoding="utf-8"))
                 api_cfg = config.get("signal_api", {})
                 neon_cfg = config.get("neon", {})
-                if api_cfg.get("enabled", True) and api_cfg.get("base_url"):
+                if _flag_true(api_cfg.get("enabled")) and api_cfg.get("base_url"):
                     post_signal(
                         api_cfg.get("base_url", ""),
                         api_cfg.get("auth_token", ""),
                         signal_data,
                     )
-                if neon_cfg.get("enabled", True) and neon_cfg.get("api_url"):
+                if _flag_true(neon_cfg.get("enabled")) and neon_cfg.get("api_url"):
                     post_signal(
                         neon_cfg.get("api_url", ""),
                         neon_cfg.get("auth_token", ""),
