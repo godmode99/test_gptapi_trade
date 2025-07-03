@@ -177,7 +177,14 @@ def _format_summary_message(
                 rr_fmt = str(signal['rr'])
             extra.append(f"📈 rr:{rr_fmt}")
         if signal.get("regime_type") is not None:
-            extra.append(f"📊 regime_type:{signal['regime_type']}")
+            regime = signal["regime_type"]
+            if isinstance(regime, dict):
+                regime_fmt = ", ".join(
+                    f"{k}={v}" for k, v in regime.items()
+                )
+            else:
+                regime_fmt = str(regime)
+            extra.append(f"📊 regime_type: {regime_fmt}")
         if extra:
             parts.append("")
             parts.append("\n".join(extra))
