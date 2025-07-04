@@ -193,7 +193,7 @@ def _format_summary_message(
         if signal.get("short_reason") is not None:
             parts.append("")
             reason = str(signal["short_reason"])
-            reason_fmt = re.sub(r"(?<!^)(\d+\))", r"\n\1", reason).strip()
+            reason_fmt = re.sub(r"(?<!^)(\d+[\.)](?!\d))", r"\n\1", reason).strip()
             parts.append(f"📝 short_reason:{reason_fmt}")
         if signal.get("order_status") is not None:
             parts.append("")
