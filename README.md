@@ -61,6 +61,7 @@ cp src/gpt_trader/send/config/gpt.example.json src/gpt_trader/send/config/gpt.js
 
 สคริปต์ `fetch_mt5_data.py` อ่านค่าจาก `src/gpt_trader/fetch/config/fetch_mt5.json` สามารถกำหนดไฟล์อื่นด้วย `--config`
 ตัวอย่างคีย์ที่ใช้ได้ได้แก่ `symbol`, `fetch_bars`, `indicators`, `time_fetch`, `timeframes` และ `tz_shift`
+สำหรับบันทึกประวัติการเทรดใช้ `fetch_mt5_history.py` โดยกำหนดช่วงเวลาใน `src/gpt_trader/fetch/config/fetch_mt5_history.json`
 
 เมื่อรัน `live_trade_workflow.py` ให้สร้างไฟล์ `config/setting_live_trade.json` จากเทมเพลต
 

@@ -33,6 +33,7 @@
 - `cli/liveTrade_scheduler.py` — ตัวอย่างตั้งเวลาเรียก `live_trade_workflow.py`
 - `fetch/fetch_mt5_data.py` — ดึงข้อมูลราคาและคำนวณ indicator ผ่าน MT5
 - `fetch/fetch_yf_data.py` — ดึงข้อมูลจาก yfinance
+- `fetch/fetch_mt5_history.py` — ดึงประวัติการเทรดจาก MT5 และบันทึกเป็น CSV
 - `send/send_to_gpt.py` — ส่งข้อมูลไป GPT และบันทึกสำเนา prompt
 - `parse/parse_gpt_response.py` — แปลงข้อความตอบกลับเป็นไฟล์สัญญาณ
 
