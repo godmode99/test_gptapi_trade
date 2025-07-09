@@ -70,8 +70,12 @@ class TradeSignalSender:
         return None
 
     def calculate_risk_reward(self):
-        """Calculate the risk/reward ratio without altering ``tp``."""
-        self.rr = 1 + (100 - self.confidence) / 50
+        """Calculate risk/reward based on entry, SL, and TP distances."""
+        risk = abs(self.entry - self.sl)
+        reward = abs(self.tp - self.entry)
+        if risk == 0:
+            raise ValueError("SL must not equal entry when computing RR")
+        self.rr = reward / risk
 
     def calculate_lot(self, balance, tick_value, tick_size, volume_min,
                       volume_max, volume_step):
