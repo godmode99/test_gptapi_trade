@@ -45,10 +45,10 @@ python src/gpt_trader/cli/live_trade_workflow.py --config my_config.json --skip-
 
 ## การรันแบบอัตโนมัติ
 
-ใช้สคริปต์ `src/gpt_trader/cli/liveTrade_scheduler.py` เพื่อเรียก `live_trade_workflow.py` ทุก ๆ ชั่วโมง
+ใช้สคริปต์ `src/gpt_trader/cli/scheduler_liveTrade.py` เพื่อเรียก `live_trade_workflow.py` ทุก ๆ ชั่วโมง
 
 ```bash
-python src/gpt_trader/cli/liveTrade_scheduler.py
+python src/gpt_trader/cli/scheduler_liveTrade.py
 ```
 
 กด **Ctrl+C** เพื่อหยุดการทำงานของ scheduler
