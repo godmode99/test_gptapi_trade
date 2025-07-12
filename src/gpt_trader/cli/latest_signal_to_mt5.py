@@ -31,7 +31,8 @@ class TradeSignalSender:
             self.symbol_base = self.extract_symbol_base()
         else:
             self.symbol_base = None
-        self.symbol_map = {k.upper(): v for k, v in (symbol_map or SYMBOL_MAP).items()}
+        merged_map = {**SYMBOL_MAP, **(symbol_map or {})}
+        self.symbol_map = {k.upper(): v for k, v in merged_map.items()}
         self.symbol = None
         self.entry = None
         self.sl = None

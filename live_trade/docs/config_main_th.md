@@ -22,6 +22,7 @@
 | `notify` |  | ตั้งค่าการแจ้งเตือนผ่าน LINE หรือ Telegram (ใช้คีย์ `line` และ `telegram`) |
 | `signal_api.enabled` |  | เปิด/ปิดการส่งสัญญาณไป backend (ค่าเริ่มต้น `true`) |
 | `neon.enabled` |  | เปิด/ปิดการบันทึกผลไป Neon (ค่าเริ่มต้น `true`) |
+| `symbol_map` |  | mapping ระหว่างชื่อสัญลักษณ์ในสัญญาณกับชื่อจริงใน MT5 |
 
 ตัวอย่างโครงสร้างไฟล์:
 
@@ -45,6 +46,9 @@
   },
   "parse": {
     "tz_shift": 7
+  },
+  "symbol_map": {
+    "XAUUSDM": "XAUUSDm"
   },
   "notify": {
     "line": {"enabled": true, "token": "YOUR_LINE_TOKEN"},

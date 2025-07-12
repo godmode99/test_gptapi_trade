@@ -15,6 +15,7 @@
 
 โปรเจกต์มีเทมเพลต `config/setting_live_trade.example.json` อยู่แล้ว
 คัดลอกไฟล์นี้เป็น `setting_live_trade.json` แล้วแก้ไขค่า `openai_api_key`
+และสามารถปรับ `symbol_map` หากชื่อสัญลักษณ์ในไฟล์สัญญาณไม่ตรงกับชื่อจริงใน MT5
 
 ```bash
 cp config/setting_live_trade.example.json \
