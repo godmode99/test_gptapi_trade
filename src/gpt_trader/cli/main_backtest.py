@@ -8,7 +8,6 @@ import asyncio
 import json
 import tempfile
 import logging
-import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
