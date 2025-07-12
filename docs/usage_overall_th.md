@@ -32,11 +32,11 @@
    ```
    สามารถระบุอาร์กิวเมนต์เพิ่มเติมได้ เช่น `--config path/to/file.json`
    หรือ `--skip-fetch` เพื่อข้ามขั้นตอนดึงข้อมูล
-3. สำหรับการรันแบบอัตโนมัติ ให้เรียก `src/gpt_trader/cli/liveTrade_scheduler.py`
+3. สำหรับการรันแบบอัตโนมัติ ให้เรียก `src/gpt_trader/cli/scheduler_liveTrade.py`
    เพื่อทำงานทุกชั่วโมง สคริปต์นี้สามารถรันได้โดยตรง เพราะ
    `live_trade_workflow.py` จะเพิ่ม path ของโปรเจกต์ให้อัตโนมัติ
    ```bash
-   python src/gpt_trader/cli/liveTrade_scheduler.py
+   python src/gpt_trader/cli/scheduler_liveTrade.py
    ```
 
 ## 3. การรันโหมด Backtest
