@@ -57,7 +57,12 @@ def get_session(ts: pd.Timestamp) -> str:
 
 def _fetch_rates(symbol: str, interval: str, bars: int, tz_shift: int = 0) -> pd.DataFrame:
     """Fetch OHLC data from yfinance."""
-    LOGGER.info("Fetching %s bars for %s interval", bars, interval)
+    LOGGER.info(
+        "Fetching %s bars for %s interval on %s",
+        bars,
+        interval,
+        symbol,
+    )
     df = yf.download(symbol, interval=interval, period="60d", progress=False)
     if df.empty:
         raise RuntimeError(f"Failed to fetch data for {symbol} interval {interval}")
