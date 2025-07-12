@@ -35,9 +35,11 @@
 3. สำหรับการรันแบบอัตโนมัติ ให้เรียก `src/gpt_trader/cli/scheduler_liveTrade.py`
    เพื่อทำงานทุกชั่วโมง สคริปต์นี้สามารถรันได้โดยตรง เพราะ
    `live_trade_workflow.py` จะเพิ่ม path ของโปรเจกต์ให้อัตโนมัติ
-   ```bash
-   python src/gpt_trader/cli/scheduler_liveTrade.py
-   ```
+ ```bash
+  python src/gpt_trader/cli/scheduler_liveTrade.py
+  ```
+  สามารถระบุไฟล์คอนฟิกอื่นได้ด้วย `--config path/to/file.json`
+  หากไม่ระบุจะใช้ `config/setting_live_trade.json`
 
 ## 3. การรันโหมด Backtest
 
