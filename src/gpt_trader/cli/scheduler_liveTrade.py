@@ -231,7 +231,7 @@ def _notify_summary(notify_cfg: dict, entry: str) -> None:
             LOGGER.info("Telegram notified")
 
 
-def _run_workflow() -> None:
+def _run_workflow(cfg_path: Path) -> None:
     """Execute the main workflow once."""
     LOGGER.info("Starting scheduled workflow run")
     status = "success"
@@ -252,7 +252,7 @@ def _run_workflow() -> None:
     message = ""
     signal = None
     try:
-        cfg = _load_config(DEFAULT_CFG)
+        cfg = _load_config(cfg_path)
         parse_cfg = cfg.get("parse", {})
         notify_cfg = cfg.get("notify", {})
         risk_pct = cfg.get("risk_per_trade")
@@ -336,12 +336,13 @@ def _make_workflow_runner(
     start_time: dt_time,
     stop_day: int,
     stop_time: dt_time,
+    cfg_path: Path,
 ) -> callable:
     """Return function that runs workflow only within the configured window."""
 
     def _runner() -> None:
         if _within_window(datetime.now(), start_day, start_time, stop_day, stop_time):
-            _run_workflow()
+            _run_workflow(cfg_path)
         else:
             LOGGER.info("Outside configured window - skipping run")
 
@@ -425,12 +426,18 @@ def main() -> None:
         default="23:35",
         help="Time of day to stop (HH:MM)",
     )
+    parser.add_argument(
+        "--config",
+        default=str(DEFAULT_CFG),
+        help="Path to JSON config",
+    )
     args = parser.parse_args()
 
     start_day = _parse_day(args.start_day)
     start_time = _parse_time(args.start_time)
     stop_day = _parse_day(args.stop_day)
     stop_time = _parse_time(args.stop_time)
+    cfg_path = Path(args.config)
 
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     logging.basicConfig(
@@ -445,7 +452,7 @@ def main() -> None:
         first_run, args.interval, start_day, start_time, stop_day, stop_time
     )
     job = scheduler.add_job(
-        _make_workflow_runner(start_day, start_time, stop_day, stop_time),
+        _make_workflow_runner(start_day, start_time, stop_day, stop_time, cfg_path),
         "interval",
         minutes=args.interval,
         next_run_time=next_exec,
@@ -463,7 +470,7 @@ def main() -> None:
         args.stop_time,
     )
 
-    _run_workflow()
+    _run_workflow(cfg_path)
 
     try:
         scheduler.start()
