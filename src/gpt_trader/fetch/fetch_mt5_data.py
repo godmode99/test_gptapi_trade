@@ -100,7 +100,12 @@ def _fetch_rates(
 
     If *end_time* is provided the data will end at that timestamp.
     """
-    LOGGER.info("Fetching %s bars for %s timeframe", bars, timeframe)
+    LOGGER.info(
+        "Fetching %s bars for %s timeframe on %s",
+        bars,
+        timeframe,
+        symbol,
+    )
     if end_time is None:
         rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, bars)
     else:
