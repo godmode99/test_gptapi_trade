@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pytest
 
 from gpt_trader.parse.parse_gpt_response import _extract_json
