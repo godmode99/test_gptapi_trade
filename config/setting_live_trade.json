@@ -11,8 +11,8 @@
     },
     "fetch": {
         "tz_shift": 4,
-        "symbol": "XAUUSDm",
-        "symbol_signal": "xauusd",
+        "symbol": "USDJPYm",
+        "symbol_signal": "usdjpy",
         "fetch_bars": 50,
         "indicators": {
             "atr14": true,
@@ -32,7 +32,7 @@
     },
     "send": {
         "openai_api_key": "YOUR_API_KEY",
-        "model": "gpt-4o",
+        "model": "gpt-4.1",
         "json_file": "",
         "json_path": "data/live_trade/fetch",
         "save_prompt_dir": "data/live_trade/save_prompt_api"
@@ -47,6 +47,8 @@
     "signal_api": {"base_url": "http://localhost:8000", "auth_token": "YOUR_TOKEN", "enabled": true},
     "neon": {"api_url": "http://localhost:3000", "database_url": "", "enabled": true},
     "symbol_map": {
+        "USDJPYM" : "USDJPYm",
+        "USDJPY" : "USDJPYm",
         "XAUUSDM": "XAUUSDm",
         "XAUUSD": "XAUUSDm"
     },
